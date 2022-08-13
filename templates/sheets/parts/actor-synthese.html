@@ -1,0 +1,44 @@
+<ol class="items-list">
+    <section class="main flexcol">
+        <h2>Armes et attaques</h2>
+        
+        <table>
+            <tr>
+                <th width="30%" text-align="left">Réference</th>
+                <th  width="7%" text-align="center">Att.</th>
+                <th  width="7%" text-align="center">Score</th>
+                <th  width="14%" text-align="center">Jet Init</th>
+                <th  width="14%" text-align="center">Dégats</th>
+                <th  width="7%" text-align="center">Bris</th>
+                <th  width="7%" text-align="center">Mun.</th>
+                <th  width="7%" text-align="center">Act.</th>
+            </tr>
+        {{#each ArmesResum as |resu key|}}
+            <tr class="item" data-item-id="{{resu._id}}">
+                <td> <a class="rollable" data-roll-type="itemS">{{resu.data.NomAffiche}}</a></td>
+                <td class="align-center"> <a class="rollable" data-roll-type="itemS">{{resu.data.attributd}}</a></td>
+                <td class="align-center"> <a class="rollable" data-roll-type="itemS">{{resu.data.score}}</a></td>
+                <td class="align-center"><a class="rollable" data-roll-type="itemI={{resu.data.jetinit}}">{{resu.data.jetinit}}</a></td>
+                <td class="align-center"><a class="rollable" data-roll-type="itemD={{resu.data.degat}}">{{resu.data.degat}}</a></td>
+                <td class="align-center">{{resu.data.bris}}</td>
+                {{#if resu.data.AMunition}}
+                <td class="align-center">{{resu.data.munition}}</td>
+                {{else}}
+                <td class="align-center">n.a.</td>
+                {{/if}}
+                <td class="item-controls align-center" text-align="center">
+                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                </td>
+            </tr>
+            <tr class="item" data-item-id="{{resu._id}}">
+                <td colspan="7">
+                    <i>{{cmp.data.descRapide}}</i>
+                </td>
+                <td class="item-controls align-center">
+                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+        {{/each}}
+        </table>      
+      </section>
+</ol>

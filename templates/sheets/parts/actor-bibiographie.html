@@ -1,0 +1,43 @@
+<table>
+    <tr>
+      <th  width="7%" text-align="center"></th>
+      <th  width="15%" text-align="center">Nom</th>
+      <th  width="10%" text-align="left">Blanc</th>
+      <th  width="10%" text-align="center">1/2Perle</th>
+      <th  width="10%" text-align="center">1/2Lune</th>
+      <th  width="10%" text-align="center">Perle</th>
+      <th  width="10%" text-align="center">Lune</th>
+      <th  width="7%" text-align="center">Orc</th>
+      <th  width="7%" text-align="center">Emmer.</th>
+      <th  width="7%" text-align="center">Pourpe</th>
+      <th  width="7%" text-align="center">Act.</th>
+    </tr>
+    {{#each bourses as |bourse id|}}
+    <tr class="item" data-item-id="{{bourse._id}}">
+        <td class="align-center"><a class="rollable" data-roll-type="item"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/></a></td>
+        <td class="align-center">{{bourse.name}}</td>
+        <td class="align-center">{{bourse.data.blanc}}</td>
+        <td class="align-center">{{bourse.data.demiePerle}}</td>
+        <td class="align-center">{{bourse.data.demieLune}}</td>
+        <td class="align-center">{{bourse.data.perle}}</td>
+        <td class="align-center">{{bourse.data.lune}}</td>
+        <td class="align-center">{{bourse.data.orc}}</td>
+        <td class="align-center">{{bourse.data.emmeraude}}</td>
+        <td class="align-center">{{bourse.data.pourpre}}</td>
+        <td class="item-controls" >
+            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+        </td>
+    </tr>
+    <tr class="item" data-item-id="{{bourse._id}}">
+        <td colspan="10">
+            <i>{{bourse.data.autres}}</i>
+        </td>
+        <td class="item-controls" >
+            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+        </td>
+    </tr>
+  {{/each}}
+</table>  
+<div class="editor">
+{{editor content=data.biography target="data.biography" rollData=rollData button=true owner=owner editable=editable}} 
+</div>

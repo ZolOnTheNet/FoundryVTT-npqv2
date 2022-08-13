@@ -1,0 +1,24 @@
+﻿[IBeam]
+Path=Text White 1.cur
+
+[Crosshair]
+Path=Precision White 1.cur
+
+[NWPen]
+Path=Handwriting White.cur
+
+[SizeNS]
+Path=Vertical White 1.cur
+
+[SizeWE]
+Path=Horizontal White 1.cur
+
+[SizeNWSE]
+Path=Diagonal 1 White 1.cur
+
+[SizeNESW]
+Path=Diagonal 2 White 1.cur
+
+[SizeAll]
+Path=Move White 1.cur
+

@@ -1,0 +1,43 @@
+  <table>
+    <tr>
+      <th  width="7%" text-align="center"></th>
+      <th width="37%" text-align="left">Nom</th>
+      <th width="7%" text-align="center">Actif</th>
+      <th  width="7%" text-align="center">Type</th>
+      <th  width="7%" text-align="center">Quantité</th>
+      <th  width="14%" text-align="center">Poids</th>
+      <th  width="14%" text-align="center">Volume</th>
+      <th  width="7%" text-align="center">Act.</th>
+    </tr>
+    {{#each gear as |item id|}}
+    <tr class="item" data-item-id="{{item._id}}">
+        <td class="align-center"><a class="rollable" data-roll-type="item"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/></a></td>
+        <td class="align-left">{{item.name}}</td>
+        <td class="align-center">
+         {{#if data.actif}}
+            <input name="data.actif" type="checkbox" disabled=true checked/>
+          {{else}}
+            <input name="data.actif" type="checkbox" disabled=true/>
+          {{/if}}
+        </td>
+        <td class="align-center">{{item.data.typeObjet}}</td>
+        <td class="align-center">{{item.data.quantite}}</td>
+        <td class="align-center">{{item.data.poids}}</td>
+        <td class="align-center">{{item.data.volume}}</td>
+        <td class="item-controls" >
+            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+        </td>
+    </tr>
+    <tr class="item" data-item-id="{{item._id}}">
+        <td colspan="5">
+            <i>{{item.data.descRapide}}</i>
+        </td>
+        <td colspan="2">
+          S:{{item.data.bonus.score}},D:{{item.data.bonus.dommage}},PI:{{item.data.bonus.pinit}},PV:{{item.data.bonus.PdV}}, PM:{{item.data.bonus.PdM}}
+        </td>
+      <td class="item-controls" >
+            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+        </td>
+    </tr>
+  {{/each}}
+  </table>      

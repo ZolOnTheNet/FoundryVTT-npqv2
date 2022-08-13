@@ -1,0 +1,61 @@
+<div>
+  
+</div>
+<ol class="items-list">
+  {{#each spells as |spell spellLevel|}}
+    <li class="item flexrow items-header">
+      <div class="item-name">Les sorts de niveau {{spellLevel}}</div>
+      <div class="item-controls">
+        <a class="item-control item-create" title="Create item" data-type="sort" data-spell-level="{{spellLevel}}"><i class="fas fa-plus"></i> Ajouter un sort niv. {{spellLevel}}</a>
+      </div>
+    </li>
+    <table>
+      <tr>
+        <th class="align-center" width="7%">
+          
+        </th>
+        <th  class="align-left" width="50%">
+          Nom du sort 
+        </th>
+        <th class="align-center" width="10%">
+          Spé.
+        </th>
+        <th class="align-center" width="10%">
+          cout
+        </th>
+        <th  class="align-center" width="10%">
+          Attr
+        </th>
+        <th  class="align-center" width="13%">
+          Score
+        </th>
+      </tr>  
+      {{#each spell as |item id|}}
+        <tr class="item" data-item-id="{{item._id}}">
+          <td class="align-center">
+            <a class="rollable" data-roll-type="item"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/></a>
+          </td>
+          <td class="align-left">
+            {{item.name}}
+          </td>
+          <td class="align-center">
+            {{item.data.codeSpe}}
+          </td>
+          <td class="align-center">
+            {{item.data.coutMagie}}
+          </td>
+          <td class="align-center">
+            {{item.data.attributd}}
+          </td>
+          <td class="align-center">
+            {{item.data.scoreRel}}
+          </td>
+          <td class="align-center">
+            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+          </td>
+        </tr>     
+      {{/each}}
+    </table>
+  {{/each}}
+</ol>

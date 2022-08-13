@@ -1,0 +1,23 @@
+{
+    "name": "npqv2",
+    "title": "NPQ v2",
+    "description": "NPQ v2 pour FoundryVTT!",
+    "version": "0.0.1",
+    "minimumCoreVersion": "9.0.0",
+    "compatibleCoreVersion": "9",
+    "templateVersion": 2,
+    "author": "ZolOnTheNet",
+    "esmodules": ["module/npqv2.js"],
+    "styles": ["css/npqv1.css"],
+    "scripts": [],
+    "packs": [],
+    "languages": [],
+    "gridDistance": 1.5,
+    "gridUnits": "m",
+    "primaryTokenAttribute": "",
+    "secondaryTokenAttribute": "",
+    "url": "https://www-lagep.cpe.fr/public/lemonde2k2/",
+    "manifest": "",
+    "download": "",
+    "license": "LICENSE.txt"
+  }

@@ -1,0 +1,9 @@
+/r 10d6x6cs>=5df=1 (relance les 6, supprime les 1 comme negatif, tout ce qui est au dessus de 4 est une réussite)
+base du système de réussite.
+
+Actuellement, pas tout transposer en npqv2. Les noms des templates ne sont pas conformes, il faut aussi modifier le fichier des sous formes.
+
+le meilleur système de lancer de dés est :
+/r Nd6x6cs>4  où N est le nombre de dés, les 6 relance et on garde les 5 et 6 (>4)
+C'est la difficulté qui peut produire des négatifs (on enlève la difficulte)
+-4 echec critique ? en c'est l'idée de faire la moitié de 1 (ou le tier) et avoir aucun succès
