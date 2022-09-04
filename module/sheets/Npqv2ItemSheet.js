@@ -2,7 +2,7 @@
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
- export class npqv2ItemSheet extends ItemSheet {
+ export default class npqv2ItemSheet extends ItemSheet {
 
     /** @override */
     static get defaultOptions() {

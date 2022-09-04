@@ -18,12 +18,13 @@
         },
         "minibase": {
             "blessure":3,
+            "BlessureMax": 3,
             "PdM": {
                 "value": 5,
                 "min": 0,
                 "max": 5
               },
-            "difficulte":0,
+            "difficulte":5,
             "dommage": 3,
             "biography":""
         },

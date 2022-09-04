@@ -1,20 +1,20 @@
-export class npqv2ActorSheet extends ActorSheet {
+export default  class npqv2ActorSheet extends ActorSheet {
 
     /** @override */
     static get defaultOptions() {
       return mergeObject(super.defaultOptions, {
         classes: ["npqv2", "sheet", "actor"],
-        template: "systems/npqv2/templates/actor/actor-pj-sheet.html",
+        template: "systems/npqv2/templates/personnage-sheet.html", // attention c'est template() qui retourne le véritable nom
         width: 655,
         height: 519,
         tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "features" }]
       });
     }
   
-    /** @override */
+    /** @override , selection du fichier front end en fonction du type d'acteur (ici PJ, Boss, demi-Boss et figurant) */
     get template() {
-      console.log("NPQv2 | ouvre : systems/npqv2/templates/actor/actor-"+this.actor.data.type+"-sheet.html");
-      return `systems/npqv2/templates/actor/actor-${this.actor.data.type}-sheet.html`;
+      console.log("NPQv3 | ouvre : systems/npqv2/templates/sheets/actor-"+this.actor.data.type+"-sheet.html");
+      return `systems/npqv2/templates/sheets/actor-${this.actor.data.type}-sheet.html`;
     }
   
     /* -------------------------------------------- */
@@ -52,7 +52,7 @@ export class npqv2ActorSheet extends ActorSheet {
       context.rollData = context.actor.getRollData();
   
       // Prepare active effects
-      context.effects = prepareActiveEffectCategories(this.actor.effects);
+     // context.effects = prepareActiveEffectCategories(this.actor.effects);
 //      context.AttribV = { "for":"Force", "ag":"Agilité", "con":"Constitution", "p":"Présence", "ig":"Intelligence", "it":"Intuition", "v":"Volonté" };
 //      context.LstDes = { "D300":"D300", "D250":"D250","D200":"D200","D150":"D150","D120":"D120","D100":"D100","D80":"D80","D60":"D60","D50":"D50","D40":"D40"}
       console.log("NPQv2| context:", context);
@@ -275,127 +275,126 @@ export class npqv2ActorSheet extends ActorSheet {
     //   }
     }
   
-    /**
-     * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
-     * @param {Event} event   The originating click event
-     * @private
-     */
-    async _onItemCreate(event) {
-      event.preventDefault();
-      const header = event.currentTarget;
-      // Get the type of item to create.
-      const type = header.dataset.type;
-      // Grab any data associated with this control.
-      const data = duplicate(header.dataset);
-      // Initialize a default name.
-      const name = `Nouveau ${type.capitalize()}`;
-      // Prepare the item object.
-      const itemData = {
-        name: name,
-        type: type,
-        data: data
-      };
-      // Remove the type from the dataset since it's in the itemData.type prop.
-      delete itemData.data["type"];
-  
-      // Finally, create the item!
-      return await Item.create(itemData, {parent: this.actor});
-    }
-  
-    /**
-     * Handle clickable rolls.
-     * @param {Event} event   The originating click event
-     * @private
-     */
-    _onRoll(event) {
-      event.preventDefault();
-      const element = event.currentTarget;
-      const dataset = element.dataset;
-  
-      // Handle item rolls.
-      if (dataset.rollType) {
-        // if (dataset.rollType.substring(0,4) == 'item') {
-        //   const itemId = element.closest('.item').dataset.itemId;
-        //   const item = this.actor.items.get(itemId);
-        //   if(item) {
-        //     if(item.type == "arme_resum") {
-        //          if(dataset.rollType.substring(0,5) == "itemI"){
-        //            // lance le dé d'init, il faut le mettre dans init
-                  
-        //            let formula = dataset.rollType.substring("ItemI=".length);
-        //            this.actor.data.data.attrder.initformule = formula + " + " + this.actor.data.data.attrder.pinit_finaux.value;
-        //            this.render(true);
-        //            /*
-        //            let roll = new Roll(formula, this.actor.getRollData());
-        //            let cm = roll.toMessage({
-        //              speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        //              flavor: "<b>Jet d'init</b>",
-        //              //content:"Super jet !!",
-        //              rollMode: game.settings.get('core', 'rollMode'),
-        //            });
-        //            */
-        //          } else if(dataset.rollType.substring(0,5) == "itemA"){
-        //           // utlisation de l'attribut comme reférence
-        //          } else if(dataset.rollType.substring(0,5) == "itemS"){
-        //           promptForLancer(element.closest('.item').firstElementChild.innerText,item.data.data.score,item.data.data.attributd, this.actor.data.data[item.data.data.attributd].value, 
-        //               item.data.data.degat).then(value => {
-        //             console.log("lancer de dés ",value);
-        //             console.log("acteur ",this.actor);
-        //             //jetdata = { "roll":r, "eval":txtEval, "score":scoreTot, "des": attr, "nom":txtNom, "Code":codeRet };
-        //             let qui = ChatMessage.getSpeaker({ actor: this.actor });
-        //             let jetdata = utils.lancerJet(value.txtNom, value.des, value.score + value.bonus, qui); 
-        //             utils.lanceDommage(jetdata.Code, value.dommage,qui)    
-        //           }).catch(e => 0);
-                  
-        //          } else if(dataset.rollType.substring(0,5) == "itemD"){
-        //            // jet de dommage 
-        //             let formula = dataset.rollType.substring("ItemD=".length);
-        //             let label = "<h2>Jet de dommage</h2> ";
-        //             if(item.data.data.idarmeref != "") {
-        //               let arm = this.actor.items.get(item.data.data.idarmeref)
-        //               label = arm.data.name +" fait les dommages :";
-        //             }
-        //             label += "</h2>ayant pour dommage : ";
-        //             let roll = new Roll(formula, this.actor.getRollData());
-        //             let cm = roll.toMessage({
-        //                   speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        //                   flavor: label,
-        //                   //content:"Super jet !!",
-        //                   rollMode: game.settings.get('core', 'rollMode'),
-        //             });
-        //             //return utils.SimpleLancerSousCmp(this.actor, item.data,ChatMessage.getSpeaker({ actor: this.actor }));
-        //          }
-        //     }
-        //     else return item.roll();
-        //   }
-        // }
-      }
-  
-      // Handle rolls that supply the formula directly.
-      if (dataset.roll) {
-        // let label = dataset.label ? `[Attribut] ${dataset.label}` : '';
-        // if(dataset.form === undefined) dataset.form = "no";
-        // if(dataset.form == "yes") {
-        //   promptForLancer(label,25,dataset.label, dataset.roll,"").then(value => {
-        //     // on peut traiter si le score n'a pas été indiqué comme un simple lancé
-        //             console.log("lancer de dés ",value);
-        //             console.log("acteur ",this.actor);
-        //             //jetdata = { "roll":r, "eval":txtEval, "score":scoreTot, "des": attr, "nom":txtNom, "Code":codeRet };
-        //             let qui = ChatMessage.getSpeaker({ actor: this.actor });
-        //             let jetdata = utils.lancerJet(value.txtNom, value.des, value.score + value.bonus, qui); 
-        //             if(value.dommage != "") utils.lanceDommage(jetdata.Code, value.dommage,qui)    
-        //           }).catch(e => 0);
-        } else {
-        
-        // let roll = new Roll(dataset.roll, this.actor.getRollData());
-        // let cm = roll.toMessage({
-        //   speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        //   flavor: label,
-        //   //content:"Super jet !!",
-        //   rollMode: game.settings.get('core', 'rollMode'),
-        //   });
-        }
-      }
-    }
-  
+  /**
+   * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
+   * @param {Event} event   The originating click event
+   * @private
+   */
+  async _onItemCreate(event) {
+    event.preventDefault();
+    const header = event.currentTarget;
+    // Get the type of item to create.
+    const type = header.dataset.type;
+    // Grab any data associated with this control.
+    const data = duplicate(header.dataset);
+    // Initialize a default name.
+    const name = `Nouveau ${type.capitalize()}`;
+    // Prepare the item object.
+    const itemData = {
+      name: name,
+      type: type,
+      data: data
+    };
+    // Remove the type from the dataset since it's in the itemData.type prop.
+    delete itemData.data["type"];
+
+    // Finally, create the item!
+    return await Item.create(itemData, {parent: this.actor});
   }
+  
+  /**
+   * Handle clickable rolls.
+   * @param {Event} event   The originating click event
+   * @private
+   */
+  _onRoll(event) {
+    event.preventDefault();
+    const element = event.currentTarget;
+    const dataset = element.dataset;
+
+    // Handle item rolls.
+    if (dataset.rollType) {
+      // if (dataset.rollType.substring(0,4) == 'item') {
+      //   const itemId = element.closest('.item').dataset.itemId;
+      //   const item = this.actor.items.get(itemId);
+      //   if(item) {
+      //     if(item.type == "arme_resum") {
+      //          if(dataset.rollType.substring(0,5) == "itemI"){
+      //            // lance le dé d'init, il faut le mettre dans init
+                
+      //            let formula = dataset.rollType.substring("ItemI=".length);
+      //            this.actor.data.data.attrder.initformule = formula + " + " + this.actor.data.data.attrder.pinit_finaux.value;
+      //            this.render(true);
+      //            /*
+      //            let roll = new Roll(formula, this.actor.getRollData());
+      //            let cm = roll.toMessage({
+      //              speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      //              flavor: "<b>Jet d'init</b>",
+      //              //content:"Super jet !!",
+      //              rollMode: game.settings.get('core', 'rollMode'),
+      //            });
+      //            */
+      //          } else if(dataset.rollType.substring(0,5) == "itemA"){
+      //           // utlisation de l'attribut comme reférence
+      //          } else if(dataset.rollType.substring(0,5) == "itemS"){
+      //           promptForLancer(element.closest('.item').firstElementChild.innerText,item.data.data.score,item.data.data.attributd, this.actor.data.data[item.data.data.attributd].value, 
+      //               item.data.data.degat).then(value => {
+      //             console.log("lancer de dés ",value);
+      //             console.log("acteur ",this.actor);
+      //             //jetdata = { "roll":r, "eval":txtEval, "score":scoreTot, "des": attr, "nom":txtNom, "Code":codeRet };
+      //             let qui = ChatMessage.getSpeaker({ actor: this.actor });
+      //             let jetdata = utils.lancerJet(value.txtNom, value.des, value.score + value.bonus, qui); 
+      //             utils.lanceDommage(jetdata.Code, value.dommage,qui)    
+      //           }).catch(e => 0);
+                
+      //          } else if(dataset.rollType.substring(0,5) == "itemD"){
+      //            // jet de dommage 
+      //             let formula = dataset.rollType.substring("ItemD=".length);
+      //             let label = "<h2>Jet de dommage</h2> ";
+      //             if(item.data.data.idarmeref != "") {
+      //               let arm = this.actor.items.get(item.data.data.idarmeref)
+      //               label = arm.data.name +" fait les dommages :";
+      //             }
+      //             label += "</h2>ayant pour dommage : ";
+      //             let roll = new Roll(formula, this.actor.getRollData());
+      //             let cm = roll.toMessage({
+      //                   speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      //                   flavor: label,
+      //                   //content:"Super jet !!",
+      //                   rollMode: game.settings.get('core', 'rollMode'),
+      //             });
+      //             //return utils.SimpleLancerSousCmp(this.actor, item.data,ChatMessage.getSpeaker({ actor: this.actor }));
+      //          }
+      //     }
+      //     else return item.roll();
+      //   }
+      // }
+    }
+
+    // Handle rolls that supply the formula directly.
+    if (dataset.roll) {
+      // let label = dataset.label ? `[Attribut] ${dataset.label}` : '';
+      // if(dataset.form === undefined) dataset.form = "no";
+      // if(dataset.form == "yes") {
+      //   promptForLancer(label,25,dataset.label, dataset.roll,"").then(value => {
+      //     // on peut traiter si le score n'a pas été indiqué comme un simple lancé
+      //             console.log("lancer de dés ",value);
+      //             console.log("acteur ",this.actor);
+      //             //jetdata = { "roll":r, "eval":txtEval, "score":scoreTot, "des": attr, "nom":txtNom, "Code":codeRet };
+      //             let qui = ChatMessage.getSpeaker({ actor: this.actor });
+      //             let jetdata = utils.lancerJet(value.txtNom, value.des, value.score + value.bonus, qui); 
+      //             if(value.dommage != "") utils.lanceDommage(jetdata.Code, value.dommage,qui)    
+      //           }).catch(e => 0);
+      } else {
+      
+      // let roll = new Roll(dataset.roll, this.actor.getRollData());
+      // let cm = roll.toMessage({
+      //   speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      //   flavor: label,
+      //   //content:"Super jet !!",
+      //   rollMode: game.settings.get('core', 'rollMode'),
+      //   });
+    }
+  }
+}
+ 

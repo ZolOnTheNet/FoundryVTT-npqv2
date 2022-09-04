@@ -7,3 +7,72 @@ le meilleur système de lancer de dés est :
 /r Nd6x6cs>4  où N est le nombre de dés, les 6 relance et on garde les 5 et 6 (>4)
 C'est la difficulté qui peut produire des négatifs (on enlève la difficulte)
 -4 echec critique ? en c'est l'idée de faire la moitié de 1 (ou le tier) et avoir aucun succès
+
+
+macro ------------------------------------------------------
+========= Tirage générique de base =========================
+const form = `<form>
+ <table>
+      <tbody>
+        <tr><td>Nb dés</td>
+            <td><input name="nbdes" type="integer" value=5 /></td></tr>
+        <tr><td>Réserve</td>
+            <td><input name="reserve" type="integer" value=0 /></td></tr>
+        <tr><td>Difficulté</td>
+            <td><input name="difficulte" type="integer"value=5 /></td></tr>
+      </tbody>
+    </table>
+</form>`;
+
+function handleSubmit(html) {
+  const formElement = html[0].querySelector('form');
+  const formData = new FormDataExtended(formElement);
+  const formDataObject = formData.toObject();
+
+  // expects an object: { input-1: 'some value' }
+//  console.log('output form data object', formDataObject);
+//  console.log('Nb dés', formDataObject);
+//  console.log('Réserve', formDataObject["reserve"]);
+  // ne mache pas : game.chatMessageLancerDes("coucou",5,3,5);
+// traitement de retour du dialogue
+  let res = parseInt( formDataObject["reserve"]);
+  let nbdes = parseInt( formDataObject["nbdes"]);
+  let diff = parseInt( formDataObject["difficulte"]);
+// res ne peut etre plus grand que ndes -1 (impair) ou -2 (pair)
+  if(res >= nbdes) res = nbdes-1;
+   let lancer = nbdes-res;
+   let r = new Roll(""+(lancer)+"D6");
+   r.evaluate({async :false });
+  let resultat = parseInt(r.result);
+  let nbsucces = parseInt((resultat - diff + 5) / 5)  ;
+  if (nbsucces <= 0) nbsucces = 0;
+  if (nbsucces > 0) nbsucces += parseInt(res);
+// --------------------------------------------
+
+  let monTexte = "Votre jet("+ lancer + "D6) ainsi que "+ parseInt(res)+ 
+" succès en réserve contre une difficulté de "+ diff + ", vous donne <b>"+nbsucces+" mises</b> à jouer";
+  // sortie du texte
+   let chatData = {
+        user: game.user._id,
+        speaker: ChatMessage.getSpeaker(),
+        flavor: monTexte,
+        rollMode: game.settings.get('core', 'rollMode')
+    };
+    //ChatMessage.create(chatData);
+   let cm = r.toMessage(chatData);
+}
+
+ function simpleDialogue(){
+  let i = 10;
+  let sp = ChatMessage.getSpeaker();
+    new Dialog({
+    title: "lancer de dé pour "+sp.alias,
+    content: form,
+    buttons: {
+        submit: { label: "Submit", callback: handleSubmit },
+        cancel: { label: "Cancel" },
+    },
+    }).render(true);
+}
+
+simpleDialogue();
