@@ -81,8 +81,8 @@
           <div class="abilities flexcol">
             {{#each data.attributs as |attrib key|}}
             <div class="flexrow flex-group-center">
-              <label for="attrib.value" class="resource-label rollable flexlarge align-left" data-roll="{{attrib.value}}" data-label="Jet de {{attrib.label}}">{{attrib.label}} </label>
-              <input type="text" name="attrib.value" value="{{attrib.value}}" data-dtype="Number"/>
+              <label for="attrib.value" class="resource-label rollable flexlarge align-left" data-roll="{{attrib.value}}" data-label="Jet de {{attrib.label}}" data-rollType=1 >{{attrib.label}} </label>
+              <input type="text" name="data.attributs.{{attrib.code}}.value" value="{{attrib.value}}" data-dtype="Number"/>
               <span class="attrib-mod rollable" data-roll="{{attrib.value}}" data-form="yes" data-label="Jet en {{attrib.label}}"> {{attrib.abrv}}</span>
             </div>
             {{/each}}
@@ -93,8 +93,8 @@
           {{#each data.attrder as |attribd key|}}
           <div class="attribd flexrow flex-group-center">
             <label for="attribd.value" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{attribd.abrv}}">{{attribd.abrv}}</label>
-            <input type="text" name="attribd.value" value="{{attribd.value}}" data-dtype="Number"/>
-            <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-label="{{attrib}}">{{attribd.value}}</span>
+            <input type="text" name="data.attrder.{{attribd.abrv}}.value" value="{{attribd.value}}" data-dtype="text"/>
+            <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-label="{{attrib}}">{{attribd.abrv}}</span>
           </div>
           {{/each}}        
         </section>

@@ -67,9 +67,9 @@ export default class npqv2ActorSheet extends ActorSheet {
      * @return {undefined}
      */
     _prepareCharacterData(context) {
-      // Handle ability scores.
+      // // Handle ability scores.
       // for (let [k, v] of Object.entries(context.data.attributs)) {
-        // v.label = game.i18n.localize(CONFIG.NPQV1.attributs[k]) ?? k;
+      //   v.label = game.i18n.localize(CONFIG.NPQV1.attributs[k]) ?? k;
       // }
     }
   
@@ -120,7 +120,7 @@ export default class npqv2ActorSheet extends ActorSheet {
           //   bonus.pinit += (i.data.bonus.pinit != 0)?i.data.bonus.pinit:0;
           //   bonus.PdM  += (i.data.bonus.PdM)?i.data.bonus.PdM:0;
           //   bonus.PdV  += (i.data.bonus.PdV)?i.data.bonus.PdV:0;
-          // }
+          // }PdVTot
           gear.push(i);
         }
         else if (i.type === 'domaine') {
@@ -237,42 +237,34 @@ export default class npqv2ActorSheet extends ActorSheet {
       super.activateListeners(html);
   
       // Render the item sheet for viewing/editing prior to the editable check.
-    //   html.find('.item-edit').click(ev => {
-    //     const li = $(ev.currentTarget).parents(".item");
-    //     const item = this.actor.items.get(li.data("itemId"));
-    //     item.sheet.render(true);
-    //   });
+      html.find('.item-edit').click(ev => {
+        const li = $(ev.currentTarget).parents(".item");
+        const item = this.actor.items.get(li.data("itemId"));
+        item.sheet.render(true);
+      });
   
-    //   // -------------------------------------------------------------
-    //   // Everything below here is only needed if the sheet is editable
-    //   if (!this.isEditable) return;
+      // -------------------------------------------------------------
+      // Everything below here is only needed if the sheet is editable
+      if (!this.isEditable) return;
   
-    //   // Add Inventory Item
-    //   html.find('.item-create').click(this._onItemCreate.bind(this));
+      // Add Inventory Item
+      html.find('.item-create').click(this._onItemCreate.bind(this));
   
-    //   // Delete Inventory Item
-    //   html.find('.item-delete').click(ev => {
-    //     const li = $(ev.currentTarget).parents(".item");
-    //     const item = this.actor.items.get(li.data("itemId"));
-    //     item.delete();
-    //     li.slideUp(200, () => this.render(false));
-    //   });
+      // Delete Inventory Item
+      html.find('.item-delete').click(ev => {
+        const li = $(ev.currentTarget).parents(".item");
+        const item = this.actor.items.get(li.data("itemId"));
+        item.delete();
+        li.slideUp(200, () => this.render(false));
+      });
   
     //   // Active Effect management
     //   html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
   
-    //   // Rollable abilities.
-    //   html.find('.rollable').click(this._onRoll.bind(this));
+      // Rollable abilities.
+      html.find('.rollable').click(this._onRoll.bind(this));
   
     //   // Drag events for macros.
-    //   if (this.actor.isOwner) {
-    //     let handler = ev => this._onDragStart(ev);
-    //     html.find('li.item').each((i, li) => {
-    //       if (li.classList.contains("inventory-header")) return;
-    //       li.setAttribute("draggable", true);
-    //       li.addEventListener("dragstart", handler, false);
-    //     });
-    //   }
     }
   
   /**
@@ -311,9 +303,16 @@ export default class npqv2ActorSheet extends ActorSheet {
     event.preventDefault();
     const element = event.currentTarget;
     const dataset = element.dataset;
-
+    if(dataset.rollType === undefined || dataset.rollType=="") dataset.rollType ="debase";
     // Handle item rolls.
-    if (dataset.rollType) {
+    switch(dataset.rollType) {
+      
+      case 'dedirect' : 
+        game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
+        break;
+      case 'debase' :
+        game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
+        break;
       // if (dataset.rollType.substring(0,4) == 'item') {
       //   const itemId = element.closest('.item').dataset.itemId;
       //   const item = this.actor.items.get(itemId);
@@ -385,8 +384,9 @@ export default class npqv2ActorSheet extends ActorSheet {
       //             let jetdata = utils.lancerJet(value.txtNom, value.des, value.score + value.bonus, qui); 
       //             if(value.dommage != "") utils.lanceDommage(jetdata.Code, value.dommage,qui)    
       //           }).catch(e => 0);
+       // game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
       } else {
-      
+        //game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode);
       // let roll = new Roll(dataset.roll, this.actor.getRollData());
       // let cm = roll.toMessage({
       //   speaker: ChatMessage.getSpeaker({ actor: this.actor }),

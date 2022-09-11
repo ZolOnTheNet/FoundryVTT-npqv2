@@ -24,8 +24,8 @@
                 "min": 0,
                 "max": 5
               },
-            "difficulte":5,
-            "dommage": 3,
+            "difficulte":1,
+            "DeDom": "1D4",
             "biography":""
         },
         "attr": {
@@ -35,7 +35,7 @@
               "label":"force",
               "abrv":"For"
             },
-            " ag": {
+            "ag": {
               "value": 2,
               "label":"Agilité",
               "abrv":"Ag"
@@ -70,12 +70,12 @@
         "attrb":{
           "attrder": {
             "BDomC": {
-              "value": 2,
+              "value": "1d6",
               "label":"D.Dom. Contact",
               "abrv":"BDomC"
             },
             "BDomD": {
-              "value": 2,
+              "value": "1d6",
               "label":"D.Dom. Distant",
               "abrv":"BDomD"
             },
@@ -119,10 +119,14 @@
         "Heroisme":1
       },
       "figurant": {
-        "templates": ["minibase", "attr", "attrb"],
+        "templates": ["minibase"],
         "nivTresor": 0
       },
-      "mini-boss": {
+      "mini-boss-f": {
+        "templates": ["minibase","attr","attrb"],
+        "nivTresor":2
+      },
+      "mini-boss-b": {
         "templates": ["base","attr","attrb"],
         "nivTresor":2
       },
@@ -229,19 +233,15 @@
         "idcmpref":"",
         "desync":0,
         "attributd":"for",
-        "score":10,
-        "jetinit":"2D6",
-        "resistance":1,
+        "DeCmp":10,        
         "degat":"1D10",
+        "BDom":"1d4",
         "special":"",
+        "resistance":1,
         "bris":5,
         "munitions":-1,
-        "BPro" : {
-          "total":0,
-          "libre":0,
-          "Init":0,
-          "Dom":0
-        }
+        "reserve":0,
+        "lancer":1
       }
     }
   }

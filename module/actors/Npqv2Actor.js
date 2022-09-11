@@ -1,8 +1,9 @@
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
+ * pas de default !
  */
- export class npqv1Actor extends Actor {
+ export class npqv2Actor extends Actor {
     prepareData() {
         // Prepare data for the actor. Calling the super version of this executes
         // the following, in order: data reset (to clear active effects),
@@ -54,10 +55,10 @@
           bonus.PdM  += (i.data.data.bonus.PdM)?i.data.data.bonus.PdM:0;
           bonus.PdV  += (i.data.data.bonus.PdV)?i.data.data.bonus.PdV:0;
         }
-        data.PdMTot = data.PdM.max+bonus.PdM;
+        data.PdMTot = data.PdM.max+bonus.PdM; // correction rapide pour les points de magie et de vie
         data.PdVTot = data.PdV.max+bonus.PdV;
-        if(typeof data.attrder.pinit_base.value === 'string')data.attrder.pinit_base.value = parseInt(data.attrder.pinit_base.value,10)
-        data.attrder.pinit_finaux.value = data.attrder.pinit_base.value+bonus.pinit;
+        //if(typeof data.attrder.pinit_base.value === 'string')data.attrder.pinit_base.value = parseInt(data.attrder.pinit_base.value,10)
+        //data.attrder.pinit_finaux.value = data.attrder.pinit_base.value+bonus.pinit;
         data.bonus = bonus;
     }
       /**

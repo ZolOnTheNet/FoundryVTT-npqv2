@@ -84,22 +84,21 @@
             <div class="abilities flexcol">
               {{#each data.attributs as |attrib key|}}
               <div class="attrib flexrow flex-group-center">
-                <label for="attrib.value" class="resource-label rollable flexlarge align-left" data-roll="{{attrib.value}}" data-label="Jet de {{attrib.label}}">{{attrib.label}}</label>
+                <label for="attrib.value" class="resource-label rollable flexlarge align-left" data-roll="{{attrib.value}}" data-rollType="dedirect" data-label="Jet de {{attrib.label}}">{{attrib.label}}</label>
                 <select name="data.attributs.{{attrib.code}}.value">
                   {{selectOptions ../LstDes selected=attrib.value}}
                 </select>  
-                <span class="attrib-mod rollable" data-roll="{{attrib.value}}" data-form="yes" data-label="Jet en {{attrib.label}}">{{attrib.abrv}}</span>
+                <span class="attrib-mod rollable" data-roll="{{attrib.value}}" data-rollType=""debase" data-label="Jet en {{attrib.label}}">{{attrib.abrv}}</span>
               </div>
               {{/each}}
             </div>
           </aside>
-  
           <section class="main flexcol">
             {{#each data.attrder as |attribd key|}}
             <div class="attribd flexrow flex-group-center">
-              <label for="attribd.value" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{attribd.abrv}}">{{attribd.abrv}}</label>
+              <label for="attribd.value" class="resource-label rollable flexlarge align-left" data-roll=""  data-label="{{attribd.abrv}}">{{attribd.abrv}}</label>
               <input type="text" name="attribd.value" value="{{attribd.value}}" data-dtype="Number"/>
-              <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-label="{{attrib}}">{{attribd.value}}</span>
+              <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-label="{{attrib}}">{{attribd.abrv}}</span>
             </div>
             {{/each}}        
           </section>
