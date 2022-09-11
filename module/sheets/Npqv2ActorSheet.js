@@ -1,4 +1,4 @@
-export default  class npqv2ActorSheet extends ActorSheet {
+export default class npqv2ActorSheet extends ActorSheet {
 
     /** @override */
     static get defaultOptions() {
@@ -98,123 +98,123 @@ export default  class npqv2ActorSheet extends ActorSheet {
         5: []
       };
   
-    //   let bib = context.data.biography.split('</p>');
-    //   if (Array.isArray(bib)){
-    //     if (bib.length < 6){
-    //       //context.data.biography += "<br>&nbsp<br><br><br>";
-    //       context.data.biography += "<p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>";
-    //     }
-    //   }
+      let bib = context.data.biography.split('</p>');
+      if (Array.isArray(bib)){
+        if (bib.length < 6){
+          //context.data.biography += "<br>&nbsp<br><br><br>";
+          context.data.biography += "<p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>";
+        }
+      }
   
-    //   // Iterate through items, allocating to containers
-    //   for (let i of context.items) {
-    //     i.img = i.img || DEFAULT_TOKEN;
-    //     // Append to gear.
-    //     if (i.type === 'objet') {
-    //       i.data.descRapide = i.data.description.substring(0,(i.data.description+".").indexOf("."));
-    //       i.data.utiRapide  = i.data.utilisation.substring(0,(i.data.utilisation+".").indexOf("."));
-    //       i.data.isArme = !(i.data.typeObjet=='O'); // c'est une arme si c'est pas un objet de type O
-    //       // if(i.data.actif) {
-    //       //   bonus.score += (i.data.bonus.score != 0)?(i.data.bonus.score):0;
-    //       //   bonus.dommage += (i.data.bonus.dommage != "")?"+("+i.data.bonus.dommage+")":"";
-    //       //   bonus.pinit += (i.data.bonus.pinit != 0)?i.data.bonus.pinit:0;
-    //       //   bonus.PdM  += (i.data.bonus.PdM)?i.data.bonus.PdM:0;
-    //       //   bonus.PdV  += (i.data.bonus.PdV)?i.data.bonus.PdV:0;
-    //       // }
-    //       gear.push(i);
-    //     }
-    //     else if (i.type === 'domaine') {
-    //       // on lui ajoute le résumé (pour l'instant jusqu'au premier point)
-    //       i.data.descRapide = (i.data.description).substring(0,(i.data.description+".").indexOf("."));
-    //       domaines.push(i);
-    //     } 
-    //     else if (i.type === 'competence'){
-    //       i.data.descRapide = (i.data.description+".").substring(0,(i.data.description+".").indexOf("."));
-    //       if(i.data.idLien != ""){
-    //         // calcul si spécialisation
-    //         let it = context.actor.items.get(i.data.idLien);
-    //         i.data.scoreRel = i.data.score + it.data.data.score;
-    //       }else {
-    //         i.data.scoreRel = i.data.score;
-    //       }
-    //       competences.push(i);
-    //     }
-    //     // Append to features.
-    //     else if (i.type === 'feature') {
-    //       features.push(i);
-    //     }
-    //     else if (i.type === 'secret') {
-    //       if(i.data.niveau >0 && i.data.niveau < i.data.niveauMax) {
-    //         i.data.nomMax = i.data["niv"+i.data.niveau].nom;  
-    //       } else  i.data.nomMax = "";
-    //       secrets.push(i);
-    //     }
-    //     // ajouter dans les résumés des armes
-    //     else if( i.type === 'arme_resum'){
-    //       i.data.descRapide = i.data.special.substring(0,(i.data.special+".").indexOf('.'));
-    //       i.data.NomAffiche = "-non déf-";
-    //       if(i.data.desync == 0) {
-    //         i.data.score = 0;
-    //         i.data.jetinit = "";
-    //         i.data.degat ="";
-    //         i.data.bris = -1;
-    //       }
-    //       if(i.data.idarmeref !== "") {
-    //         //let a = context.items[i.data.idarmeref];
-    //         let a = context.actor.items.get(i.data.idarmeref);
-    //         if(a !== undefined){
-    //           // si synchro alors on ajouter les bonus 
-    //           i.data.NomAffiche = a.name;
-    //           if(i.data.desync == 0) {
-    //             if(a.data.data.initiative ==""){
-    //               i.data.jetinit = a.data.data.pinitDes 
-    //               if(a.data.data.bonus.pinit != 0 ) i.data.jetinit += "+ (" +a.data.data.bonus.pinit +")";
-    //             } else {
-    //               i.data.jetinit = a.data.data.initiative; // l'initiative de l'arme modifié
-    //             }
-    //             i.data.score = i.data.score + a.data.data.bonus.score;
-    //             i.data.bris = a.data.data.bris; // a mettre dans objet
-    //             i.data.resistance = a.data.data.resistance // a metrte dans objet
-    //             i.data.degat = a.data.data.dommage ;
-    //             if(a.data.data.bonus.dommage !="+0") i.degat = i.degat + " +("+a.data.data.bonus.dommage+")";
-    //           }
-    //         } 
-    //       }
-    //       if(i.data.idcmpref !== ""){
-    //         //let c = context.items[i.data.idcmpref];
-    //         let c = context.actor.items.get(i.data.idcmpref);
-    //         if(c !== undefined){
-    //           i.data.NomAffiche = i.data.NomAffiche + "("+c.name+")";
-    //           i.data.BPro = c.data.data.BPro;
-    //           // calcul
-    //           if(i.data.desync == 0) {
-    //             i.data.score = i.data.score + c.data.data.score;
-    //           }    
-    //         } 
-    //       }
-    //       if(i.data.munitions > -1) {
-    //         i.data.AMunition = true;
-    //       } else i.data.AMunition = false;
-    //       ArmesResum.push(i);
-    //     }
-    //     // Append to spells.
-    //     else if (i.type === 'sort') {
-    //       i.data.descRapide = i.data.description.substring(0,(i.data.description+".").indexOf("."));
-    //       if(i.data.idLien != ""){
-    //         // calcul si spécialisation
-    //         let it = context.actor.items.get(i.data.idLien);
-    //         i.data.scoreRel = i.data.score + it.data.data.score;
-    //       }else {
-    //         i.data.scoreRel = i.data.score;
-    //       }
-    //       if (i.data.niveau != undefined) {
-    //         spells[i.data.niveau].push(i);
-    //       }
-    //     }
-    //     else if (i.type === 'argent') {
-    //       bourses.push(i);
-    //     }
-    //  }
+      // Iterate through items, allocating to containers
+      for (let i of context.items) {
+        i.img = i.img || DEFAULT_TOKEN;
+        // Append to gear.
+        if (i.type === 'objet') {
+          i.data.descRapide = i.data.description.substring(0,(i.data.description+".").indexOf("."));
+          i.data.utiRapide  = i.data.utilisation.substring(0,(i.data.utilisation+".").indexOf("."));
+          i.data.isArme = !(i.data.typeObjet=='O'); // c'est une arme si c'est pas un objet de type O
+          // if(i.data.actif) {
+          //   bonus.score += (i.data.bonus.score != 0)?(i.data.bonus.score):0;
+          //   bonus.dommage += (i.data.bonus.dommage != "")?"+("+i.data.bonus.dommage+")":"";
+          //   bonus.pinit += (i.data.bonus.pinit != 0)?i.data.bonus.pinit:0;
+          //   bonus.PdM  += (i.data.bonus.PdM)?i.data.bonus.PdM:0;
+          //   bonus.PdV  += (i.data.bonus.PdV)?i.data.bonus.PdV:0;
+          // }
+          gear.push(i);
+        }
+        else if (i.type === 'domaine') {
+          // on lui ajoute le résumé (pour l'instant jusqu'au premier point)
+          i.data.descRapide = (i.data.description).substring(0,(i.data.description+".").indexOf("."));
+          domaines.push(i);
+        } 
+        else if (i.type === 'competence'){
+          i.data.descRapide = (i.data.description+".").substring(0,(i.data.description+".").indexOf("."));
+          if(i.data.idLien != ""){
+            // calcul si spécialisation
+            let it = context.actor.items.get(i.data.idLien);
+            i.data.scoreRel = i.data.score + it.data.data.score;
+          }else {
+            i.data.scoreRel = i.data.score;
+          }
+          competences.push(i);
+        }
+        // Append to features.
+        else if (i.type === 'feature') {
+          features.push(i);
+        }
+        else if (i.type === 'secret') {
+          if(i.data.niveau >0 && i.data.niveau < i.data.niveauMax) {
+            i.data.nomMax = i.data["niv"+i.data.niveau].nom;  
+          } else  i.data.nomMax = "";
+          secrets.push(i);
+        }
+        // ajouter dans les résumés des armes
+        else if( i.type === 'arme_resum'){
+          i.data.descRapide = i.data.special.substring(0,(i.data.special+".").indexOf('.'));
+          i.data.NomAffiche = "-non déf-";
+          if(i.data.desync == 0) {
+            i.data.score = 0;
+            i.data.jetinit = "";
+            i.data.degat ="";
+            i.data.bris = -1;
+          }
+          if(i.data.idarmeref !== "") {
+            //let a = context.items[i.data.idarmeref];
+            let a = context.actor.items.get(i.data.idarmeref);
+            if(a !== undefined){
+              // si synchro alors on ajouter les bonus 
+              i.data.NomAffiche = a.name;
+              if(i.data.desync == 0) {
+                if(a.data.data.initiative ==""){
+                  i.data.jetinit = a.data.data.pinitDes 
+                  if(a.data.data.bonus.pinit != 0 ) i.data.jetinit += "+ (" +a.data.data.bonus.pinit +")";
+                } else {
+                  i.data.jetinit = a.data.data.initiative; // l'initiative de l'arme modifié
+                }
+                i.data.score = i.data.score + a.data.data.bonus.score;
+                i.data.bris = a.data.data.bris; // a mettre dans objet
+                i.data.resistance = a.data.data.resistance // a metrte dans objet
+                i.data.degat = a.data.data.dommage ;
+                if(a.data.data.bonus.dommage !="+0") i.degat = i.degat + " +("+a.data.data.bonus.dommage+")";
+              }
+            } 
+          }
+          if(i.data.idcmpref !== ""){
+            //let c = context.items[i.data.idcmpref];
+            let c = context.actor.items.get(i.data.idcmpref);
+            if(c !== undefined){
+              i.data.NomAffiche = i.data.NomAffiche + "("+c.name+")";
+              i.data.BPro = c.data.data.BPro;
+              // calcul
+              if(i.data.desync == 0) {
+                i.data.score = i.data.score + c.data.data.score;
+              }    
+            } 
+          }
+          if(i.data.munitions > -1) {
+            i.data.AMunition = true;
+          } else i.data.AMunition = false;
+          ArmesResum.push(i);
+        }
+        // Append to spells.
+        else if (i.type === 'sort') {
+          i.data.descRapide = i.data.description.substring(0,(i.data.description+".").indexOf("."));
+          if(i.data.idLien != ""){
+            // calcul si spécialisation
+            let it = context.actor.items.get(i.data.idLien);
+            i.data.scoreRel = i.data.score + it.data.data.score;
+          }else {
+            i.data.scoreRel = i.data.score;
+          }
+          if (i.data.niveau != undefined) {
+            spells[i.data.niveau].push(i);
+          }
+        }
+        else if (i.type === 'argent') {
+          bourses.push(i);
+        }
+     }
   
       // Assign and return
       context.gear = gear;

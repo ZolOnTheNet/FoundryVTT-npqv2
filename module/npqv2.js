@@ -11,4 +11,6 @@ Hooks.once("init", async function () {
 
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("npqv2", npqv2ActorSheet, { makeDefault: true });
+
+    return preloadHandlebarsTemplates();
 })

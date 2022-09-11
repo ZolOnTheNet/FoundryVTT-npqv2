@@ -1,0 +1,54 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+      <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+      <div class="header-fields">
+        <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+      </div>
+    </header>
+    <section class="sheet-body">
+      <h2>Petites monnaies</h2>
+      <div class="resources grid grid-5col">
+        <div class="resource flex-group-center">
+          Blancs :<br>
+          <input name="data.blanc" type="text" value="{{data.blanc}}" data-dtype="Number"/>
+        </div>  
+        <div class="resource flex-group-center">
+          Demie-perles :<br>
+          <input name="data.demiePerle" type="text" value="{{data.demiePerle}}" data-dtype="Number"/>
+        </div>  
+        <div class="resource flex-group-center">
+          Demie-Lunes :<br>
+          <input name="data.demieLune" type="text" value="{{data.demieLune}}" data-dtype="Number"/>
+        </div>  
+        <div class="resource flex-group-center">
+          Perles :<br>
+          <input name="data.perle" type="text" value="{{data.perle}}" data-dtype="Number"/>
+        </div>  
+        <div class="resource flex-group-center">
+          Lunes :<br>
+          <input name="data.lune" type="text" value="{{data.lune}}" data-dtype="Number"/>
+        </div>  
+      </div>        
+      <h2>Grosses valeurs marchandes</h2>
+      <div class="resources grid grid-3col">
+        <div class="resource flex-group-center">
+          Orc :<br>
+          <input name="data.orc" type="text" value="{{data.orc}}" data-dtype="Number"/>
+        </div>  
+        <div class="resource flex-group-center">
+          Emmeraudes :<br>
+          <input name="data.emmeraude" type="text" value="{{data.emmeraude}}" data-dtype="Number"/>
+        </div>  
+        <div class="resource flex-group-center">
+          Pourpres :<br>
+          <input name="data.pourpre" type="text" value="{{data.pourpre}}" data-dtype="Number"/>
+        </div>   
+      </div>
+      <div class="resource grid grid-2col">
+        <div class="biography grid-span-2">
+          <h2>Autres :</h2>    
+            <textarea name="data.autres" rows="7">{{data.autres}}</textarea>
+          </div>
+      </div>
+    </section>
+</form>

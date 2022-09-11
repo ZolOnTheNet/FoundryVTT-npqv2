@@ -9,6 +9,9 @@ C'est la difficulté qui peut produire des négatifs (on enlève la difficulte)
 -4 echec critique ? en c'est l'idée de faire la moitié de 1 (ou le tier) et avoir aucun succès
 
 
+
+ {{> "systems/npqv2/templates/sheets/parts/actor-bibiographie.html"}}  
+
 macro ------------------------------------------------------
 ========= Tirage générique de base =========================
 const form = `<form>

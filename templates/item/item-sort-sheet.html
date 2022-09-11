@@ -1,0 +1,73 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation defaut dans item-sheet.mjs au début --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="attributes">Caractéristiques</a>
+    <a class="item" data-tab="description">Description</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Attributes Tab --}}
+    {{!-- "sort": {"codeSpe":"","idLien":"","description": "Petit texte de...","niveau": 1,"coutMagie":1,"effet":""}, --}}
+
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      {{!-- As you add new fields, add them in here! --}}
+      <div class="resource grid grid-4col">
+        <div class="resource flex-group-center">
+          <label class="resource-label">Niveau du Sort</label>
+          <input type="text" name="data.niveau" value="{{data.niveau}}" data-dtype="Number"/>
+        </div>
+        <div class="resource flex-group-center">
+          <label class="resource-label">Cout en Magie</label>
+          <input type="text" name="data.coutMagie" value="{{data.coutMagie}}" data-dtype="Number"/>
+        </div>
+        <div>
+          <label class="resource-label">Attribut base</label>
+          <select  name="data.attributd">
+            {{selectOptions AttribV selected=data.attributd}}
+          </select>
+        </div>
+        <div class="resource flex-group-center">
+          <label class="resource-label">Score base</label>
+          <input type="text" name="data.score" value="{{data.score}}" data-dtype="Number"/>
+        </div>
+      </div>
+      {{#if A1Acteur}}
+      <div class="resource grid grid-4col">
+        <div class="resource flex-group-left">
+          Spécialisation de :
+        </div>
+        <div class="resource flex-group-left">
+          <select name="data.idLien">
+            {{selectOptions CmpV selected=data.idLien}}
+          </select>        </div> 
+        <div class="resource">
+          {{#if NomCode}}
+            {{NomCmp}}
+            
+            [{{NomCode}}]
+          {{/if}}
+        </div>                 
+      </div>
+      {{/if}}
+      <input type="hidden" name="data.codeSpe" value="{{NomCode}}"/>
+      <h2>Effets du sort :</h2>
+      <textarea name="data.effet" rows="5">{{data.effet}}</textarea>
+      {{!-- editor content=data.effet target="data.effet" rollData=rollData button=true owner=owner editable=editable  placeholder="Quels effets" --}}
+    </div>
+    
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{!-- editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable  placeholder="Description" --}}
+      <textarea name="data.description" rows="10">{{data.description}}</textarea>
+    </div>
+  </section>
+</form>

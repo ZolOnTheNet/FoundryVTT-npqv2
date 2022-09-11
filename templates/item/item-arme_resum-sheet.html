@@ -1,0 +1,94 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+    </div>
+  </header>
+  <section class="sheet-body">
+    <h2>Liaison avec un joueur</h2>
+    <div class="resources grid grid-4col">
+      <div class="resource flex-group-center">
+        Ref Arme :<br>
+        {{#if A1Acteur}}
+        <select name="data.idarmeref">
+          {{selectOptions ArmesV selected=data.idarmeref}}
+        </select> 
+       {{else}}
+          Sans objet
+        {{/if}}
+      </div>  
+      <div class="resource flex-group-center">
+        Réf compétence : <br>
+        {{#if A1Acteur}}
+          <select name="data.idcmpref">
+            {{selectOptions CmpV selected=data.idcmpref}}
+          </select> 
+        {{else}}
+           Sans objet
+        {{/if}}
+      </div>
+      <div class="resource flex-group-center">
+        Arme en Main. :<br>
+        {{#if A1Acteur}}
+        <button data-preset="ArmeEnMain" type="button">
+          Init de cette Arme
+        </button>
+          {{#if data.armeEnMain}}
+          <input name="data.armeEnMain" type="checkbox" checked/>
+          {{else}}
+          <input name="data.armeEnMain" type="checkbox" />
+          {{/if}}
+        {{else}}
+          Sans objet
+        {{/if}}
+      </div>  
+      <div class="resource flex-group-center">
+        Desynchro Val. :<br>
+        {{#if A1Acteur}}
+          {{#if data.desync}}
+          <input name="data.desync" type="checkbox" checked/>
+          {{else}}
+          <input name="data.desync" type="checkbox" />
+          {{/if}}
+        {{else}}
+          Sans objet
+        {{/if}}     </div>  
+    </div>
+    <h2>Aide a la résolution du jet</h2>
+    <div class="resources grid grid-7col">
+      <div class="resource grid-span-2">
+        Attr. :<br>
+        <select  name="data.attributd">
+          {{selectOptions AttribV selected=data.attributd}}
+        </select>
+      </div>  
+      <div class="resource flex-group-left ">
+        Score :<br>
+        <input name="data.score" type="text" value="{{data.score}}" data-dtype="Number"/>
+      </div>  
+      <div class="resource flex-group-center">
+        Jet Init :<br>
+        <input name="data.jetinit" type="text" value="{{data.jetinit}}" />
+      </div>  
+      <div class="resource flex-group-center">
+        Dégat :<br>
+        <input name="data.degat" type="text" value="{{data.degat}}" />
+      </div>  
+      <div class="resource flex-group-center">
+        Résist. :<br>
+        <input name="data.resistance" type="text" value="{{data.resistance}}" data-dtype="Number"/>
+      </div>  
+      <div class="resource flex-group-center">
+        bris :<br>
+        <input name="data.bris" type="text" value="{{data.bris}}" data-dtype="Number"/>
+      </div>  
+    </div>        
+    <div class="resource grid grid-2col">
+      <div class="biography grid-span-2">
+        <h2>Spécial :</h2>    
+          <textarea name="data.special" rows="7">{{data.special}}</textarea>
+        </div>
+    </div>
+  </section>
+</form>

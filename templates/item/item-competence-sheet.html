@@ -1,0 +1,72 @@
+{{!-- "competence": {"codeSpe":"", "idLien":"", "description": "","attributd":"for","score":15,"code":"Dom","BPro":0,"XPa":0},--}}
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+      <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+      <div class="header-fields">
+        <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+      </div>
+    </header>
+    <section class="sheet-body">
+      <div class="resources grid grid-5col">
+        <div class="resource flex-group-center">
+          Code :
+        </div>  
+        <div class="resource flex-group-center">
+          Attribut :
+        </div>
+        <div class="resource flex-group-center">
+          Score :
+        </div>
+        <div class="resource flex-group-center">
+          BPro :
+        </div>
+        <div class="resource flex-group-center">
+          XPa
+        </div>
+      </div>
+      <div class="resource grid grid-5col">
+        <div class="resource flex-group-center">
+          <input name="data.code" type="text" value="{{data.code}}" placeholder="Code Cmp"/>
+        </div>  
+        <div class="resource flex-group-center">
+          <select  name="data.attributd">
+            {{selectOptions AttribV selected=data.attributd}}
+          </select>
+        </div>
+        <div class="resource flex-group-center">
+          <input type="text" name="data.score" value="{{data.score}}" data-dtype="Number"/>
+        </div>
+        <div class="resource flex-group-center">
+          <input type="text" name="data.BPro" value="{{data.BPro}}" data-dtype="Number"/>
+        </div>
+        <div class="resource flex-group-center">
+          <input type="text" name="data.XPa" value="{{data.XPa}}" data-dtype="Number"/>
+        </div>
+      </div>
+      {{#if A1Acteur}}
+      <div class="resource grid grid-4col">
+        <div class="resource flex-group-left">
+          Spécialisation de :
+        </div>
+        <div class="resource flex-group-left">
+          <select name="data.idLien">
+            {{selectOptions CmpV selected=data.idLien}}
+          </select>        </div> 
+        <div class="resource grid-span-2">
+          {{#if NomCode}}
+            {{NomCmp}}
+            <input type="hidden" name="data.codeSpe" value="{{NomCode}}"/>
+            [{{NomCode}}]
+          {{/if}}
+        </div>        
+      </div>
+      {{/if}}
+      <input type="hidden" name="data.codeSpe" value="{{NomCode}}"/>
+      <div class="resource grid grid-2col">
+        <div class="biography grid-span-2">
+          <h2>Description :</h2>    
+            <textarea name="data.description" rows="5">{{data.description}}</textarea>
+          </div>
+      </div>
+    </section>
+</form>
