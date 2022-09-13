@@ -1,3 +1,4 @@
+import {lanceLesDes, simpleDialogue} from "../utils.js"
 export default class npqv2ActorSheet extends ActorSheet {
 
     /** @override */
@@ -308,10 +309,12 @@ export default class npqv2ActorSheet extends ActorSheet {
     switch(dataset.rollType) {
       
       case 'dedirect' : 
-        game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
+        //game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
+        let expl = (game.explode)?"D6x6":"D6";
+        lanceLesDes(dataset.roll,0,expl,5)
         break;
       case 'debase' :
-        game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
+        simpleDialogue(dataset.roll, 0, 5, CONFIG.explode)
         break;
       // if (dataset.rollType.substring(0,4) == 'item') {
       //   const itemId = element.closest('.item').dataset.itemId;

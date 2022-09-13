@@ -84,12 +84,12 @@
               "label":"Point de Progession",
               "abrv":"ScProg"
             },
-            "mvtBase":{
+            "MvtBase":{
               "value": 2,
               "label":"Mouvement",
               "abrv":"MvtBase"
             },
-            "mvtAct":{
+            "MvtAct":{
               "value": 2,
               "label":"Mouvement Actuel",
               "abrv":"MvtAct"
@@ -160,7 +160,7 @@
         "attributd":"for",
         "score":15,
         "code":"Dom",
-        "BPro":0,
+        "NbDes":0,
         "XPa":0
       },
       "competence":{
@@ -170,7 +170,7 @@
         "attributd":"for",
         "score":25,
         "code":"cmp",
-        "BPro":0,
+        "NbDes":0,
         "XPa":0
       },
       "sort": {

@@ -1,10 +1,15 @@
+/*******************************
+ * mettre en surbrillance en rouge les liens de type rollable 
+ */
 .rollable:hover, .rollable:focus {
   color: #000;
   text-shadow: 0 0 10px red;
   cursor: pointer;
 }
 
-
+/*******************************
+ * Les grilles de 2 à 12 colonnes
+ */
 .grid,
 .grid-2col {
   display: grid;
@@ -65,6 +70,9 @@
   grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 
+/****************************************************************
+ * css a retrouver l'utiliter
+ */
 .items-list .item-controls {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -76,11 +84,39 @@
   -ms-flex-pack: end;
   justify-content: flex-end;
 }
-
+/* *********************************
+ * gestion des onglet des feuilles
+ */
 
 .npqv2 .sheet-tabs {
   -webkit-box-flex: 0;
   -ms-flex: 0;
   flex: 0;
 }
-
+/********************************
+ * bouton dans le chat pour avoir un joli petit rendu
+ */
+.chat-message .btn {
+  cursor: pointer;
+  margin: 0 0 5px 2px;
+  padding: 3px;
+  min-width: 25px;
+  height: 28px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid #999;
+  border-radius: 3px;
+  box-shadow: 0 0 2px #FFF inset;
+  word-break: break-all;
+}
+.chat-message .btn:hover {
+  color: #464331c4;
+  background: rgba(0, 0, 0, 0.3);
+  text-shadow: none;
+  border: 1px outset #736953a6;
+}
+.chat-message .btn:active {
+  border: 1px inset #736953a6;
+  background: rgba(0, 0, 0, 0.3);
+  color: #464331c4;
+}

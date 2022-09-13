@@ -84,7 +84,12 @@
         }
         context.A1Acteur = true;
       }
-  
+      // le nombre de dés peut être plus gand que le score de la compétence, mais pas l'inverse
+      if(context.data.type == "competence") {
+        if((itemData.data.score/10) > itemData.data.NbDes) {
+          itemData.data.NbDes = Math.floor(itemData.data.score/10)
+        }
+      }
   /*    if(context.data.type == "secret") { // utilise editor
         if(itemData.data.description == "") itemData.data.description= "initialiser<br> et 1<br> et 2<br>et 3<br>";
         for(let i = 1; i < itemData.data.niveauMax; i++ ) {
@@ -94,28 +99,28 @@
       }
       */
       // Add the actor's data to context.data for easier access, as well as flags.
-      if(context.data.type == "objet") {
-        context.TypeObjets = { "O":"Objet","C":"Arme Courte", "M":"Arme Moyenne","L":"Arme Longue" };
-        switch(context.data.data.typeObjet){
-          case "C":
-            itemData.data.pinitDes = "3D6";
-            itemData.data.EstArme = true;
-            break;
-          case "M":
-            itemData.data.pinitDes = "2D6";
-            itemData.data.EstArme = true;
-            break;
-          case "L":
-            itemData.data.pinitDes = "1D6";
-            itemData.data.EstArme = true;
-            break;
-          default :
-            itemData.data.pinitDes = "";
-            itemData.data.EstArme = false;
-            break;
-        }
+      // if(context.data.type == "objet") {
+      //   context.TypeObjets = { "O":"Objet","C":"Arme Courte", "M":"Arme Moyenne","L":"Arme Longue" };
+      //   switch(context.data.data.typeObjet){
+      //     case "C":
+      //       itemData.data.pinitDes = "3D6";
+      //       itemData.data.EstArme = true;
+      //       break;
+      //     case "M":
+      //       itemData.data.pinitDes = "2D6";
+      //       itemData.data.EstArme = true;
+      //       break;
+      //     case "L":
+      //       itemData.data.pinitDes = "1D6";
+      //       itemData.data.EstArme = true;
+      //       break;
+      //     default :
+      //       itemData.data.pinitDes = "";
+      //       itemData.data.EstArme = false;
+      //       break;
+      //   }
   
-      } 
+      // } 
   
       // attention modification du degrée de data.. !
       context.data = itemData.data;

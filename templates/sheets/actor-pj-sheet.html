@@ -81,9 +81,9 @@
           <div class="abilities flexcol">
             {{#each data.attributs as |attrib key|}}
             <div class="flexrow flex-group-center">
-              <label for="attrib.value" class="resource-label rollable flexlarge align-left" data-roll="{{attrib.value}}" data-label="Jet de {{attrib.label}}" data-rollType=1 >{{attrib.label}} </label>
+              <label for="data.attributs.{{attrib.code}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{attrib.value}}" data-label="Jet de {{attrib.label}}" data-roll-type="dedirect" >{{attrib.label}} </label>
               <input type="text" name="data.attributs.{{attrib.code}}.value" value="{{attrib.value}}" data-dtype="Number"/>
-              <span class="attrib-mod rollable" data-roll="{{attrib.value}}" data-form="yes" data-label="Jet en {{attrib.label}}"> {{attrib.abrv}}</span>
+              <span class="attrib-mod rollable" data-roll="{{attrib.value}}" data-roll-type="debase" data-label="Jet en {{attrib.label}}"> {{attrib.abrv}}</span>
             </div>
             {{/each}}
           </div>
@@ -92,9 +92,9 @@
         <section class="main flexcol">
           {{#each data.attrder as |attribd key|}}
           <div class="attribd flexrow flex-group-center">
-            <label for="attribd.value" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{attribd.abrv}}">{{attribd.abrv}}</label>
+            <label for="data.attrder.{{attribd.abrv}}.value" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{attribd.abrv}}">{{attribd.abrv}}</label>
             <input type="text" name="data.attrder.{{attribd.abrv}}.value" value="{{attribd.value}}" data-dtype="text"/>
-            <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-label="{{attrib}}">{{attribd.abrv}}</span>
+            <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-label="{{attribd.abrv}}">{{attribd.abrv}}</span>
           </div>
           {{/each}}        
         </section>
@@ -118,6 +118,9 @@
         </section>
       </section>
     </div>
-
+    {{!-- Owned Competences, Domaines Tab --}}
+    <div class="tab competences" data-group="primary" data-tab="competences">
+      {{> "systems/npqv2/templates/sheets/parts/actor-competences.html"}}
+    </div>
   </section>
 </form>
