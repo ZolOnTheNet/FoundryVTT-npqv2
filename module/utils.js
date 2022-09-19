@@ -91,7 +91,7 @@ function lanceLesDom(NbMises = 2, DommageArm = "1d6", BDom = "d6"){
 
 // --------------------------------------------
 
-  let monTexte = "Votre jet ("+ Dommage + ") vous donne <b>"+resultat+" point de dommage</b> à jouer.<br>Bouton Cible";
+  let monTexte = "Votre jet ("+ Dommage + ") vous donne <b>"+resultat+" points de dommage</b> à jouer.<br>Bouton Cible";
   // sortie du texte
    let chatData = {
         user: game.user._id,
@@ -148,4 +148,41 @@ function DialogueDommage(nbMises = 5, DommageArm = "1d6", BDom = "d6"){
       }).render(true);
 }
 
-export { simpleDialogue, lanceLesDes, DialogueDommage}
+/**********************
+ * lancer un dé de bonus au Dommage
+ * 
+ */
+ function lancerDeBrut(Formule = "1d6", Texte = "", dom = true){
+  // pour BDom faudra faire des tests : pas de chiffre avant (ou sinon prendre en compte), attention au + (deux dés)
+
+  
+  let r = new Roll(Formule);
+  r.evaluate({async :false });
+  let resultat = parseInt(r.result);
+
+// --------------------------------------------
+  let monTexte = ""
+  if( Texte == "") {
+    monTexte = "Votre jet ("+ Formule + ") vous donne <b>"+resultat
+    if(dom) {
+      monTexte += ' points de dommages</b> en supplément.<br><a class="btn apply-dmg" data-apply="full"><i class="fas fa-user-minus" title="lancer les dommage"></i></a>';
+    } else {
+      monTexte += '</b>';
+    }
+  } else monTexte = Texte;
+  
+  // sortie du texte
+   let chatData = {
+        user: game.user._id,
+        speaker: ChatMessage.getSpeaker(),
+        flavor: monTexte,
+        rollMode: game.settings.get('core', 'rollMode')
+    };
+    //ChatMessage.create(chatData);
+   let cm = r.toMessage(chatData);
+}
+
+/***
+ * EXPORT ---------------
+ */
+export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut}

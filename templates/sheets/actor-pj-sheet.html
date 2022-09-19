@@ -92,9 +92,9 @@
         <section class="main flexcol">
           {{#each data.attrder as |attribd key|}}
           <div class="attribd flexrow flex-group-center">
-            <label for="data.attrder.{{attribd.abrv}}.value" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{attribd.abrv}}">{{attribd.abrv}}</label>
-            <input type="text" name="data.attrder.{{attribd.abrv}}.value" value="{{attribd.value}}" data-dtype="text"/>
-            <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-label="{{attribd.abrv}}">{{attribd.abrv}}</span>
+            <label for="data.attrder.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll-type="attribr_direct" data-roll="{{attribd.value}}" data-label="{{key}}">{{attribd.label}}</label>
+            <input type="text" name="data.attrder.{{key}}.value" value="{{attribd.value}}" data-dtype="text"/>
+            <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-roll-type="attribr" data-roll="{{attribd.value}}" data-label="{{key}}">{{attribd.abrv}}</span>
           </div>
           {{/each}}        
         </section>

@@ -1,8 +1,9 @@
 <ol class="items-list">
     <section class="main flexcol">
+        {{#if data.isDomaine}}
         <h2>Domaines</h2>
         {{!-- "domaine": {"description": "","attributd":"for","score":15,"code":"Dom","BPro":0,"XPa":0},--}}
-        <table>
+        <table border="1">
             <tr>
                 <th width="65%" text-align="left">N°-Nom [Code]</th>
                 <th  width="7%" text-align="center">Att.</th>
@@ -32,8 +33,9 @@
             </tr>
         {{/each}}
         </table>
+        {{/if}}
         <h2>Compétences</h2>
-        <table>
+        <table border="1">
             <tr>
                 <th width="50%">Nom [Code]</th>
                 <th width="10%">Spéc.</th>
@@ -45,9 +47,12 @@
            </tr>
         {{#each competences as |cmp key|}}
             <tr class="item" data-item-id="{{cmp._id}}">
-                <td > <a class="rollable" data-roll-type="item"><b>{{key}}-{{cmp.name}}</b> [{{cmp.data.code}}]</a></td>
+                <td > <a class="rollable" data-roll-type="item"><b>{{key}}-{{cmp.name}}</b></a> 
+                    <a class="rollable" data-roll-type="itemLg"><b>[{{cmp.data.code}}]</b></a> 
+                </td>
                 <td class="align-center">{{cmp.data.codeSpe}}</td>
-                <td class="align-center">{{cmp.data.attributd}}</td>
+                <td class="align-center">{{cmp.data.attributd}} [{{AttribV.for}}]
+                </td>
                     {{#if cmp.data.codeSpe}}
                         <td class="align-center" >
                             {{cmp.data.scoreRel}} (++)

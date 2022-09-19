@@ -94,17 +94,17 @@
               "label":"Mouvement Actuel",
               "abrv":"MvtAct"
             },
-            "Recup. Magie":{
+            "RecupMagie":{
               "value": "D3",
               "label":"Dé de recup Magie",
-              "abrv":"Recup.Magie"
+              "abrv":"Recup Magie"
             },
-            "Recup. Santé":{
+            "RecupSante":{
               "value": "D3",
               "label":"Dé de récup Santé",
-              "abrv":"Recup.Santé"
+              "abrv":"Recup Santé"
             },
-            "reputation":{
+            "reput":{
               "value": 0,
               "label":"Réputation",
               "abrv":"Reput"
@@ -171,7 +171,8 @@
         "score":25,
         "code":"cmp",
         "NbDes":0,
-        "XPa":0
+        "XPa":0,
+        "EstPro":false
       },
       "sort": {
         "codeSpe":"",

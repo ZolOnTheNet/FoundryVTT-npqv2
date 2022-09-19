@@ -1,4 +1,4 @@
-import {lanceLesDes, simpleDialogue} from "../utils.js"
+import {lanceLesDes, simpleDialogue, lancerDeBrut} from "../utils.js"
 export default class npqv2ActorSheet extends ActorSheet {
 
     /** @override */
@@ -51,10 +51,10 @@ export default class npqv2ActorSheet extends ActorSheet {
       }
       // Add roll data for TinyMCE editors.
       context.rollData = context.actor.getRollData();
-  
+      
       // Prepare active effects
      // context.effects = prepareActiveEffectCategories(this.actor.effects);
-//      context.AttribV = { "for":"Force", "ag":"Agilité", "con":"Constitution", "p":"Présence", "ig":"Intelligence", "it":"Intuition", "v":"Volonté" };
+      context.AttribV = { "for":"Force", "ag":"Agilité", "con":"Constitution", "p":"Présence", "ig":"Intelligence", "it":"Intuition", "v":"Volonté" };
 //      context.LstDes = { "D300":"D300", "D250":"D250","D200":"D200","D150":"D150","D120":"D120","D100":"D100","D80":"D80","D60":"D60","D50":"D50","D40":"D40"}
       console.log("NPQv2| context:", context);
       return context;
@@ -306,8 +306,23 @@ export default class npqv2ActorSheet extends ActorSheet {
     const dataset = element.dataset;
     if(dataset.rollType === undefined || dataset.rollType=="") dataset.rollType ="debase";
     // Handle item rolls.
+    // prétraitement suivant le rolltype et le champs
+    switch(dataset.rollType) {
+      case 'attribr_direct':
+        if(dataset.label.substring(0,4) == "BDom") {
+          dataset.rollType = 'dedirectdom';
+        } else if(dataset.label.substring(0,4) == "Recup") {
+          dataset.rollType = 'recup'
+        } else dataset.rollType = 'rien';
+        break;
+      case 'attribr':
+        break;
+    }
+
     switch(dataset.rollType) {
       
+      case 'item':
+        console.log("Compétence : trouver le code et ajouter les dés !");
       case 'dedirect' : 
         //game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
         let expl = (game.explode)?"D6x6":"D6";
@@ -316,6 +331,11 @@ export default class npqv2ActorSheet extends ActorSheet {
       case 'debase' :
         simpleDialogue(dataset.roll, 0, 5, CONFIG.explode)
         break;
+      case 'dedirectdom': //lance le dés tel que 
+        lancerDeBrut(dataset.roll,"",true);
+        break;
+      case 'lancerbrut':
+        lancerDeBrut(dataset.roll, "", false);
       // if (dataset.rollType.substring(0,4) == 'item') {
       //   const itemId = element.closest('.item').dataset.itemId;
       //   const item = this.actor.items.get(itemId);
@@ -371,6 +391,7 @@ export default class npqv2ActorSheet extends ActorSheet {
       //     else return item.roll();
       //   }
       // }
+      case 'rien' :
     }
 
     // Handle rolls that supply the formula directly.

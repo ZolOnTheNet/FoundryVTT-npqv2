@@ -4,6 +4,7 @@ import npqv2ItemSheet from "./sheets/Npqv2ItemSheet.js";
 import npqv2ActorSheet from "./sheets/Npqv2ActorSheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { simpleDialogue, lanceLesDes, DialogueDommage } from "./utils.js";
+import { updateInitiative } from "./updateInitiative.js";
 
 //  a metre au bon endroit
 function XXX(event, html, data){
@@ -27,10 +28,17 @@ function XXX(event, html, data){
       if(actor==null) {
         console.log("Selectionner un personnage");
       } else {
-        let idcmb = game.combat.combatants.find(x => x.actorId=actor);
+        // let idcmb = game.combat.combatants.find(x => x.actorId=actor);
         const result = parseInt(html.find(".dice-total").text())
-        //let id = "RdFhwUs3vkKPqVFB"
-        game.combat.setInitiative(idcmb._id, result);
+ /*        //let id = "RdFhwUs3vkKPqVFB"
+        if(game.users.current.role == 4) {
+          game.combat.setInitiative(idcmb._id, result);
+        } else {
+          idcmb.update({ initiative: result})
+          game.actors.get(actor).update({ data: { initiative: result } });
+        }
+ */    // piquer à seventhsea
+        updateInitiative(actor, result);
       }
       break;
   }

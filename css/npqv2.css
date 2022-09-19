@@ -120,3 +120,12 @@
   background: rgba(0, 0, 0, 0.3);
   color: #464331c4;
 }
+/****************************************************************
+ * gestion des alignement du centre
+*/
+.align-center {
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  text-align: center;
+}
