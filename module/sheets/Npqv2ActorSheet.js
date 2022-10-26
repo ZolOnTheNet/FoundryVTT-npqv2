@@ -1,4 +1,4 @@
-import {lanceLesDes, simpleDialogue, lancerDeBrut} from "../utils.js"
+import {lanceLesDes, simpleDialogue, lancerDeBrut, DialogueDommage} from "../utils.js"
 export default class npqv2ActorSheet extends ActorSheet {
 
     /** @override */
@@ -90,7 +90,7 @@ export default class npqv2ActorSheet extends ActorSheet {
       const secrets = [];
       const ArmesResum = [];
       const bourses = [];
-      // const bonus = {"score":0,"dommage":"","pinit":0,"PdM":0,"PdV":0};
+      const bonus = {"score":0,"deSup":0,"dommage":"","PdM":0,"PdV":0};
       const spells = {
         1: [],
         2: [],
@@ -115,13 +115,13 @@ export default class npqv2ActorSheet extends ActorSheet {
           i.data.descRapide = i.data.description.substring(0,(i.data.description+".").indexOf("."));
           i.data.utiRapide  = i.data.utilisation.substring(0,(i.data.utilisation+".").indexOf("."));
           i.data.isArme = !(i.data.typeObjet=='O'); // c'est une arme si c'est pas un objet de type O
-          // if(i.data.actif) {
-          //   bonus.score += (i.data.bonus.score != 0)?(i.data.bonus.score):0;
-          //   bonus.dommage += (i.data.bonus.dommage != "")?"+("+i.data.bonus.dommage+")":"";
-          //   bonus.pinit += (i.data.bonus.pinit != 0)?i.data.bonus.pinit:0;
-          //   bonus.PdM  += (i.data.bonus.PdM)?i.data.bonus.PdM:0;
-          //   bonus.PdV  += (i.data.bonus.PdV)?i.data.bonus.PdV:0;
-          // }PdVTot
+          if(i.data.actif) {
+            bonus.score += (i.data.bonus.score != 0)?(i.data.bonus.score):0;
+            bonus.dommage += (i.data.bonus.dommage != "")?"+("+i.data.bonus.dommage+")":"";
+            bonus.deSup += (i.data.bonus.deSup != 0)?i.data.bonus.deSup:0;
+            bonus.PdM  += (i.data.bonus.PdM)?i.data.bonus.PdM:0;
+            bonus.PdV  += (i.data.bonus.PdV)?i.data.bonus.PdV:0;
+           }
           gear.push(i);
         }
         else if (i.type === 'domaine') {
@@ -156,7 +156,7 @@ export default class npqv2ActorSheet extends ActorSheet {
           i.data.NomAffiche = "-non déf-";
           if(i.data.desync == 0) {
             i.data.score = 0;
-            i.data.jetinit = "";
+            i.data.deSup = 0;
             i.data.degat ="";
             i.data.bris = -1;
           }
@@ -167,17 +167,18 @@ export default class npqv2ActorSheet extends ActorSheet {
               // si synchro alors on ajouter les bonus 
               i.data.NomAffiche = a.name;
               if(i.data.desync == 0) {
-                if(a.data.data.initiative ==""){
-                  i.data.jetinit = a.data.data.pinitDes 
-                  if(a.data.data.bonus.pinit != 0 ) i.data.jetinit += "+ (" +a.data.data.bonus.pinit +")";
-                } else {
-                  i.data.jetinit = a.data.data.initiative; // l'initiative de l'arme modifié
-                }
+                // if(a.data.data.initiative ==""){
+                //   i.data.jetinit = a.data.data.pinitDes 
+                //   if(a.data.data.bonus.pinit != 0 ) i.data.jetinit += "+ (" +a.data.data.bonus.pinit +")";
+                // } else {
+                //   i.data.jetinit = a.data.data.initiative; // l'initiative de l'arme modifié
+                // }
                 i.data.score = i.data.score + a.data.data.bonus.score;
                 i.data.bris = a.data.data.bris; // a mettre dans objet
                 i.data.resistance = a.data.data.resistance // a metrte dans objet
                 i.data.degat = a.data.data.dommage ;
-                if(a.data.data.bonus.dommage !="+0") i.degat = i.degat + " +("+a.data.data.bonus.dommage+")";
+                // ça fonctione pus comme ça !  : if(a.data.data.bonus.dommage !="+0") i.degat = i.degat + " +("+a.data.data.bonus.dommage+")";
+                //i.data.Bdc = a.data.data.attrder.BDomC ; // il faudra changer cela (peut être une liste)
               }
             } 
           }
@@ -227,7 +228,7 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.ArmesResum = ArmesResum;
       context.bourses = bourses;
       // context.bonus = bonus;
-      context.bonus = this.actor.data.data.bonus
+      context.bonus = this.actor.data.data.bonus;
     }
   
   
@@ -312,20 +313,30 @@ export default class npqv2ActorSheet extends ActorSheet {
         if(dataset.label.substring(0,4) == "BDom") {
           dataset.rollType = 'dedirectdom';
         } else if(dataset.label.substring(0,4) == "Recup") {
-          dataset.rollType = 'recup'
+          dataset.rollType = 'recup';
         } else dataset.rollType = 'rien';
         break;
       case 'attribr':
+        if(dataset.label.substring(0,4) == "BDom") {
+          dataset.rollType = 'diagdom';
+        } else if(dataset.label.substring(0,4) == "Recup") {
+          dataset.rollType = 'recup';
+        } else dataset.rollType = 'rien';
         break;
     }
-
+    let expl = (game.explode)?"D6x6":"D6";
     switch(dataset.rollType) {
       
+      case 'cmp':
+        //  element.closest('.item').childNodes[11].childNodes[1].value  (pour la mise)
+        let res =  element.closest('.item').childNodes[11].childNodes[1].value ?  parseInt(element.closest('.item').childNodes[11].childNodes[1].value) :0;
+        // attention : roll + res == roll ori... ! a modifier
+        lanceLesDes(dataset.roll,res,expl,5)
+        break;
       case 'item':
         console.log("Compétence : trouver le code et ajouter les dés !");
       case 'dedirect' : 
         //game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
-        let expl = (game.explode)?"D6x6":"D6";
         lanceLesDes(dataset.roll,0,expl,5)
         break;
       case 'debase' :
@@ -333,6 +344,9 @@ export default class npqv2ActorSheet extends ActorSheet {
         break;
       case 'dedirectdom': //lance le dés tel que 
         lancerDeBrut(dataset.roll,"",true);
+        break;
+      case 'diagdom':
+        DialogueDommage(1,"1d6",dataset.roll);
         break;
       case 'lancerbrut':
         lancerDeBrut(dataset.roll, "", false);

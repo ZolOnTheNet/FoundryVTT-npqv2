@@ -64,6 +64,8 @@
       <input type="hidden" name="data.codeSpe" value="{{NomCode}}"/>
       
       <h2>Description :</h2> 
-      {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}       
+      <div class="editor">
+        {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}       
+      </div>
     </section>
 </form>

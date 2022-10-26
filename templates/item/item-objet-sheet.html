@@ -56,7 +56,6 @@
 
     {{!-- Attributes Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
-      {{!-- As you add new fields, add them in here! --}}
       <h2>Bonus accordés à l'objet</h2>
       <div class="resource grid grid-5col">
         <div class="resource">
@@ -64,12 +63,12 @@
           <input type="text" name="data.bonus.score" value="{{data.bonus.score}}" data-dtype="Number"/>
         </div>
         <div class="resource">
-          <label class="resource-label">Dommages</label>
-          <input type="text" name="data.bonus.dommage" value="{{data.bonus.dommage}}" data-dtype="String"/>
+          <label class="resource-label">Dé Sup Bonus</label>
+          <input type="text" name="data.bonus.deSup" value="{{data.bonus.deSup}}" data-dtype="Number"/>
         </div>
         <div class="resource">
-          <label class="resource-label">Pt. Init</label>
-          <input type="text" name="data.bonus.pinit" value="{{data.bonus.pinit}}" data-dtype="Number"/>
+          <label class="resource-label">Dommages</label>
+          <input type="text" name="data.bonus.dommage" value="{{data.bonus.dommage}}" data-dtype="String"/>
         </div>
         <div class="resource">
           <label class="resource-label">Pt. de Vie</label>
@@ -81,34 +80,23 @@
         </div>
       </div>
       {{#if data.EstArme}}
-      <h2>Carractéristique de l'Arme :</h2>
-      <div class="resource grid grid-3col">
-        <div class="resource">
-          <label class="resource-label">Dés d'initiative</label>
-          <input type="text" name="data.pinitDes" value="{{data.pinitDes}}" data-dtype="String"/>
-          non modifiable, <br>utiliser la formule
+        <h2>Carractéristique de l'Arme :</h2>
+        <div class="resource grid grid-3col">
+          <div class="resource">
+            <label class="resource-label">Formule de Dommages</label>
+            <input type="text" name="data.dommage" value="{{data.dommage}}" data-dtype="String"/>
+            la partie "bonus" se rajoute aussi.
+          </div>
+          <div class="resource">
+            <label class="resource-label">Bris</label>
+            <input type="text" name="data.bris" value="{{data.bris}}" data-dtype="Number"/>
+          </div>
+          <div class="resource">
+            <label class="resource-label">Resitance</label>
+            <input type="text" name="data.resistance" value="{{data.resistance}}" data-dtype="Number"/>
+          </div>
         </div>
-        <div class="resource grid-span-2" >
-          <label class="resource-label">Formule d'initiative (hors défaut)</label>
-          <input type="text" name="data.initiative" value="{{data.initiative}}" data-dtype="String"/>
-          Normalement : {{data.pinitDes}} + Init Total du joueur
-        </div>
+      {{/if}}
     </div>
-    <div class="resource grid grid-3col">
-      <div class="resource">
-        <label class="resource-label">Formule de Dommages</label>
-        <input type="text" name="data.dommage" value="{{data.dommage}}" data-dtype="String"/>
-         la partie "bonus" se rajoute aussi.
-      </div>
-      <div class="resource">
-        <label class="resource-label">Bris</label>
-        <input type="text" name="data.bris" value="{{data.bris}}" data-dtype="Number"/>
-      </div>
-      <div class="resource">
-        <label class="resource-label">Resitance</label>
-        <input type="text" name="data.resistance" value="{{data.resistance}}" data-dtype="Number"/>
-      </div>
-    </div>
-    {{/if}}
   </section>
 </form>

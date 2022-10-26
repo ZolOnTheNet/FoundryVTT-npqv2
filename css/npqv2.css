@@ -93,6 +93,15 @@
   -ms-flex: 0;
   flex: 0;
 }
+
+.npqv2 .editor,
+.npqv2 .biography,
+.npqv2 .sheet-body,
+.npqv2 .sheet-body .tab,
+.npqv2 .sheet-body .tab .editor {
+  height: 93%;
+}
+
 /********************************
  * bouton dans le chat pour avoir un joli petit rendu
  */

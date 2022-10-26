@@ -61,13 +61,18 @@
       <input type="hidden" name="data.codeSpe" value="{{NomCode}}"/>
       <h2>Effets du sort :</h2>
       <textarea name="data.effet" rows="5">{{data.effet}}</textarea>
-      {{!-- editor content=data.effet target="data.effet" rollData=rollData button=true owner=owner editable=editable  placeholder="Quels effets" --}}
+      <div class="editor" >
+        {{!-- editor content=data.effet target="data.effet" rollData=rollData button=true owner=owner editable=editable  placeholder="Quels effets" --}}
+      </div>
     </div>
     
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
       {{!-- editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable  placeholder="Description" --}}
-      <textarea name="data.description" rows="10">{{data.description}}</textarea>
+      <!-- <textarea name="data.description" rows="10">{{data.description}}</textarea> -->
+      <div class="editor" >
+        {{!-- editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable  placeholder="Description" --}}
+      </div>
     </div>
   </section>
 </form>

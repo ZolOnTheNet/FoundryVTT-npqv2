@@ -118,9 +118,36 @@
         </section>
       </section>
     </div>
+
+    {{!-- Tab de Synthese --}}
+    <div class="tab items" data-group="primary" data-tab="synthese">
+       {{> "systems/npqv2/templates/sheets/parts/actor-synthese.html"}}
+    </div>
+    
     {{!-- Owned Competences, Domaines Tab --}}
     <div class="tab competences" data-group="primary" data-tab="competences">
       {{> "systems/npqv2/templates/sheets/parts/actor-competences.html"}}
     </div>
+
+    {{!--  Sortilèges Tab --}}
+    <div class="tab sorts" data-group="primary" data-tab="sorts">
+      {{> "systems/npqv2/templates/sheets/parts/actor-sorts.html"}}
+    </div>
+
+    {{!-- Secret possédée --}}
+    <div class="tab secrets" data-group="primary" data-tab="secrets">
+      {{> "systems/npqv2/templates/sheets/parts/actor-secrets.html"}}
+    </div>
+  
+    {{!-- Owned Items Tab --}}
+    <div class="tab items" data-group="primary" data-tab="items">
+       {{> "systems/npqv2/templates/sheets/parts/actor-items.html"}}
+    </div>
+
+    {{!-- Active Effects Tab --}}
+    <div class="tab effects flexcol" data-group="primary" data-tab="effects">
+      {{> "systems/npqv2/templates/sheets/parts/actor-effects.html"}}
+    </div>
+
   </section>
 </form>

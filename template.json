@@ -106,6 +106,7 @@
             },
             "reput":{
               "value": 0,
+              "total":0,
               "label":"Réputation",
               "abrv":"Reput"
             }  
@@ -117,6 +118,9 @@
         "ethnie":"",
         "chance":5,
         "Heroisme":1
+      },
+      "points2danger":{
+        "points":5
       },
       "figurant": {
         "templates": ["minibase"],
@@ -144,12 +148,10 @@
         "poids": 0,
         "volume" : 0,
         "typeObjet":"O",
-        "pinitDes": "",
-        "initiative": "",
         "bonus":{
           "score":0,
+          "deSup":0,
           "dommage":"+0",
-          "pinit":0,
           "PdM":0,
           "PdV":0
         },

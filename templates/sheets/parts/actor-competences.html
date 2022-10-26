@@ -5,7 +5,8 @@
         {{!-- "domaine": {"description": "","attributd":"for","score":15,"code":"Dom","BPro":0,"XPa":0},--}}
         <table border="1">
             <tr>
-                <th width="65%" text-align="left">N°-Nom [Code]</th>
+                <th width="45%" text-align="left">N°-Nom [Code]</th>
+                <th width="20%" text-align="left">Mises retenues</th>
                 <th  width="7%" text-align="center">Att.</th>
                 <th  width="7%" text-align="center">Score</th>
                 <th  width="7%" text-align="center">NbDes</th>
@@ -15,6 +16,7 @@
         {{#each domaines as |cmp key|}}
             <tr class="item" data-item-id="{{cmp._id}}">
                 <td> <a class="rollable" data-roll-type="item"><b>{{key}}-{{cmp.name}}</b> [{{cmp.data.code}}]</a></td>
+                <td> <input name="Mise" type="number" value="{{cmp.data.mise}}" placeholder="Mise gardée"/></td>
                 <td>{{cmp.data.attributd}}</td>
                 <td>{{cmp.data.score}}</td>
                 <td>{{cmp.data.NbDes}}</td>
@@ -33,22 +35,23 @@
             </tr>
         {{/each}}
         </table>
-        {{/if}}
         <h2>Compétences</h2>
+        {{/if}}
         <table border="1">
             <tr>
-                <th width="50%">Nom [Code]</th>
+                <th width="36%" text-align="left">Nom [Code]</th>
                 <th width="10%">Spéc.</th>
                 <th width="7%">Att.</th>
                 <th width="12%">Score</th>
                 <th width="7%">Nb Dés</th>
+                <th width="14%">Mises retenues</th>
                 <th width="7%">XPa</th>
                 <th width="7%">Act.</th>
            </tr>
         {{#each competences as |cmp key|}}
             <tr class="item" data-item-id="{{cmp._id}}">
-                <td > <a class="rollable" data-roll-type="item"><b>{{key}}-{{cmp.name}}</b></a> 
-                    <a class="rollable" data-roll-type="itemLg"><b>[{{cmp.data.code}}]</b></a> 
+                <td > <a class="rollable" data-roll-type="cmp" data-roll="{{cmp.data.NbDes}}" data-roll-res="{{cmp.data.miseret}}"><b>{{key}}-{{cmp.name}}</b></a> 
+                    <a class="rollable" data-roll-type="cmpLg" data-roll="{{cmp.data.NbDes}}" data-roll-res="{{cmp.data.miseret}}"><b>[{{cmp.data.code}}]</b></a> 
                 </td>
                 <td class="align-center">{{cmp.data.codeSpe}}</td>
                 <td class="align-center">{{cmp.data.attributd}} [{{AttribV.for}}]
@@ -64,13 +67,14 @@
                     {{/if}}
                 </td>
                 <td class="align-center">{{cmp.data.NbDes}}</td>
+                <td> <input name="{{cmp.data.code}}_miseret" type="number" value="0" placeholder="Mise gardée"/></td>
                 <td class="align-center">{{cmp.data.XPa}}</td>
                 <td class="item-controls align-center">
                     <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                 </td>
             </tr>
             <tr class="item" data-item-id="{{cmp._id}}">
-                <td colspan="6">
+                <td colspan="7">
                     <i>{{cmp.data.descRapide}}</i>
                 </td>
                 <td class="item-controls align-center">

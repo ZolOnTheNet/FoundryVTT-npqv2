@@ -31,9 +31,6 @@
       <div class="resource flex-group-center">
         Arme en Main. :<br>
         {{#if A1Acteur}}
-        <button data-preset="ArmeEnMain" type="button">
-          Init de cette Arme
-        </button>
           {{#if data.armeEnMain}}
           <input name="data.armeEnMain" type="checkbox" checked/>
           {{else}}
@@ -68,12 +65,8 @@
         <input name="data.score" type="text" value="{{data.score}}" data-dtype="Number"/>
       </div>  
       <div class="resource flex-group-center">
-        Jet Init :<br>
-        <input name="data.jetinit" type="text" value="{{data.jetinit}}" />
-      </div>  
-      <div class="resource flex-group-center">
         Dégat :<br>
-        <input name="data.degat" type="text" value="{{data.degat}}" />
+        <input name="data.degat" type="text" value="{{data.degat}}" data-dtype="String" /> 
       </div>  
       <div class="resource flex-group-center">
         Résist. :<br>

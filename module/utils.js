@@ -5,7 +5,7 @@
 function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5 ){
   let r = new Roll(""+(lancer)+formDe);
   r.evaluate({async :false });
-  let resultat = parseInt(r.result);
+  let resultat = r.total; // r.total entier, r.result chaine de caractère
   let nbsucces = parseInt((resultat - diff + 5) / 5)  ;
   if (nbsucces <= 0) nbsucces = 0;
   if (nbsucces > 0) nbsucces += parseInt(res);
@@ -63,31 +63,36 @@ function handleSubmit(html) {
             <tr><td>Réserve</td>
                 <td><input name="reserve" type="integer" value=`+reserve+` /></td></tr>
             <tr><td>Difficulté</td>
-                <td><input name="difficulte" type="integer"value=`+diff+` /></td></tr>
+                <td><input name="difficulte" type="integer" value=`+diff+` /></td></tr>
         </tbody>
         </table>
     </form>`;
-
-    new Dialog({
-    title: "lancer de dé pour "+sp.alias,
-    content: form,
-    buttons: {
-        submit: { label: "Submit", callback: handleSubmit },
-        cancel: { label: "Cancel" },
-    },
-    }).render(true);
+    DialogueElementaire("lancer de dé pour "+sp.alias, form, handleSubmit);
 }
 /////-------------------------------------------------------------------
 // DialogueDommage
 //-------------------------------------------------------------------------
+function justeDesFaces(BDom = "1d6") { // il faudra renforcer les tests ici (pas de deux dés, D et d dispo etc...)
+  let posd = BDom.indexOf("d");
+  let posD = BDom.indexOf("D");
+  let ret = "d6";
+  let pos = Math.max(posd, posD); // on supprime le -1 (non trouvé)
+  if(pos > -1 ) {
+    ret = BDom.substring(pos);
+  } 
+  return ret;
+}
+
 function lanceLesDom(NbMises = 2, DommageArm = "1d6", BDom = "d6"){
   // pour BDom faudra faire des tests : pas de chiffre avant (ou sinon prendre en compte), attention au + (deux dés)
   NbMises--; let Dommage = "";
+  BDom = justeDesFaces(BDom);
+  if( BDom)
   Dommage = (NbMises < 1)?DommageArm: DommageArm+"+"+NbMises+BDom; 
   
   let r = new Roll(Dommage);
   r.evaluate({async :false });
-  let resultat = parseInt(r.result);
+  let resultat = parseInt(r.total);
 
 // --------------------------------------------
 
@@ -138,34 +143,24 @@ function DialogueDommage(nbMises = 5, DommageArm = "1d6", BDom = "d6"){
         </tbody>
         </table>
     </form>`;
-    new Dialog({
-      title: "lancer de dé pour "+sp.alias,
-      content: form,
-      buttons: {
-          submit: { label: "Submit", callback: handleSubmitDom },
-          cancel: { label: "Cancel" },
-      },
-      }).render(true);
+    DialogueElementaire("lancer de dé pour "+sp.alias, form, handleSubmitDom);
 }
 
 /**********************
  * lancer un dé de bonus au Dommage
  * 
  */
- function lancerDeBrut(Formule = "1d6", Texte = "", dom = true){
-  // pour BDom faudra faire des tests : pas de chiffre avant (ou sinon prendre en compte), attention au + (deux dés)
-
-  
+ function lancerDeBrut(Formule = "1d6", Texte = "", dom = true){ 
   let r = new Roll(Formule);
   r.evaluate({async :false });
-  let resultat = parseInt(r.result);
+  let resultat = parseInt(r.total);
 
 // --------------------------------------------
   let monTexte = ""
   if( Texte == "") {
     monTexte = "Votre jet ("+ Formule + ") vous donne <b>"+resultat
     if(dom) {
-      monTexte += ' points de dommages</b> en supplément.<br><a class="btn apply-dmg" data-apply="full"><i class="fas fa-user-minus" title="lancer les dommage"></i></a>';
+      monTexte += ' points de dommages</b> en supplément.<br><a class="btn apply-dmg" data-apply="DomApply"><i class="fas fa-user-minus" title="Appliquer les dommages"></i></a>';
     } else {
       monTexte += '</b>';
     }
@@ -182,6 +177,23 @@ function DialogueDommage(nbMises = 5, DommageArm = "1d6", BDom = "d6"){
    let cm = r.toMessage(chatData);
 }
 
+/***
+ * Dialogue élémentaire : une liste de champs et deux boutons : cancle
+ * principe on fournis les gros paramètre : 
+ * le titre, le contenu (form), la fonction callback
+ */
+
+function DialogueElementaire (titre = "lancer de dé", form="<h2>coucou</h2", fnctCallBack = null) {
+  new Dialog({
+    title: titre,
+    content: form,
+    buttons: {
+        cancel: { label: "Cancel" },
+        submit: { label: "Submit", callback: fnctCallBack },
+    },
+    }).render(true);
+
+}
 /***
  * EXPORT ---------------
  */

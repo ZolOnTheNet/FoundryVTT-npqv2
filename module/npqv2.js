@@ -10,16 +10,20 @@ import { updateInitiative } from "./updateInitiative.js";
 function XXX(event, html, data){
   const btn = $(event.currentTarget);
   const btnType = btn.data("apply");
+  // cette partie peut être toujours utile ou non, mais nécessaire pour full, et DomApply
+  let c = html.find(".flavor-text").text();
+  let st = c.indexOf("donne ") + "donne ".length;
+  let ed = c.indexOf(" ", st);
   switch(btnType){
     case "full"   : 
       console.log("lancer dommage !"); 
-      let c = html.find(".flavor-text").text();
-      let st = c.indexOf("donne ") + "donne ".length;
-      let ed = c.indexOf(" ", st);
       let nbMises = parseInt(c.substring(st,ed));
       DialogueDommage(nbMises);
       break;
-    case "half"   : console.log("lancer dommage !"); break;
+    case "DomApply"   : 
+      console.log("appliquer les dommages !"); 
+      let DomTot = parseInt(c.substring(st,ed));
+      break;
     case "double" : console.log("lancer dommage !"); break;
     case "init"   : 
       console.log("modifier l'init du perso !");

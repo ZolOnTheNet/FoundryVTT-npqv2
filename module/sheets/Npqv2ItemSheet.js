@@ -100,7 +100,6 @@
       */
       // Add the actor's data to context.data for easier access, as well as flags.
       // if(context.data.type == "objet") {
-      //   context.TypeObjets = { "O":"Objet","C":"Arme Courte", "M":"Arme Moyenne","L":"Arme Longue" };
       //   switch(context.data.data.typeObjet){
       //     case "C":
       //       itemData.data.pinitDes = "3D6";
@@ -125,6 +124,7 @@
       // attention modification du degrée de data.. !
       context.data = itemData.data;
       context.flags = itemData.flags;
+      context.TypeObjets = { "O":"Objet","C":"Arme Courte", "M":"Arme Moyenne","L":"Arme Longue" };
       context.AttribV = { "for":"Force", "ag":"Agilité", "con":"Constitution", "p":"Présence", "ig":"Intelligence", "it":"Intuition", "v":"Volonté" };
   
   //    data.TypeValue = persodata.type; 
