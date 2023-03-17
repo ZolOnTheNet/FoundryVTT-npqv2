@@ -1,251 +1,338 @@
 {
-    "Actor": {
-      "types": ["pj", "figurant", "mi-boss", "Boss"],
-      "templates": {
-        "base": {
-          "PdV": {
-            "value": 15,
-            "min": 0,
-            "max": 15
+  "Actor": {
+    "types": ["pj", "figurant", "Boss", "monstre"],
+    "templates": {
+      "etats": {
+        "value":6,
+        "incMagie":0,
+        "diff": {
+          "rang1":6,
+          "rang2":9,
+          "rang3":12,
+          "rang4":15
+        },
+        "fatigue": {
+          "label":"k2m.fatigue",
+          "cmp":0,
+          "xp":0,
+          "rang1": { "value":0, "max":0},
+          "rang2": { "value":0, "max":0},
+          "rang3": { "value":0, "max":0},
+          "rang4": { "value":0, "max":0}
+        },
+        "faiblesse": {
+          "label":"k2m.faiblesse",
+          "cmp":0,
+          "xp":0,
+          "rang1": { "value":0, "max":0},
+          "rang2": { "value":0, "max":0},
+          "rang3": { "value":0, "max":0},
+          "rang4": { "value":0, "max":0}
+        },
+        "tension": {
+          "label":"k2m.tension",
+          "cmp":0,
+          "xp":0,
+          "rang1": { "value":0, "max":0},
+          "rang2": { "value":0, "max":0},
+          "rang3": { "value":0, "max":0},
+          "rang4": { "value":0, "max":0}
+        },
+        "PdM": {
+          "label":"k2m.pdm",
+          "cmp":0,
+          "xp":0,
+          "rang1": { "value":0, "max":0},
+          "rang2": { "value":0, "max":0},
+          "rang3": { "value":0, "max":0},
+          "rang4": { "value":0, "max":0}
+        },
+        "effort": {
+          "label":"k2m.effort",
+          "value":0,
+          "max":19
+        }
+      },
+      "compteur":{
+        "compteur":{
+          "value":6,
+          "diff": {
+            "rang1":6,
+            "rang2":9,
+            "rang3":12,
+            "rang4":15
           },
-          "PdM": {
-            "value": 5,
-            "min": 0,
-            "max": 5
+          "label": "k2m.compteur",
+          "rang1": { "value":3, "max":3},
+          "rang2": { "value":3, "max":3},
+          "rang3": { "value":3, "max":3},
+          "rang4": { "value":3, "max":3}
+        }
+      },
+      "base": {
+        "nom":"",
+        "type":"PJ",
+        "Origine":"",
+        "Ethnie":"gents",
+        "Besogne":"artisan",
+        "biography": "",
+        "reputation": { "value":0, "max":0},
+        "XP":{ "value":0, "max":0}
+      },
+      "cmps": {
+        "cmp" : {
+          "artisan": {
+            "value": 1,
+            "label":"k2m.artisan",
+            "xp":0              
           },
-          "biography": "",
-          "XP":0
-        },
-        "minibase": {
-            "blessure":3,
-            "BlessureMax": 3,
-            "PdM": {
-                "value": 5,
-                "min": 0,
-                "max": 5
-              },
-            "difficulte":1,
-            "DeDom": "1D4",
-            "biography":""
-        },
-        "attr": {
-          "attributs" : {
-            "for": {
-              "value": 2,
-              "label":"force",
-              "abrv":"For"
-            },
-            "ag": {
-              "value": 2,
-              "label":"Agilité",
-              "abrv":"Ag"
-           },
-            "con": {
-              "value": 2,
-              "label":"Constitution",
-              "abrv":"Con"
-            },
-            "it": {
-              "value": 2,
-              "label":"Intuition",
-              "abrv":"It"
-            },
-            "ig": {
-              "value": 2,
-              "label":"Intelligence",
-              "abrv":"Ig"
-            },
-            "v": {
-              "value": 2,
-              "label":"Volonté",
-              "abrv":"Vo"
-            },
-            "p": {
-              "value": 2,
-              "label":"Présence",
-              "abrv":"Pre"
-            }
-          }
-        },
-        "attrb":{
-          "attrder": {
-            "BDomC": {
-              "value": "1d6",
-              "label":"D.Dom. Contact",
-              "abrv":"BDomC"
-            },
-            "BDomD": {
-              "value": "1d6",
-              "label":"D.Dom. Distant",
-              "abrv":"BDomD"
-            },
-            "ScProg": {
-              "value": 2,
-              "label":"Point de Progession",
-              "abrv":"ScProg"
-            },
-            "MvtBase":{
-              "value": 2,
-              "label":"Mouvement",
-              "abrv":"MvtBase"
-            },
-            "MvtAct":{
-              "value": 2,
-              "label":"Mouvement Actuel",
-              "abrv":"MvtAct"
-            },
-            "RecupMagie":{
-              "value": "D3",
-              "label":"Dé de recup Magie",
-              "abrv":"Recup Magie"
-            },
-            "RecupSante":{
-              "value": "D3",
-              "label":"Dé de récup Santé",
-              "abrv":"Recup Santé"
-            },
-            "reput":{
-              "value": 0,
-              "total":0,
-              "label":"Réputation",
-              "abrv":"Reput"
-            }  
+          "artiste": {
+            "value": 1,
+            "label":"k2m.artiste",
+            "xp":0              
+          },
+          "athlete": {
+            "value": 1,
+            "label":"k2m.athlete",
+            "xp":0              
+          },
+          "bagarreur": {
+            "value": 1,
+            "label":"k2m.bagarreur",
+            "xp":0              
+          },
+          "bricoleur": {
+            "value": 1,
+            "label":"k2m.bricoleur",
+            "xp":0              
+          },
+          "campagnard": {
+            "value": 1,
+            "label":"k2m.campagnard",
+            "xp":0              
+          },
+          "citadin": {
+            "value": 1,
+            "label":"k2m.citadin",
+            "xp":0              
+          },
+          "erudit": {
+            "value": 1,
+            "label":"k2m.erudit",
+            "xp":0              
+          },
+          "gentilhomme": {
+            "value": 1,
+            "label":"k2m.gentilhomme",
+            "xp":0              
+          },
+          "gestionnaire": {
+            "value": 1,
+            "label":"k2m.gestionnaire",
+            "xp":0              
+          },
+          "guerrier": {
+            "value": 1,
+            "label":"k2m.guerrier",
+            "xp":0              
+          },
+          "intrigan": {
+            "value": 1,
+            "label":"k2m.intrigan",
+            "xp":0              
+          },
+          "larron": {
+            "value": 1,
+            "label":"k2m.larron",
+            "xp":0              
+          },
+          "magicien": {
+            "value": 1,
+            "label":"k2m.magicien",
+            "xp":0              
+          },
+          "marchand": {
+            "value": 1,
+            "label":"k2m.marchand",
+            "xp":0              
+          },
+          "matelot": {
+            "value": 1,
+            "label":"k2m.matelot",
+            "xp":0              
+          },
+          "medecin": {
+            "value": 1,
+            "label":"k2m.medecin",
+            "xp":0              
+          },
+          "orateur": {
+            "value": 1,
+            "label":"k2m.orateur",
+            "xp":0              
+          },
+          "saltimbanque": {
+            "value": 1,
+            "label":"k2m.saltimbanque",
+            "xp":0              
+          },
+          "soldat": {
+            "value": 1,
+            "label":"k2m.artisan",
+            "xp":0              
+          },
+          "sorcier": {
+            "value": 1,
+            "label":"k2m.artisan",
+            "xp":0              
+          },
+          "rodeur": {
+            "value": 1,
+            "label":"k2m.artisan",
+            "xp":0              
+          },
+          "tavernier": {
+            "value": 1,
+            "label":"k2m.artisan",
+            "xp":0              
+          },
+          "veneur": {
+            "value": 1,
+            "label":"k2m.artisan",
+            "xp":0              
+          },
+          "voyageur": {
+            "value": 1,
+            "label":"k2m.artisan",
+            "xp":0              
           }
         }
       },
-      "pj": {
-        "templates": ["base","attr","attrb"],
-        "ethnie":"",
-        "chance":5,
-        "Heroisme":1
-      },
-      "points2danger":{
-        "points":5
-      },
-      "figurant": {
-        "templates": ["minibase"],
-        "nivTresor": 0
-      },
-      "mini-boss-f": {
-        "templates": ["minibase","attr","attrb"],
-        "nivTresor":2
-      },
-      "mini-boss-b": {
-        "templates": ["base","attr","attrb"],
-        "nivTresor":2
-      },
-      "Boss" : {
-        "templates": ["base","attr","attrb"],
-        "nivTresor":4
+      "carac": {
+        "valeur":3,
+        "plus":6,
+        "special": 9,
+        "extra" : 12
       }
     },
-    "Item": {
-      "types": ["objet", "domaine", "sort", "competence", "avantage","ethnie", "secret","argent", "arme_resum"],
-      "objet": {
-        "description": "",
-        "utilisation": "",
-        "quantite": 1,
-        "poids": 0,
-        "volume" : 0,
-        "typeObjet":"O",
-        "bonus":{
-          "score":0,
-          "deSup":0,
-          "dommage":"+0",
-          "PdM":0,
-          "PdV":0
-        },
-        "special":""
+    "pj": {
+      "templates": ["base","etats","cmps"]
+    },
+    "figurant": {
+      "templates": ["compteur","carac"],
+      "nivTresor": 0
+    },
+    "Boss" : {
+      "templates": ["base","etats","cmps"],
+      "nivTresor":4
+    },
+    "monstre": {
+      "templates": ["compteur"],
+      "nivTresor":2
+    }
+  },
+  "Item": {
+    "types": ["objet", "sort", "aspect", "avantage","ethnie", "secret","argent", "arme_resum"],
+    "objet": {
+      "description": "",
+      "utilisation": "",
+      "quantite": 1,
+      "poids": 0,
+      "volume" : 0,
+      "typeObjet":"O",
+      "bonus":{
+        "score":0,
+        "deSup":0,
+        "dommage":"+0",
+        "PdM":0,
+        "PdV":0
       },
-      "domaine": {
-        "description": "Petit texte de présentation du domaine. Il est en format simple pour être mis sans difficulté en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "attributd":"for",
-        "score":15,
-        "code":"Dom",
-        "NbDes":0,
-        "XPa":0
+      "special":""
+    },
+      "aspect":{
+      "codeSpe":"",
+      "idLien":"",
+      "description":"Petit texte de présentation de l'Aspect",
+      "XpDep":0,
+      "code":"aspect",
+      "NbDes":0,
+      "XPa":0
+    },
+    "sort": {
+      "codeSpe":"",
+      "idLien":"",
+      "description": "Petit texte de présentation du sortilège, pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
+      "niveau": 1,
+      "coutMagie":1,
+      "effet":"",
+      "XpDep":10,
+      "NbDes":0,
+      "XPa":0
+    },
+    "ethnie":{
+      "description": "",
+      "nom":"Gent",
+      "urlweb":"https://www-lagep.cpe.fr/public/lemonde2k2/doku.php?id=k2:gents",
+      "secrets":"",
+      "abrv":"gent"
+    },
+    "secret":{
+      "nomGene":"Position sociale",
+      "description": "",
+      "niveau":0,
+      "niveauMax":5,
+      "niv1": {
+        "nom":"basse echelle",
+        "description" :"au début de l'échelle sociale",
+        "effet":"1D6 sur la table de l'origine"
       },
-      "competence":{
-        "codeSpe":"",
-        "idLien":"",
-        "description":"Petit texte de présentation de la compétence, pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "attributd":"for",
-        "score":25,
-        "code":"cmp",
-        "NbDes":0,
-        "XPa":0,
-        "EstPro":false
+      "niv2": {
+        "nom":"classe ouvrière",
+        "description" :"famille de travailleur",
+        "effet":"2D6 sur la table de l'origine"
       },
-      "sort": {
-        "codeSpe":"",
-        "idLien":"",
-        "description": "Petit texte de présentation du sortilège, pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "niveau": 1,
-        "coutMagie":1,
-        "effet":"",
-        "score":10,
-        "attributd":"ig"
+      "niv3": {
+        "nom":"classe ouvrière",
+        "description" :"famille de travailleur",
+        "effet":"3D6 sur la table de l'origine"
       },
-      "avantage":{
-        "description": "Petit texte de présentation de l'avantage ou désavantage. Pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "bonus":"",
-        "bonusAffect":""
+      "niv4": {
+        "nom":"classe ouvrière",
+        "description" :"famille de travailleur",
+        "effet":"4D6 sur la table de l'origine"
       },
-      "ethnie":{
-        "description": "",
-        "nom":"Gent",
-        "urlweb":"https://www-lagep.cpe.fr/public/lemonde2k2/doku.php?id=k2:gents",
-        "secrets":"",
-        "abrv":"gent"
-      },
-      "secret":{
-        "nomGene":"Position sociale",
-        "description": "",
-        "niveau":0,
-        "niveauMax":5,
-        "niv1": {
-          "nom":"basse echelle",
-          "description" :"au début de l'échelle sociale",
-          "effet":"1D6 sur la table de l'origine"
-        },
-        "niv2": {
-          "nom":"classe ouvrière",
-          "description" :"famille de travailleur",
-          "effet":"2D6 sur la table de l'origine"
-        },"dommarmeEnMainf":false,
-        "niv5": {
-          "nom":"classe aisée",
-          "description" :"famille d'ingénieur ou de bourgeois",
-          "effet":"5D6 sur la table de l'origine"
-        }
-      },
-      "argent": {
-        "blanc":0,
-        "demiePerle":0,
-        "demieLune":0,
-        "perle":0,
-        "lune":0,
-        "orc":0,
-        "emmeraude":0,
-        "pourpre":0,
-        "autres":""
-      },
-      "arme_resum":{
-        "armeEnMain":false,
-        "idarmeref":"",
-        "idcmpref":"",
-        "desync":0,
-        "attributd":"for",
-        "DeCmp":10,        
-        "degat":"1D10",
-        "BDom":"1d4",
-        "special":"",
-        "resistance":1,
-        "bris":5,
-        "munitions":-1,
-        "reserve":0,
-        "lancer":1
+      "niv5": {
+        "nom":"classe aisée",
+        "description" :"famille d'ingénieur ou de bourgeois",
+        "effet":"5D6 sur la table de l'origine"
       }
+    },
+    "argent": {
+      "blanc":0,
+      "demiePerle":0,
+      "demieLune":0,
+      "perle":0,
+      "lune":0,
+      "orc":0,
+      "emmeraude":0,
+      "pourpre":0,
+      "autres":""
+    },
+    "arme_resum":{
+      "armeEnMain":false,
+      "idarmeref":"",
+      "idcmpref":"",
+      "desync":0,
+      "attributd":"for",
+      "DeCmp":10,        
+      "degat":"1D10",
+      "BDom":"1d4",
+      "special":"",
+      "resistance":1,
+      "bris":5,
+      "munitions":-1,
+      "reserve":0,
+      "lancer":1
     }
   }
-  
+}

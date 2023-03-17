@@ -79,3 +79,14 @@ function handleSubmit(html) {
 }
 
 simpleDialogue();
+
+
+///////////////////////////
+La gestion des personnages
+les états sont Fatigue, Faiblesse, Tension, Point de Magie
+  ils ont 4 rangs, qui peuvent être déséquilibré (value = valeur actuel, max = valeur du rang)
+les difficultés sont : 6,9,12,15
+
+Attention :
+Actuellement seul peut être le Pj est fait
+dans les PNJ : nous avons le Boss = PJ, le figurant (qui as valeur, domaine, spécialités, et extra ainsi que compteur), le montre qui peut avoir beaucou plus de rang de compteur...

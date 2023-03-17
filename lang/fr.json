@@ -1,0 +1,12 @@
+{
+    "xp":"Exp",
+
+    "k2m.compteur":"Compteur",
+    "k2m.effort":"Effort",
+    "k2m.fatigue": "Fatigue",
+    "k2m.faiblesse": "Faiblesse",
+    "k2m.PdM": "Points de Magie",
+    "k2m.tension": "Tension",
+    
+    "k2m.system" : "Système Metal"
+}
