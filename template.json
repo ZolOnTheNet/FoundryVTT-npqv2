@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["pj", "figurant", "Boss", "monstre"],
+    "types": ["pj", "figurant", "monstre"],
     "templates": {
       "etats": {
         "value":6,
@@ -78,6 +78,14 @@
         "biography": "",
         "reputation": { "value":0, "max":0},
         "XP":{ "value":0, "max":0}
+      },
+      "minibase":  {
+        "nom":"",
+        "type":"PNJ",
+        "Origine":"",
+        "Ethnie":"gents",
+        "Besogne":"artisan",
+        "biography": ""
       },
       "cmps": {
         "cmp" : {
@@ -219,15 +227,11 @@
       "templates": ["base","etats","cmps"]
     },
     "figurant": {
-      "templates": ["compteur","carac"],
+      "templates": ["minibase","compteur","carac"],
       "nivTresor": 0
     },
-    "Boss" : {
-      "templates": ["base","etats","cmps"],
-      "nivTresor":4
-    },
     "monstre": {
-      "templates": ["compteur"],
+      "templates": ["minibase","compteur","carac"],
       "nivTresor":2
     }
   },
@@ -256,6 +260,7 @@
       "XpDep":0,
       "code":"aspect",
       "NbDes":0,
+      "urlweb":"",
       "XPa":0
     },
     "sort": {
@@ -267,6 +272,7 @@
       "effet":"",
       "XpDep":10,
       "NbDes":0,
+      "urlweb":"https://www-lagep.cpe.fr/public/lemonde2k2/doku.php?id=k2:gents",
       "XPa":0
     },
     "ethnie":{

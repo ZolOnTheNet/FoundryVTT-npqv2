@@ -28,9 +28,13 @@
        * is queried and has a roll executed directly from it).
        */
       prepareDerivedData() {
-        const actorData = this.data;
-        const data = actorData.data;
-        const flags = actorData.flags.boilerplate || {};
+        // mise en conformité v10
+        //const actorData = this.data;
+        //const data = actorData.data;
+        const actorData = this;
+     // Pour l'instant non utilisé
+     //   const data = actorData.system;
+     //   const flags = actorData.flags.boilerplate || {};
     
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
@@ -42,13 +46,14 @@
        * Prepare Character type specific data
        */
       _prepareCharacterData(actorData) {
-        if (actorData.type !== 'pj') return;
+        if (actorData.type !== 'pj') return; // Seulement PJ !
      // TODO : modifier le code pour les bonus
         // Make modifications to data here. For example:
-        const data = actorData.data;
-        const bonus = {"score":0,"dommage":"","pinit":0,"PdM":0,"PdV":0};
-        // mettre ici les bonus !
-        const bonusLst = actorData.items.filter(item => item.type === "objet" && item.data.data.actif==true);
+        //const data = actorData.data;
+        const data = actorData.system;
+        // mettre ici les bonus ! Pour l'instant hors système 
+        // const bonus = {"score":0,"dommage":"","pinit":0,"PdM":0,"PdV":0};
+/*        const bonusLst = actorData.items.filter(item => item.type === "objet" && item.data.data.actif==true);
         for(let i of bonusLst){
           bonus.score += (i.data.data.bonus.score != 0)?(i.data.data.bonus.score):0;
           bonus.dommage += (i.data.data.bonus.dommage != "")?"+("+i.data.data.bonus.dommage+")":"";
@@ -60,13 +65,14 @@
         //if(typeof data.attrder.pinit_base.value === 'string')data.attrder.pinit_base.value = parseInt(data.attrder.pinit_base.value,10)
         //data.attrder.pinit_finaux.value = data.attrder.pinit_base.value+bonus.pinit;
         data.bonus = bonus;
+ */
     }
       /**
        * Prepare NPC type specific data.
        */
       _prepareNpcData(actorData) {
-        if (actorData.type !== 'pnj') return;
-    
+        if (actorData.type == 'pj') return; // càd pour l'instant Monstre, figurants
+        
         // Make modifications to data here. For example:
         //const data = actorData.data;
         //data.xp = (data.cr * data.cr) * 100;
@@ -109,7 +115,7 @@
        * Prepare NPC roll data.
        */
       _getNpcRollData(data) {
-        if (this.data.type !== 'pnj') return;
+        if (this.data.type == 'pj') return;
     
         // Process additional NPC data here.
       }

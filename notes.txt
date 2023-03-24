@@ -90,3 +90,14 @@ les difficultés sont : 6,9,12,15
 Attention :
 Actuellement seul peut être le Pj est fait
 dans les PNJ : nous avons le Boss = PJ, le figurant (qui as valeur, domaine, spécialités, et extra ainsi que compteur), le montre qui peut avoir beaucou plus de rang de compteur...
+
+templates.json : 
+"types": ["pj", "figurant", "monstre"],
+
+et 
+"Boss" : {
+      "templates": ["base","etats","cmps"],
+      "nivTresor":4
+    },
+
+pour les monstres : le rang4 peut être mis à de plus grandes valeurs (regroupant les différents rangs suivants)
