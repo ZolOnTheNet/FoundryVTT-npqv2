@@ -1,3 +1,13 @@
+/*** la base est fourni par Boilerplate system : https://gitlab.com/asacolips-projects/foundry-mods/boilerplate/-/tree/master
+ * obtention de la police de caractère roboto
+ */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+/* Global styles */
+.window-app {
+  font-family: "Roboto", sans-serif;
+}
+
+
 /*******************************
  * mettre en surbrillance en rouge les liens de type rollable 
  */
@@ -131,10 +141,34 @@
 }
 /****************************************************************
  * gestion des alignement du centre
-*/
+ */
 .align-center {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
   text-align: center;
 }
+/****************************************************************
+ * mes CSS à moi
+ */
+.sheet-flex-form {
+  flex: 0;
+}
+
+.sheet-header-zol {
+    display: flex;
+    flex-direction: row;
+/*    flex-wrap: wrap; */
+    justify-content: flex-start;
+    align-items: normal;
+ } 
+
+ .tableau-hearder {
+    border : 0
+
+ }
+
+ .mini-input {
+   size : "2em";
+   width : auto;
+ }

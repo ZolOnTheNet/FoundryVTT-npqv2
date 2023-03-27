@@ -14,8 +14,8 @@ export default class npqv2ActorSheet extends ActorSheet {
   
     /** @override , selection du fichier front end en fonction du type d'acteur (ici PJ, Boss, demi-Boss et figurant) */
     get template() {
-      console.log("NPQv3 | ouvre : systems/npqv2/templates/sheets/actor-"+this.actor.data.type+"-sheet.html");
-      return `systems/npqv2/templates/sheets/actor-${this.actor.data.type}-sheet.html`;
+      console.log("NPQv2 | ouvre : systems/npqv2/templates/sheets/actor-"+this.actor.type+"-sheet.html");
+      return `systems/npqv2/templates/sheets/actor-${this.actor.type}-sheet.html`;
     }
   
     /* -------------------------------------------- */
@@ -29,10 +29,10 @@ export default class npqv2ActorSheet extends ActorSheet {
       const context = super.getData();
   
       // Use a safe clone of the actor data for further operations.
-      const actorData = this.actor.data.toObject(false);
+      const actorData = this.actor.toObject(false);
   
       // Add the actor's data to context.data for easier access, as well as flags.
-      context.data = actorData.data;
+      context.system = actorData.system;  // peut être changer data en système après relecture
       context.flags = actorData.flags;
   
       // Prepare character data and items.
@@ -41,21 +41,17 @@ export default class npqv2ActorSheet extends ActorSheet {
         this._prepareCharacterData(context);
       }
   
+      // ------ Les différents NPC ---------------
       // Prepare NPC data and items.
       if (actorData.type == 'pnj') {
         this._prepareItems(context);
       }
-  
-      for (let att in context.data.attributs) {
-          context.data.attributs[att].code = att;
+      if (actorData.type == 'figurant') {
+        this._prepareItemsFig(context);
       }
       // Add roll data for TinyMCE editors.
       context.rollData = context.actor.getRollData();
       
-      // Prepare active effects
-     // context.effects = prepareActiveEffectCategories(this.actor.effects);
-      context.AttribV = { "for":"Force", "ag":"Agilité", "con":"Constitution", "p":"Présence", "ig":"Intelligence", "it":"Intuition", "v":"Volonté" };
-//      context.LstDes = { "D300":"D300", "D250":"D250","D200":"D200","D150":"D150","D120":"D120","D100":"D100","D80":"D80","D60":"D60","D50":"D50","D40":"D40"}
       console.log("NPQv2| context:", context);
       return context;
     }
@@ -99,14 +95,14 @@ export default class npqv2ActorSheet extends ActorSheet {
         5: []
       };
   
-      let bib = context.data.biography.split('</p>');
+      let bib = context.system.biography.split('</p>');
       if (Array.isArray(bib)){
         if (bib.length < 6){
           //context.data.biography += "<br>&nbsp<br><br><br>";
-          context.data.biography += "<p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>";
+          context.system.biography += "<p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>";
         }
       }
-  
+  /*
       // Iterate through items, allocating to containers
       for (let i of context.items) {
         i.img = i.img || DEFAULT_TOKEN;
@@ -217,7 +213,7 @@ export default class npqv2ActorSheet extends ActorSheet {
           bourses.push(i);
         }
      }
-  
+  */
       // Assign and return
       context.gear = gear;
       context.features = features;
@@ -228,9 +224,28 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.ArmesResum = ArmesResum;
       context.bourses = bourses;
       // context.bonus = bonus;
-      context.bonus = this.actor.data.data.bonus;
+      context.bonus = this.actor.system.data.bonus;
     }
   
+    _prepareItemsFig(context) {
+      // tableau minimu des items. Specialité, extra et normalement, besogne sont des items "Aspects"
+      const armes = [];  // les armes utilisables par le figurant
+      const armures = [];  // armure portée au moment de la rencontre
+      const specialite = []; // Aspect spécialité
+      const extra = []; // Aspect considéré comme extra si on réduit le compteur
+      const secrets = []; // si on veut k²isé les figurants
+      const bourses = []; // différentes bourses et trésort
+      const mago = false; 
+      const sorts = { // si c'est un magicien
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: []
+      };
+  
+
+    }
   
     /* -------------------------------------------- */
   
