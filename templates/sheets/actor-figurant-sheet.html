@@ -48,6 +48,15 @@
   
       {{!-- les caracteristiques }}
       <div class="tab items" data-group="primary" data-tab="caracteristiques">
+        <section class="main flexcol">
+          {{#each system.cpsm as |cmp key|}}
+          <div class="attribd flexrow flex-group-center">
+            <label for="attribd.value" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{attribd.label}}">{{attribd.label}}</label>
+            <input type="text" name="cmp.value" value="{{cmp.value}}" data-dtype="Number"/>
+            <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-label="{{attrib}}">{{cmp.value}}</span>
+          </div>
+          {{/each}}        
+        </section>
         
       </div>
       {{!-- Owned Items Tab --}}

@@ -56,6 +56,7 @@
       "compteur":{
         "compteur":{
           "value":6,
+          "decoupe":4, 
           "diff": {
             "rang1":6,
             "rang2":9,
@@ -238,6 +239,7 @@
   "Item": {
     "types": ["objet", "sort", "aspect", "avantage","ethnie", "secret","argent", "arme_resum"],
     "objet": {
+      "code":"objet",
       "description": "",
       "utilisation": "",
       "quantite": 1,
@@ -254,7 +256,7 @@
       "special":""
     },
       "aspect":{
-      "codeSpe":"",
+      "codeSpe":"NORM",
       "idLien":"",
       "description":"Petit texte de présentation de l'Aspect",
       "XpDep":0,
@@ -265,6 +267,7 @@
     },
     "sort": {
       "codeSpe":"",
+      "code":"sort",
       "idLien":"",
       "description": "Petit texte de présentation du sortilège, pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
       "niveau": 1,
@@ -277,6 +280,7 @@
     },
     "ethnie":{
       "description": "",
+      "code":"ethnie",
       "nom":"Gent",
       "urlweb":"https://www-lagep.cpe.fr/public/lemonde2k2/doku.php?id=k2:gents",
       "secrets":"",
@@ -284,6 +288,7 @@
     },
     "secret":{
       "nomGene":"Position sociale",
+      "code":"secret",
       "description": "",
       "niveau":0,
       "niveauMax":5,
@@ -314,6 +319,7 @@
       }
     },
     "argent": {
+      "code":"argent",
       "blanc":0,
       "demiePerle":0,
       "demieLune":0,
@@ -325,6 +331,7 @@
       "autres":""
     },
     "arme_resum":{
+      "code":"arme_resum",
       "armeEnMain":false,
       "idarmeref":"",
       "idcmpref":"",

@@ -100,4 +100,7 @@ et
       "nivTresor":4
     },
 
-pour les monstres : le rang4 peut être mis à de plus grandes valeurs (regroupant les différents rangs suivants)
+pour les monstres : les rangs peut être mis à de plus grandes valeurs (regroupant les différents rangs suivants), de découpage se fera par une réf : decoupe donnant le nombre par ligne
+
+Pour la magie c'est pas encore réelement fait : quelques points pour les dépenser ou donner quelques bonus (de 0 à 5)
+le système recherché sera sans points de magie, la fatigue prend le relais
