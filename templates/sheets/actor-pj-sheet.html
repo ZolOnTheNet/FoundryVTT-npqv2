@@ -1,73 +1,96 @@
 <form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
 
     {{!-- Sheet Header --}}
-    <table width="100%" border="0">
-      <tbody>
-        <tr>
-          <td>
-            <aside class="sidebar">
-              <div class="resource flex-group-center">
-                <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="150" width="150"/>
-              </div>  
-            </aside>
-          </td>
-          <td>
-            <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
-            <h2 class="charname"><input name="data.ethnie" type="text" value="{{data.ethnie}}" placeholder="ethnie"/></h2>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="2">
-            <div class="resources grid grid-4col">
-              <div class="resource flex-group-center">
-                <label for="data.PdV.value" class="resource-label">Points de Vie</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                  <input type="text" name="data.PdV.value" value="{{data.PdV.value}}" data-dtype="Number"/>
-                  <span> / </span>
-                  <input type="text" name="data.PdVTot" value="{{data.PdVTot}}" disabled=true data-dtype="Number"/>
-                  (<input type="text" name="data.PdV.max" value="{{data.PdV.max}}" data-dtype="Number"/>)
-                </div>
-              </div>
-      
-              <div class="resource flex-group-center">
-                <label for="data.PdM.value" class="resource-label">Pts de Magie</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                  <input type="text" name="data.PdM.value" value="{{data.PdM.value}}" data-dtype="Number"/>
-                  <span> / </span>
-                  <input type="text" name="data.PdMTot" value="{{data.PdMTot}}" disabled=true data-dtype="Number"/>
-                  (<input type="text" name="data.PdM.max" value="{{data.PdM.max}}" data-dtype="Number"/>)
-                </div>
-              </div>
-      
-              <div class="resource flex-group-center">
-                <label for="data.Heroisme" class="resource-label">Pts de Héro</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                  <input type="text" name="data.Heroisme" value="{{data.Heroisme}}" data-dtype="Number"/>
-                </div>
-              </div>
-      
-             <div class="resource flex-group-center">
-                <label for="data.XP" class="resource-label">XP</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                  <input type="text" name="data.XP" value="{{data.XP}}" data-dtype="Number"/>
-                </div>
-              </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    {{!-- les caracteristiques }}
-    <div class="tab items" data-group="primary" data-tab="caracteristiques">
-      <section class="main flexcol">
-        {{#each system.cpsm as |cmp key|}}
-        <div class="attribd flexrow flex-group-center">
-          <label for="attribd.value" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{attribd.label}}">{{attribd.label}}</label>
-          <input type="text" name="cmp.value" value="{{cmp.value}}" data-dtype="Number"/>
-          <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-label="{{attrib}}">{{cmp.value}}</span>
-        </div>
-        {{/each}}        
-      </section>
-      
+    <header class="sheet-flex-form" >
+      <table style="width: 100%" border="1">
+          <tbody>
+            <tr>
+              <td rowspan="2">
+                  <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="120"/>
+              </td>
+              <td width="60%">
+                  <h1 class="charname" ><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+              </td>
+              <td style="text-align: center">
+                XP  dép. /  tot     <br>
+                <input type="text" size="4em"  style="width: auto;" name="system.XP.value" value="{{system.XP.value}}" data-dtype="Number"/> / <input type="text"  style="width: auto;" size="4em" name="system.XP.max" value="{{system.XP.max}}" data-dtype="Number"/>                 
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="text" name="system.besogne" value="{{system.besogne}}" placeholder="Besogne"/>
+              </td>
+              <td>
+                <input type="text" name="system.ethnie" value="{{system.ethnie}}" placeholder="Ethnie"/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  </header>
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    {{!-- Default tab is specified in actor-sheet.mjs --}}
+    <a class="item" data-tab="description">Description</a>
+    <a class="item" data-tab="caracteristiques">caracs</a>
+    <a class="item" data-tab="Secret">Secrets</a>
+
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Biography Tab --}}
+    <div class="tab biography" data-group="primary" data-tab="description">
+      {{!-- If you want TinyMCE editors to output inline rolls when rendered, you need to pass the actor's roll data to the rollData property. --}}
+      {{editor system.biography target="system.biography" rollData=rollData button=true owner=owner editable=editable}}
     </div>
 
+    {{!-- les caracteristiques --}}
+    <div class="tab items" data-group="primary" data-tab="caracteristiques">
+      <section class="grid grid-3col">
+        <section class="main flexcol">
+            <h2>Compétences</h2>
+            {{#each system.cmp as |cmp key|}}
+            <div class="attribd flexrow flex-group-center">
+              <label for="system.cmp.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{cmp.label}}">{{localize  cmp.label }}</label>
+              <input type="text" size="4em" name="system.cmp.{{key}}.value" value="{{cmp.value}}" data-dtype="Number"/>
+              <span class="attrib-mod rollable" data-roll="{{cmp.value}}" data-label="{{key}}">Direct/</span>
+              <span class="attrib-mod rollable" data-roll="{{cmp.value}}" data-label="{{key}}.paris">Paris</span>
+            </div>
+            {{/each}}
+        </section>
+
+        <section class="main">
+          <h2>Aspects</h2>
+          {{#each aspects as |aspect key|}}
+          <div>
+            <span>
+              {{aspect.name}}
+            </span>
+            <span>
+              {{aspect.system.NbDes}}
+              <a class="attrib-mod rollable" data-roll="{{cmp.value}}" data-label="{{aspect}}.add"><i class="fas fa-edit"></i></a>
+              <a class="attrib-mod rollable" data-roll="{{cmp.value}}" data-label="{{aspect}}.suppr"><i class="fas fa-trash"></i></a>
+            </span>
+          </div>
+          {{/each}}
+        </section>
+        <section>
+          <h2>Sélection</h2>
+          {{#each aspects as |aspect key|}}
+          <div>
+            <span>
+              <input type="text" size="15em" name="aspect.name" value="{{aspect.name}}" />
+            </span>
+            <span>
+              <input type="text" size="4em" name="aspect.system.NbDes" value="{{aspect.system.NbDes}}" data-dtype="Number"/>
+              <a class="attrib-mod rollable" data-roll="{{cmp.value}}" data-label="{{aspect}}.add"><i class="fas fa-edit"></i></a>
+              <a class="attrib-mod rollable" data-roll="{{cmp.value}}" data-label="{{aspect}}.suppr"><i class="fas fa-trash"></i></a>
+            </span>
+          </div>
+          {{/each}}
+        </section>
+      </section>
+    </div>
+   </section> 
 </form>

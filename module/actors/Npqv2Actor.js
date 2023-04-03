@@ -3,6 +3,8 @@
  * @extends {Actor}
  * pas de default !
  */
+import { quelRang } from "../utils.js";
+
  export class npqv2Actor extends Actor {
     prepareData() {
         // Prepare data for the actor. Calling the super version of this executes
@@ -51,6 +53,18 @@
         // Make modifications to data here. For example:
         //const data = actorData.data;
         const data = actorData.system;
+        //----------------- Calcul de la valeur d'état : seuil de réussite -------------------------------
+        const lesEtats=['DPdM','fatigue','faiblesse','tension']; // Mes quatre type d'état
+        let i = 0;
+        if(data.etats.incMagie >0) i = 1; // la magie n'est pas compté dans le seuil de calcul
+        let seuilRangFinal = 0;
+        let curRang = 0;
+        for(;i < lesEtats.length; i++) {
+          curRang = quelRang(data.etats[lesEtats[i]])
+          if(curRang > seuilRangFinal) seuilRangFinal = curRang;
+        }
+        data.etats.value = data.etats.diff["rang"+seuilRangFinal]; //tableau des seuil
+        
         // mettre ici les bonus ! Pour l'instant hors système 
         // const bonus = {"score":0,"dommage":"","pinit":0,"PdM":0,"PdV":0};
 /*        const bonusLst = actorData.items.filter(item => item.type === "objet" && item.data.data.actif==true);
@@ -72,10 +86,11 @@
        */
       _prepareNpcData(actorData) {
         if (actorData.type == 'pj') return; // càd pour l'instant Monstre, figurants
-        
+        const data = actorData.system;
         // Make modifications to data here. For example:
         //const data = actorData.data;
         //data.xp = (data.cr * data.cr) * 100;
+         //----------------- Calcul de la valeur de compteur : seuil de réussite -------------------------------
       }
     
       /**

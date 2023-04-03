@@ -194,7 +194,31 @@ function DialogueElementaire (titre = "lancer de dé", form="<h2>coucou</h2", fn
     }).render(true);
 
 }
+/*
+ * Outils propre a metal (NPQv6)
+/**
+ * quelRang retourne le rang d'un objet contenant 4 rang (rangx) ayant une valeur (value)
+ * et un maximum (max), la ligne est dite complète si value = max
+ * 
+ * @param {*} objAvecRang objet de la forme suivante :
+ * obj = {
+ *        "rang1": { "value":0, "max":3},
+ *        "rang2": { "value":0, "max":3},
+ *        "rang3": { "value":0, "max":3},
+ *        "rang4": { "value":0, "max":3} 
+ *       }
+ */
+function quelRang(objAvecRang) {
+  let reponse = 0;
+  for(let i=1; i < 5; i++){
+    if(objAvecRang["rang"+i].value < objAvecRang["rang"+i].max ) {
+      reponse = i;
+      break;
+    }
+  }
+  return reponse;
+}
 /***
  * EXPORT ---------------
  */
-export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut}
+export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut, quelRang}

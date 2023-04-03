@@ -28,9 +28,10 @@ export default class npqv2ActorSheet extends ActorSheet {
       // editable, the items array, and the effects array.
       const context = super.getData();
   
+      // comment modifier si c'est un clone ?
       // Use a safe clone of the actor data for further operations.
-      const actorData = this.actor.toObject(false);
-  
+      //const actorData = this.actor.toObject(false);
+      const actorData = this.actor
       // Add the actor's data to context.data for easier access, as well as flags.
       context.system = actorData.system;  // peut être changer data en système après relecture
       context.flags = actorData.flags;
@@ -81,7 +82,8 @@ export default class npqv2ActorSheet extends ActorSheet {
       // Initialize containers.
       const gear = [];
       const features = [];
-      const domaines = [];
+      const aspects = [];
+      const sequelles = [];
       const competences = [];
       const secrets = [];
       const ArmesResum = [];
@@ -102,10 +104,10 @@ export default class npqv2ActorSheet extends ActorSheet {
           context.system.biography += "<p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>";
         }
       }
-  /*
+  
       // Iterate through items, allocating to containers
       for (let i of context.items) {
-        i.img = i.img || DEFAULT_TOKEN;
+/*        i.img = i.img || DEFAULT_TOKEN;
         // Append to gear.
         if (i.type === 'objet') {
           i.data.descRapide = i.data.description.substring(0,(i.data.description+".").indexOf("."));
@@ -120,13 +122,18 @@ export default class npqv2ActorSheet extends ActorSheet {
            }
           gear.push(i);
         }
-        else if (i.type === 'domaine') {
+        else */
+        if (i.type === 'aspect') {
           // on lui ajoute le résumé (pour l'instant jusqu'au premier point)
-          i.data.descRapide = (i.data.description).substring(0,(i.data.description+".").indexOf("."));
-          domaines.push(i);
-        } 
-        else if (i.type === 'competence'){
-          i.data.descRapide = (i.data.description+".").substring(0,(i.data.description+".").indexOf("."));
+          //i.data.descRapide = (i.data.description).substring(0,(i.data.description+".").indexOf("."));
+          if(i.system.codeSpe === 'NORM') {
+            aspects.push(i);
+          }else if(i.system.codeSpe === 'SEQ') {
+            sequelles.push(i);
+          }
+          
+        } else if (i.type === 'sort'){
+/*          i.data.descRapide = (i.data.description+".").substring(0,(i.data.description+".").indexOf("."));
           if(i.data.idLien != ""){
             // calcul si spécialisation
             let it = context.actor.items.get(i.data.idLien);
@@ -135,7 +142,9 @@ export default class npqv2ActorSheet extends ActorSheet {
             i.data.scoreRel = i.data.score;
           }
           competences.push(i);
+        */
         }
+        /*
         // Append to features.
         else if (i.type === 'feature') {
           features.push(i);
@@ -212,19 +221,21 @@ export default class npqv2ActorSheet extends ActorSheet {
         else if (i.type === 'argent') {
           bourses.push(i);
         }
-     }
   */
+      }
+  
       // Assign and return
       context.gear = gear;
       context.features = features;
       context.spells = spells;
-      context.domaines = domaines;
+      context.aspects = aspects;
+      context.sequelles = sequelles;
       context.competences = competences;
       context.secrets = secrets;
       context.ArmesResum = ArmesResum;
       context.bourses = bourses;
       // context.bonus = bonus;
-      context.bonus = this.actor.system.data.bonus;
+      //context.bonus = this.actor.system.data.bonus;
     }
   
     _prepareItemsFig(context) {

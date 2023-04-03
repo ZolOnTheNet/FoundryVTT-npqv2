@@ -2,7 +2,7 @@
   "name": "npqv2",
   "title": "NPQ v6",
   "description": "NPQ v6 pour FoundryVTT!",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "minimumCoreVersion": "9.0.0",
   "compatibleCoreVersion": "10",
   "templateVersion": 2,
