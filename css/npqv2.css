@@ -169,6 +169,23 @@
  }
 
  .mini-input {
-   size : "2em";
+   size : "2em"; /* a verifier mais normalement pas pris en compte */
    width : auto;
+ }
+
+ .normal-input {
+  width : auto ! important;
+ }
+
+ .normal-left-input {
+  text-align: right;
+  width : auto ! important;
+ }
+
+ .taille-M4 {
+  width: 25%;
+ }
+
+ .reduitTaille{
+  font-size: -1;
  }

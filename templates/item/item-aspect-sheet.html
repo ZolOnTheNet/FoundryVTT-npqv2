@@ -25,18 +25,25 @@
     {{!-- Attributes Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
       {{!-- As you add new fields, add them in here! --}}
-      <label for="system.codeSpe" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{system.codeSpe}}">{{localize  "k2m.codeSpe" }}</label>
-     {{!--  <input type="text" name="system.codeSpe" value="{{system.codeSpe}}" /> --}}
-      <select  name="system.codeSpe">
-        {{selectOptions CodifAspect selected=system.codeSpe}}
-      </select>
-
-      <label for="system.NbDes" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{system.NbDes}}">{{localize  "k2m.NbDes" }}</label>
-      <input type="text" size="4em" name="system.NbDes" value="{{system.NbDes}}" data-dtype="Number"/>
-      <label for="system.XpDep" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{system.XpDep}}">{{localize  "k2m.XpDep" }}</label>
-      <input type="text" size="4em" name="system.XpDep" value="{{system.XpDep}}" data-dtype="Number"/>
-      <label for="system.XPa" class="resource-label rollable flexlarge align-left" data-roll="" data-label="{{system.XPa}}">{{localize  "k2m.XPa" }}</label>
-      <input type="text" size="4em" name="system.XPa" value="{{system.XPa}}" data-dtype="Number"/>
+      
+     <div class="grid-2col">
+        <div>
+          <h3>{{localize  "int.carac" }}</h3>
+          <label for="system.codeSpe" class="resource-label flexlarge align-left" data-roll="" data-label="{{system.codeSpe}}">{{localize  "k2m.codeSpe" }}</label>
+          <select  name="system.codeSpe">
+            {{selectOptions CodifAspect selected=system.codeSpe}}
+          </select><br>
+          <label for="system.NbDes" class="resource-label align-left">{{localize  "k2m.NbDes" }}</label>
+          <input size="4em" class="normal-input" type="text" name="system.NbDes" value="{{system.NbDes}}" data-dtype="Number"/>
+        </div>
+        <div>
+          <h3>{{localize  "int.xp" }}</h3>
+          <label for="system.XpDep" class="resource-label flexlarge align-left" >{{localize  "k2m.XpDep" }}</label>
+          <input class="normal-input" type="text" size="4em" name="system.XpDep" value="{{system.XpDep}}" data-dtype="Number"/><br>
+          <label for="system.XPa" class="resource-label flexlarge align-left">{{localize  "k2m.XPa" }}</label>
+          <input class="normal-input" type="text" size="4em" name="system.XPa" value="{{system.XPa}}" data-dtype="Number"/>
+        </div>
+      </div>
     </div>
   </section>
 </form>

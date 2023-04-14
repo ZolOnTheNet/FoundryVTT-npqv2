@@ -6,21 +6,32 @@ function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5 ){
   let r = new Roll(""+(lancer)+formDe);
   r.evaluate({async :false });
   let resultat = r.total; // r.total entier, r.result chaine de caractère
-  let nbsucces = parseInt((resultat - diff + 5) / 5)  ;
+  let nbsucces = 0;
+  let isSucces = 0; //parseInt((resultat - diff + 5) / 5)  ;
+  if(resultat >= diff) { // le jet est un succès
+    isSucces = 1; // c'est une réussite
+    for (const value of r.terms[0].results) {
+      if(value.result%2 == 0) nbsucces++;
+    }
+    if (nbsucces > 0) nbsucces += parseInt(res);
+  }
   if (nbsucces <= 0) nbsucces = 0;
-  if (nbsucces > 0) nbsucces += parseInt(res);
+  
 // --------------------------------------------
 
-  let monTexte = "Votre jet ("+ lancer + "D6) ainsi que "+ parseInt(res)+ 
+  let monTexte = "";
+  if(isSucces >0 ) monTexte= "Votre jet ("+ lancer + "D6) ainsi que "+ parseInt(res)+ 
 " succès en réserve contre une difficulté de "+ diff + ', vous donne <font size="+5"><b>'+nbsucces+
-' mises</b></font> à jouer.<br><a class="btn apply-dmg" data-apply="init"><i class="fas fas fa-swords" title="report Initiative"></i></a> &lt;Init __ Lancer Dom&gt;'+ 
+' qualité</b></font>.<br><a class="btn apply-dmg" data-apply="init"><i class="fas fas fa-swords" title="report Initiative"></i></a> &lt;Init __ Lancer Dom&gt;'+ 
 '<a class="btn apply-dmg" data-apply="full"><i class="fas fa-user-minus" title="lancer les dommage"></i></a>';
+  else monTexte = "Désolé ! mais vous n'avez pas réussi votre jet (="+ resultat+") contre une difficulte de : "+diff+".<br>"; 
   // sortie du texte
    let chatData = {
         user: game.user._id,
         speaker: ChatMessage.getSpeaker(),
         flavor: monTexte,
-        rollMode: game.settings.get('core', 'rollMode')
+        rollMode: game.settings.get("core", "rollMode"),
+        roll: r
     };
     //ChatMessage.create(chatData);
    let cm = r.toMessage(chatData);
@@ -37,33 +48,39 @@ function handleSubmit(html) {
 //  console.log('Réserve', formDataObject["reserve"]);
   // ne mache pas : game.chatMessageLancerDes("coucou",5,3,5);
 // traitement de retour du dialogue
-  let res = parseInt( formDataObject["reserve"]);
+  let res = parseInt( formDataObject["paris"]);
   let nbdes = parseInt( formDataObject["nbdes"]);
-  let diff = parseInt( formDataObject["difficulte"]);
-  let expl = (formDataObject["exploser"] === null)? 0 : parseInt( formDataObject["exploser"]); 
+  let diff = parseInt( formDataObject["seuil"]);
+  let bonus = parseInt( formDataObject["bonus"])
+//  let expl = (formDataObject["exploser"] === null)? 0 : parseInt( formDataObject["exploser"]); 
   // au moins un dé à lancer !
+  res = res + bonus
   if(res >= nbdes) res = nbdes-1;
   let lancer = nbdes - res; 
-  let formDe = (expl ==0)? "D6":"D6x6";
+  let formDe = "D6";
   lanceLesDes(lancer, res, formDe, diff)
 }
 
- function simpleDialogue(nbdes = 5, reserve = 0, diff = 5, expl = 0){
+ function simpleDialogue(nbdes = 5, paris = 0, seuil = 6){
   let i = 10;
   let sp = ChatMessage.getSpeaker();
   let form = `<form>
+    <h2> Lancer de dés</h2>
+    <p>le nombre de dés mis en paris est soustrait du nombre de dés total, le bonus est ajouté</p>
     <table>
         <tbody>
-            <tr><td>Nb dés</td>
+            <tr><td>Nb dés total initial</td>
                 <td><input name="nbdes" type="integer" value=`+nbdes+` />` 
     // bon c'est pas trop joli mais c'est plus clair !
-    if(expl == 0) form = form + `<input name="exploser" value="1" type="checkbox">`;
-    if(expl == 1) form = form + `<input name="exploser" value="1" checked="checked" type="checkbox">`;
+    //if(expl == 0) form = form + `<input name="exploser" value="1" type="checkbox">`;
+    //if(expl == 1) form = form + `<input name="exploser" value="1" checked="checked" type="checkbox">`;
     form = form +`</td></tr>
-            <tr><td>Réserve</td>
-                <td><input name="reserve" type="integer" value=`+reserve+` /></td></tr>
-            <tr><td>Difficulté</td>
-                <td><input name="difficulte" type="integer" value=`+diff+` /></td></tr>
+            <tr><td>Paris : nb dés gardés </td>
+                <td><input name="paris" type="integer" value=`+paris+` /></td></tr>
+            <tr><td>Bonus/Malus</td>
+                <td><input name="bonus" type="integer" value=0 /></td></tr>
+            <tr><td>Seuil</td>
+                <td><input name="seuil" type="integer" value=`+seuil+` /></td></tr>
         </tbody>
         </table>
     </form>`;
@@ -202,23 +219,93 @@ function DialogueElementaire (titre = "lancer de dé", form="<h2>coucou</h2", fn
  * 
  * @param {*} objAvecRang objet de la forme suivante :
  * obj = {
- *        "rang1": { "value":0, "max":3},
- *        "rang2": { "value":0, "max":3},
- *        "rang3": { "value":0, "max":3},
- *        "rang4": { "value":0, "max":3} 
+ *        "rangs": {
+ *          "rang1": { "value":0, "max":3},
+ *          "rang2": { "value":0, "max":3},
+ *          "rang3": { "value":0, "max":3},
+ *          "rang4": { "value":0, "max":3} 
+ *         }
  *       }
  */
 function quelRang(objAvecRang) {
   let reponse = 0;
   for(let i=1; i < 5; i++){
-    if(objAvecRang["rang"+i].value < objAvecRang["rang"+i].max ) {
+    if(objAvecRang.rangs["rang"+i].value < objAvecRang.rangs["rang"+i].max ) {
       reponse = i;
       break;
     }
   }
   return reponse;
 }
+
+/**
+ * repartiVal : corrige les valeurs des rangs pour respecter la règle des consommations de points
+ * max est la valeur max de value, système à retenue, on peut indiquer val fixe ou val relatif
+ *
+ * @param {*} objAvecRang : un objet rang contenant rang1 jusqu'à rang4
+ * @param {number} [modif=0] : modification de la somme : rang1 est l'unité et rang4 le poids le plus fort, 
+ * @param {number} [bfixe=0] : la modification est-elle absolue ou relative (par défaut relative)
+ * 
+ * retourne un objet : {somme, dep} avec la somme des nouvelles values et le dépassement si y a.
+ */
+function repartiVal(objAvecRang, modif = 0, bfixe = 0){
+  let tot = 0; let obj = {};
+  if(bfixe) {
+    if(modif < 0 ) modif = -modif; // valeur toujours positive
+    tot = modif; 
+  } else {
+    for(let i = 1; i < 4 ; i++) {
+      obj = objAvecRang.rangs["rang"+1];
+      if( obj.value > obj.max) {
+        tot += obj.value - obj.max;
+        obj.value = obj.max;
+      }
+      tot += obj.value; 
+    }
+    tot += modif; // correction supplémentaire
+  }
+  // nous avons le total, répartissons le 
+  let rep = tot; // sauvont le total
+  for(let i = 1; i < 4 ; i++) {
+    obj = objAvecRang.rangs["rang"+1];
+    if( (rep - obj.max) > 0) {
+      obj.value = obj.max;
+      rep -= obj.value;
+    } else { // ce coup-ci c'est inf, on doit y mettre la somme
+      obj.value = rep;
+      rep = 0; 
+    }
+  }
+  return { 'somme': tot, 'dep' : rep};
+}
+
+/**
+ * remet les aspects ou la liste (de 1 à 3) en commancant par le haut
+ * valide pour : le jet et l'initiative
+ *
+ * @param {*} parent : jet ou initiative
+ */
+function packId(parent) {
+  let tab = []; let c = "";
+  for(let i =1; i < 4 ; i++) {
+    c =parent["idAspect"+i];
+    if( c != "") {
+      tab.push(c);
+    }
+  }
+  let lng = tab.length;
+  if(lng > 0) {
+    for(let i =0; i < 3 ; i++) {
+      if(i >= lng) {
+        parent["idAspect"+(i+1)]="";
+      } else {
+        parent["idAspect"+(i+1)]=tab[i];
+      }
+    }
+  }
+  
+}
 /***
  * EXPORT ---------------
  */
-export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut, quelRang}
+export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut, quelRang, packId, repartiVal}

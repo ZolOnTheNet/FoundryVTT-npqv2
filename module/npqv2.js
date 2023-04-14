@@ -95,7 +95,56 @@ Hooks.once("init", async function () {
     Actors.registerSheet("npqv2", npqv2ActorSheet, { makeDefault: true });
     
     registerHooks();
-
+    // ----------------------------------
+    // piquer de sevensea : svnsea2e. Hooks.once("init",...)
+    // ajoute : for et iff
+    // ----------------------------------
+    Handlebars.registerHelper('for', function (from, to, incr, block) {
+      var accum = '';
+  
+      const count = parseInt(from) + parseInt(to);
+      for (var i = from; i < count; i += incr) {
+        block.data.index = i;
+        block.data.first = i === 0;
+        block.data.last = i === to;
+        block.data.mod = Math.trunc(i / 5);
+        block.data.remain = i % 5;
+        accum += block.fn(this);
+      }
+      return accum;
+    });
+  
+    Handlebars.registerHelper('iff', function (a, operator, b, opts) {
+      var bool = false;
+      switch (operator) {
+        case '==':
+          bool = a == b;
+          break;
+        case '!=':
+          bool = a != b;
+          break;
+        case '>=':
+          bool = a >= b;
+          break;
+        case '<=':
+          bool = a <= b;
+          break;
+        case '>':
+          bool = a > b;
+          break;
+        case '<':
+          bool = a < b;
+          break;
+        default:
+          throw 'Unknown operator ' + operator;
+      }
+  
+      if (bool) {
+        return opts.fn(this);
+      } else {
+        return opts.inverse(this);
+      }
+    });
     return preloadHandlebarsTemplates();
 })
 

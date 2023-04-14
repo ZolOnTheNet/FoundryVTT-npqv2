@@ -104,3 +104,7 @@ pour les monstres : les rangs peut être mis à de plus grandes valeurs (regroup
 
 Pour la magie c'est pas encore réelement fait : quelques points pour les dépenser ou donner quelques bonus (de 0 à 5)
 le système recherché sera sans points de magie, la fatigue prend le relais
+
+le favoris pour l'instant je ne vois que le jet de cmp
+l'utilisation d'arme ?
+Comment compter les amures : selection : porté ou pas ?

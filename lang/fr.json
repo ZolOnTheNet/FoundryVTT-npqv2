@@ -1,6 +1,22 @@
 {
     "xp":"Exp",
 
+    "int.carac":"Caractéristiques",
+    "int.xp":"Expérience",
+    "int.selection": "Jet : Sélections",
+    "int.aspects":"Aspects",
+    "int.cmps": "Compétences",
+    "int.gestionCmb" : "Gestion des Cmps",
+    "int.cmpSituation" : "Compétence de Situation",
+    "int.init" : "Initiative",
+    "int.aucun" :"aucun",
+
+    "nfo.clean" : "Effacer tout (jet).",
+    "nfo.favoris" : "Ajouter aux favoris",
+    "nfo.lancerJet" : "lancer le jet",
+    "nfo.addInit" : "Ajouter à l'initiative",
+    "nfo.addJet" : "Ajouter au jet en cours",
+
     "k2m.compteur":"Compteur",
     "k2m.effort":"Effort",
     "k2m.fatigue": "Fatigue",

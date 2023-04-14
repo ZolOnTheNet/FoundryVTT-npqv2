@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["pj", "figurant", "monstre"],
+    "types": ["pj", "figurant", "monstre", "terrain"],
     "templates": {
       "jets":{
         "jet": {
@@ -11,7 +11,8 @@
           "nblancer":3,
           "paris":0,
           "seuil":6,
-          "autoEffort":1
+          "autoEffort":1,
+          "coutMagique":0
         }
       },
       "etatsTot": {
@@ -28,37 +29,49 @@
             "label":"k2m.fatigue",
             "cmp":0,
             "xp":0,
-            "rang1": { "value":0, "max":3},
-            "rang2": { "value":0, "max":3},
-            "rang3": { "value":0, "max":3},
-            "rang4": { "value":0, "max":3}
+            "value": 0,
+            "rangs": {
+              "rang1": { "value":0, "max":3},
+              "rang2": { "value":0, "max":3},
+              "rang3": { "value":0, "max":3},
+              "rang4": { "value":0, "max":3}
+            }
           },
           "faiblesse": {
             "label":"k2m.faiblesse",
             "cmp":0,
             "xp":0,
-            "rang1": { "value":0, "max":3},
-            "rang2": { "value":0, "max":3},
-            "rang3": { "value":0, "max":3},
-            "rang4": { "value":0, "max":3}
+            "value" : 0,
+            "rangs": {
+              "rang1": { "value":0, "max":3},
+              "rang2": { "value":0, "max":3},
+              "rang3": { "value":0, "max":3},
+              "rang4": { "value":0, "max":3}
+            }
           },
           "tension": {
             "label":"k2m.tension",
             "cmp":0,
             "xp":0,
-            "rang1": { "value":0, "max":3},
-            "rang2": { "value":0, "max":3},
-            "rang3": { "value":0, "max":3},
-            "rang4": { "value":0, "max":3}
+            "value" : 0,
+            "rangs": {
+              "rang1": { "value":0, "max":3},
+              "rang2": { "value":0, "max":3},
+              "rang3": { "value":0, "max":3},
+              "rang4": { "value":0, "max":3}
+            }
           },
           "DPdM": {
             "label":"k2m.dSpdm",
             "cmp":0,
             "xp":0,
-            "rang1": { "value":0, "max":0},
-            "rang2": { "value":0, "max":0},
-            "rang3": { "value":0, "max":0},
-            "rang4": { "value":0, "max":0}
+            "value" : 0,
+            "rangs": {
+              "rang1": { "value":0, "max":0},
+              "rang2": { "value":0, "max":0},
+              "rang3": { "value":0, "max":0},
+              "rang4": { "value":0, "max":0}
+            }
           },
           "effort": {
             "label":"k2m.effort",
@@ -69,7 +82,7 @@
       },
       "compteur":{
         "compteur":{
-          "value":6,
+          "value":0,
           "decoupe":4, 
           "diff": {
             "rang1":6,
@@ -78,14 +91,15 @@
             "rang4":15
           },
           "label": "k2m.compteur",
-          "rang1": { "value":3, "max":3},
-          "rang2": { "value":3, "max":3},
-          "rang3": { "value":3, "max":3},
-          "rang4": { "value":3, "max":3}
+          "rangs": {
+            "rang1": { "value":0, "max":0},
+            "rang2": { "value":0, "max":0},
+            "rang3": { "value":0, "max":0},
+            "rang4": { "value":0, "max":0}
+          }       
         }
       },
       "base": {
-        "nom":"",
         "type":"PJ",
         "Origine":"",
         "Ethnie":"gents",
@@ -95,7 +109,6 @@
         "XP":{ "value":0, "max":0}
       },
       "minibase":  {
-        "nom":"",
         "type":"PNJ",
         "Origine":"",
         "Ethnie":"gents",
@@ -239,7 +252,17 @@
       }
     },
     "pj": {
-      "templates": ["base","etatsTot","cmps","jets"]
+      "templates": ["base","etatsTot","cmps","jets"],
+      "cmpCirconstance":"",
+      "initiative": {
+        "value": 0,
+        "idAspect1":"",
+        "idAspect2":"",
+        "idAspect3":"",
+        "ptEffort": 0
+      },
+      "nbActions":1,
+      "seuilRupture":2
     },
     "figurant": {
       "templates": ["minibase","compteur","carac","jets"],
@@ -248,10 +271,13 @@
     "monstre": {
       "templates": ["minibase","compteur","carac","jets"],
       "nivTresor":2
+    },
+    "terrain":{
+
     }
   },
   "Item": {
-    "types": ["objet", "sort", "aspect", "avantage","ethnie", "secret","argent", "arme_resum"],
+    "types": ["objet", "sort", "aspect", "avantage","ethnie", "secret","argent", "favori"],
     "objet": {
       "code":"objet",
       "description": "",
@@ -344,22 +370,17 @@
       "pourpre":0,
       "autres":""
     },
-    "arme_resum":{
-      "code":"arme_resum",
-      "armeEnMain":false,
-      "idarmeref":"",
-      "idcmpref":"",
-      "desync":0,
-      "attributd":"for",
-      "DeCmp":10,        
-      "degat":"1D10",
-      "BDom":"1d4",
-      "special":"",
-      "resistance":1,
-      "bris":5,
-      "munitions":-1,
-      "reserve":0,
-      "lancer":1
+    "favori":{
+      "code":"favoris",
+      "codeSpe" : "jet",
+      "cmp": "artisan",
+      "idAspect1" : "",
+      "idAspect2" : "",
+      "idAspect3" : "",
+      "bonusDe":0,
+      "paris" : 0,
+      "idArmes" : "",
+      "idLstArmure" : "" 
     }
   }
 }

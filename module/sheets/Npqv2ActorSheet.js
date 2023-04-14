@@ -1,4 +1,4 @@
-import {lanceLesDes, simpleDialogue, lancerDeBrut, DialogueDommage} from "../utils.js"
+import {lanceLesDes, simpleDialogue, lancerDeBrut, DialogueDommage, packId} from "../utils.js"
 export default class npqv2ActorSheet extends ActorSheet {
 
     /** @override */
@@ -8,7 +8,7 @@ export default class npqv2ActorSheet extends ActorSheet {
         template: "systems/npqv2/templates/personnage-sheet.html", // attention c'est template() qui retourne le véritable nom
         width: 655,
         height: 519,
-        tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "features" }]
+        tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "caracteristiques" }]
       });
     }
   
@@ -40,6 +40,7 @@ export default class npqv2ActorSheet extends ActorSheet {
       if (actorData.type == 'pj') {
         this._prepareItems(context);
         this._prepareCharacterData(context);
+        this._prepareCharacterCmb(actorData,context);
       }
   
       // ------ Les différents NPC ---------------
@@ -66,11 +67,98 @@ export default class npqv2ActorSheet extends ActorSheet {
      */
     _prepareCharacterData(context) {
       // // Handle ability scores.
+      const choixjets = [];
       // for (let [k, v] of Object.entries(context.data.attributs)) {
       //   v.label = game.i18n.localize(CONFIG.NPQV1.attributs[k]) ?? k;
       // }
+      context.lstCMP= { };
+      for(const element in context.system.cmp){
+        context.lstCMP[element] = element; // devra mettre le bon code de traduction (game.i18n.localize)
+      };      // traitement des jets  création d'un mini objet { t, txt, d } pour type, texte, nbdés
+      // "jet": { "codecmp":"artisan",  "idAspect1":"",  "idAspect2":"",  "idAspect3":"",  "nblancer":3, "paris":0, "seuil":6, "autoEffort":1, "coutMagique":0 }
+      if(context.lstCMP[context.system.jet.codecmp] == undefined) {
+        choixjets.push({"t":"cmp","txt": game.i18n.localize("int.aucun"), "d": 0 } );
+      } else choixjets.push({"t":"cmp","txt": game.i18n.localize(context.system.cmp[context.system.jet.codecmp].label), "d":context.system.cmp[context.system.jet.codecmp].value});
+      // Assign and return
+      for(let i = 1; i < 4; i++) {
+        let c = context.system.jet["idAspect"+i];
+        if( c === "aucun" || c ==="") {
+          choixjets.push({ "t":"asp","txt":"aucun", "d":0})
+        } else {
+          let lite = context.aspects.findIndex(elem => elem._id == c);
+          if( lite === 0) {// pas trouvé : vide ?
+            choixjets.push({ "t":"asp","txt":"aucun", "d":0})
+          } else {
+            choixjets.push({ "t":"asp","txt":context.aspects[lite].name, "d":context.aspects[lite].NbDes})
+          }
+        }
+        //context.AttribV = { "for":"Force", "ag":"Agilité", "con":"Constitution", "p":"Présence", "ig":"Intelligence", "it":"Intuition", "v":"Volonté" };
+      }
     }
+ /**
+  *  cacul sur la partie lancé de dés 
+  *
+  * @param {*} actorData
+  * @param {*} context
+  * @memberof npqv2ActorSheet
+  */
+ _prepareCharacterCmb(actorData, context){
+    // "cmpCirconstance":"", "initiative":1, "nbActions":1, "seuilRupture":2
+    // "jet": { "codecmp":"artisan",  "idAspect1":"",  "idAspect2":"", "idAspect3":"",  "nblancer":3, "paris":0,  "seuil":6, "autoEffort":1,  "coutMagique":0 }
+    let c = "";
+    // calcul lié a la compétence de circonstance : system.cmpCirconstance ******************
+    if(context.system.cmpCirconstance === ""){
+      // peut être quelque chose a faire !
+    }else {      
+      context.system.initiative.value = context.system.cmp[context.system.cmpCirconstance].value;
+      context.seuilRupture =  context.system.cmp[context.system.cmpCirconstance].value +1; // seuil de rupture (reprise de calcul)
+      context.nbActions = Math.ceil(context.system.cmp[context.system.cmpCirconstance].value/2);
+    }
+    // faudra rajouter l'armure voir les bonus des armes (Co ?)
+    context.system.initiative.ptEffort = 0; context.system.initiative.lstIteAff = []; // la liste des label et des des
+    for(let i = 1; i < 4; i++) {
+      c = "asp"+i;
+      if(context.system.initiative["idAspect"+i] === ""){
+        // la aussi on laisse car peut être utile prochainement
+      }else {
+        let ite = actorData.items.get(context.system.initiative["idAspect"+i]);
+        if(ite !== null) { // a tester !XXXX
+          context.system.initiative.lstIteAff.push( { "id" : context.system.initiative["idAspect"+i], "label": ite.name, "NbDes": ite.system.NbDes });  
+          if(i>1) context.system.initiative.ptEffort +=3; // l'effort est plus important
+          context.system.initiative.value += ite.system.NbDes; 
+        }
+      }
+
+    // calcul lié au jet générique **************************
+    // on addition les nombre de dés/ le nombre d'effort
+    let nbdes = 0; let nbEffort = 0;
+      if(context.system.jet.codecmp === ""){
+        context.codeLabel = "aucune"
+        context.codeCmpDe = "-"
+      }else {
+        context.codeLabel = context.system.jet.codecmp; // il faudra la traduire
+        context.codeCmpDe = context.system.cmp[context.codeLabel].value;
+        nbdes = context.codeCmpDe;
+      }
+      
+      for(let i = 1; i < 4; i++) {
+        c = "asp"+i;
+        if(context.system.jet["idAspect"+i] === ""){
+          context[c+"Label"] = "aucun";
+          context[c+"CodeDe"] = 0;
+        }else {
+          let ite = actorData.items.get(context.system.jet["idAspect"+i])
+          context[c+"Label"] = ite.name;
+          context[c+"CodeDe"] = ite.system.NbDes;
+          if(i>1) nbEffort+=3; // l'effort est plus important
+          nbdes += ite.system.NbDes;
+        }
   
+      }
+      context.jetCoutEffort = nbEffort;
+      context.system.jet.nblancer = nbdes;
+    }
+  }
     /**
      * Organize and classify Items for Character sheets.
      *
@@ -83,10 +171,11 @@ export default class npqv2ActorSheet extends ActorSheet {
       const gear = [];
       const features = [];
       const aspects = [];
+      const choixjets = [];
       const sequelles = [];
       const competences = [];
       const secrets = [];
-      const ArmesResum = [];
+      const favoris = [];
       const bourses = [];
       const bonus = {"score":0,"deSup":0,"dommage":"","PdM":0,"PdV":0};
       const spells = {
@@ -223,8 +312,6 @@ export default class npqv2ActorSheet extends ActorSheet {
         }
   */
       }
-  
-      // Assign and return
       context.gear = gear;
       context.features = features;
       context.spells = spells;
@@ -232,7 +319,7 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.sequelles = sequelles;
       context.competences = competences;
       context.secrets = secrets;
-      context.ArmesResum = ArmesResum;
+      context.favoris = favoris;
       context.bourses = bourses;
       // context.bonus = bonus;
       //context.bonus = this.actor.system.data.bonus;
@@ -263,7 +350,7 @@ export default class npqv2ActorSheet extends ActorSheet {
     /** @override */
     activateListeners(html) {
       super.activateListeners(html);
-  
+  /*
       // Render the item sheet for viewing/editing prior to the editable check.
       html.find('.item-edit').click(ev => {
         const li = $(ev.currentTarget).parents(".item");
@@ -288,7 +375,7 @@ export default class npqv2ActorSheet extends ActorSheet {
   
     //   // Active Effect management
     //   html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
-  
+  */
       // Rollable abilities.
       html.find('.rollable').click(this._onRoll.bind(this));
   
@@ -328,29 +415,113 @@ export default class npqv2ActorSheet extends ActorSheet {
    * @private
    */
   _onRoll(event) {
+    // gestion des Rollable : a modifier XXX
     event.preventDefault();
     const element = event.currentTarget;
     const dataset = element.dataset;
-    if(dataset.rollType === undefined || dataset.rollType=="") dataset.rollType ="debase";
+    if(dataset.cmd === undefined || dataset.cmd=="") dataset.cmd ="add";
+    let cmd = ""; let cmdArgs = []; let txtCode = dataset.roll; // soit l'id soit le code cmp
+    if(dataset.cmd.indexOf(".") > 0 ){
+      cmdArgs = dataset.cmd.split(".");
+      cmd = cmdArgs[0];
+    } else {
+      cmd = dataset.cmd;
+      cmdArgs[0] = cmd;
+    }
     // Handle item rolls.
     // prétraitement suivant le rolltype et le champs
-    switch(dataset.rollType) {
-      case 'attribr_direct':
-        if(dataset.label.substring(0,4) == "BDom") {
-          dataset.rollType = 'dedirectdom';
-        } else if(dataset.label.substring(0,4) == "Recup") {
-          dataset.rollType = 'recup';
-        } else dataset.rollType = 'rien';
+    switch(cmd) {
+      case 'initCmp' : // changement de la compétence pour l'init, a partir du i de la compétence
+        this.document.update( { "system.cmpCirconstance": txtCode })
         break;
-      case 'attribr':
-        if(dataset.label.substring(0,4) == "BDom") {
-          dataset.rollType = 'diagdom';
-        } else if(dataset.label.substring(0,4) == "Recup") {
-          dataset.rollType = 'recup';
-        } else dataset.rollType = 'rien';
+      case 'initAsp' :
+        let i = 1;
+        for(; i < 4; i++){
+          if(this.document.system.initiative["idAspect"+i] === "") break;
+          if(this.document.system.initiative["idAspect"+i] === txtCode) break; // evitons les doublons !
+        } 
+        if(i > 3) i = 3;
+        let obj= {};
+        obj["system.initiative.idAspect"+i] = txtCode;
+        this.document.update(obj);
         break;
+      case 'jet': // jet direct d'un compétence, idem paris
+      case 'jet.paris': // formulaire pour faire un paris
+        simpleDialogue(this.actor.system.cmp[txtCode].value , 0, this.actor.system.etats.value )
+        break;
+      case 'lancerInit': // modification de l'init, si dans le + dépense de l'éffort, l'info est dans this.document.system.initiative.
+        break;
+      case 'lancerJet':
+        simpleDialogue(this.document.system.jet.nblancer, this.document.system.jet.paris, this.document.system.jet.seuil )
+        break;
+      case 'add': 
+         //ajouter à la selection
+         let obj1 = { };
+         switch(cmdArgs[1]){ // actuellement : init, select
+          case 'cmp':
+              obj1 = { "system.jet.codecmp": txtCode };
+            break;
+          case 'asp':
+            if( this.document.system.jet.idAspect1 === "" || this.document.system.jet.idAspect1 == txtCode) {
+              obj1 = { "system.jet.idAspect1": txtCode };
+            } else if( this.document.system.jet.idAspect2 === "" || this.document.system.jet.idAspect2 == txtCode) {
+              obj1 = { "system.jet.idAspect2": txtCode };
+            } else { // toujorus la troisieme ! if( this.docment.system.jet.idAspect1 === "")
+              obj1 = { "system.jet.idAspect3": txtCode };
+            } 
+         }
+         this.document.update( obj1 );
+        break;
+      case 'edit': // ouvrir pour modificaiton d'un aspect
+        const item = this.document.items.get(txtCode);
+        item.sheet.render(true);
+        break;
+      case 'remove':
+        let ind =(cmdArgs[2] === 'cmp')? cmd: parseInt(cmdArgs[2])+1;
+        switch(cmdArgs[1]){ // actuellement : init, select
+          case 'init':
+            this.document.system.initiative["idAspect"+ind] = ""; // c'est oas bo mais ça marche !!!
+            let obj= {};
+            obj["system.initiative.idAspect"+ind] = "";
+            this.document.update(obj);
+            // pack ?
+            packId(this.document.system.initiative);
+            break;
+          case 'select':
+            if(cmdArgs[2]==='cmp') {
+              this.document.system.jet.codecmp= ""; // pas beau mais ça marche !
+              this.document.update({ "system.jet.codecmp" : "" });
+            }else{
+              this.document.system.jet["idAspect"+ind]="";
+              let obj= {};
+              obj["system.jet.idAspect"+ind] = "";
+              this.document.update(obj);
+              packId(this.document.system.jet);
+            }
+            break;
+        }
+        break;
+      case 'sppr': // supprime l'aspect de la feuille de perso: dialog, pas encore
+        break;
+      case 'roll': // lancer de dés avec réserve ou pas
+        break;
+    //   case 'pourcode':
+    //     if(dataset.label.substring(0,4) == "BDom") {
+    //       dataset.rollType = 'dedirectdom';
+    //     } else if(dataset.label.substring(0,4) == "Recup") {
+    //       dataset.rollType = 'recup';
+    //     } else dataset.rollType = 'rien';
+    //     break;
+    //   case 'pourcode2':
+    //     if(dataset.label.substring(0,4) == "BDom") {
+    //       dataset.rollType = 'diagdom';
+    //     } else if(dataset.label.substring(0,4) == "Recup") {
+    //       dataset.rollType = 'recup';
+    //     } else dataset.rollType = 'rien';
+    //     break;
     }
-    let expl = (game.explode)?"D6x6":"D6";
+    // // --------- garder pour le code
+/*     let expl = (game.explode)?"D6x6":"D6";
     switch(dataset.rollType) {
       
       case 'cmp':
@@ -376,6 +547,7 @@ export default class npqv2ActorSheet extends ActorSheet {
         break;
       case 'lancerbrut':
         lancerDeBrut(dataset.roll, "", false);
+*/
       // if (dataset.rollType.substring(0,4) == 'item') {
       //   const itemId = element.closest('.item').dataset.itemId;
       //   const item = this.actor.items.get(itemId);
@@ -431,11 +603,11 @@ export default class npqv2ActorSheet extends ActorSheet {
       //     else return item.roll();
       //   }
       // }
-      case 'rien' :
-    }
+     // case 'rien' :
+    // }
 
     // Handle rolls that supply the formula directly.
-    if (dataset.roll) {
+    // if (dataset.roll) {
       // let label = dataset.label ? `[Attribut] ${dataset.label}` : '';
       // if(dataset.form === undefined) dataset.form = "no";
       // if(dataset.form == "yes") {
@@ -449,8 +621,8 @@ export default class npqv2ActorSheet extends ActorSheet {
       //             if(value.dommage != "") utils.lanceDommage(jetdata.Code, value.dommage,qui)    
       //           }).catch(e => 0);
        // game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
-      } else {
-        //game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode);
+     // } else {
+       //game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode);
       // let roll = new Roll(dataset.roll, this.actor.getRollData());
       // let cm = roll.toMessage({
       //   speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -458,7 +630,7 @@ export default class npqv2ActorSheet extends ActorSheet {
       //   //content:"Super jet !!",
       //   rollMode: game.settings.get('core', 'rollMode'),
       //   });
-    }
+   // }
   }
 }
  

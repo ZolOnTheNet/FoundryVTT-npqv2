@@ -3,7 +3,7 @@
  * @extends {Actor}
  * pas de default !
  */
-import { quelRang } from "../utils.js";
+import { quelRang, repartiVal } from "../utils.js";
 
  export class npqv2Actor extends Actor {
     prepareData() {
@@ -53,13 +53,33 @@ import { quelRang } from "../utils.js";
         // Make modifications to data here. For example:
         //const data = actorData.data;
         const data = actorData.system;
-        //----------------- Calcul de la valeur d'état : seuil de réussite -------------------------------
+
+        // début du traitement des états ------ certain traitement pourraient être dans la partie feuille (sheet)
         const lesEtats=['DPdM','fatigue','faiblesse','tension']; // Mes quatre type d'état
+        const EtatsMin =[ 0, 3, 3 , 3 ];
+        // const EtatRMax = [ -1, 3, 3, 3]; // le dernier rang ne fonctionne pas comme les 3 premiers -1 => faire comme les autres, 3 fixe à 3. Pbl gestion PMax
         let i = 0;
+        // Etre sur que les seuils et les max sont ok ---------------------------
+        // faudra surment repoter cela qqpart pour que cela soit pris en compte au maj
+        // faire traitement pour le cas du magic (cmp sorcier ou magicien)
+        for(i = 0;i < lesEtats.length; i++) {
+          for(let j = 1; j < 5; j++) {// attention faudra modifier le dernier rang vis à vis de autres
+            data.etats[lesEtats[i]].rangs["rang"+j].seuil = data.etats.diff["rang"+j];
+            data.etats[lesEtats[i]].rangs["rang"+j].max = data.etats[lesEtats[i]].cmp + EtatsMin[i];
+          }
+        }
+        //----------------- equilibrage des états -------------------------------
+        let etatEtats= [];
+        for(i = 0;i < lesEtats.length; i++) {
+          etatEtats[i] = repartiVal(data.etats[lesEtats[i]]);
+        }
+
+        //----------------- Calcul de la valeur d'état : seuil de réussite -------------------------------
+        
         if(data.etats.incMagie >0) i = 1; // la magie n'est pas compté dans le seuil de calcul
         let seuilRangFinal = 0;
         let curRang = 0;
-        for(;i < lesEtats.length; i++) {
+        for(i = 0;i < lesEtats.length; i++) {
           curRang = quelRang(data.etats[lesEtats[i]])
           if(curRang > seuilRangFinal) seuilRangFinal = curRang;
         }
