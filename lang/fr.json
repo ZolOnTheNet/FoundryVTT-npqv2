@@ -1,15 +1,23 @@
 {
     "xp":"Exp",
 
+    "int.bonus" : "bonus",
     "int.carac":"Caractéristiques",
     "int.xp":"Expérience",
     "int.selection": "Jet : Sélections",
     "int.aspects":"Aspects",
+    "int.sequelle": "Séquelles",
+    "int.armes": "Armes",
+    "int.armures" : "Armures",
     "int.cmps": "Compétences",
-    "int.gestionCmb" : "Gestion des Cmps",
+    "int.gestionCmb" : "Gestion des Actions",
     "int.cmpSituation" : "Compétence de Situation",
     "int.init" : "Initiative",
     "int.aucun" :"aucun",
+    "int.equipements" : "Equipements",
+    "int.cmpAspects" : "Cmp/Asp./Act.",
+    "int.generale": "Possessions",
+    "int.secrets" : "Secrets",
 
     "nfo.clean" : "Effacer tout (jet).",
     "nfo.favoris" : "Ajouter aux favoris",
@@ -53,5 +61,22 @@
     "k2m.NbDes": "Nombre de dés",
     "k2m.XpDep": "Xp dépensés",
     "k2m.XPa":"Xp gagné en aventure",
+    "k2m.quantite" : "Quanité",
+    "k2m.estActif" : "Actif ?",
+    "k2m.estADistance" : "Est à Distance",
+    "k2m.aMunition" : "Est à projectils",
+    "k2m.poids" : "Poids",
+    "k2m.volume" : "volume",
+    "k2m.menace" : "Menace (Me)",
+    "k2m.couverture" : "Couverture (Co)",
+    "k2m.protection" : "Protection (Pr)",
+    "k2m.solidite" : "Solidité (So)",
+    "k2m.CodeDommage" : "Code de dommage",
+    "k2m.PdM" : "Points de Magie",
+    "k2m.PdF" : "Points de Fatigue",
+    "k2m.PdT" : "Points de Tentions",
+    "k2m.PdFa" : "Points de Faiblesse",
+
+
     "k2m.system" : "Système Metal"
 }

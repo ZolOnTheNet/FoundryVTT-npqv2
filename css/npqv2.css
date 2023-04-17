@@ -189,3 +189,34 @@
  .reduitTaille{
   font-size: -1;
  }
+
+ .txtUtiEnCours{
+  color: red;
+  font-weight: bold;
+}
+
+.txtUtiNon {
+  font-weight: lighter;
+  color: gray;
+}
+
+.txtUtiOui {
+  font-weight: bold;
+  color: black;
+}
+
+.grdPolice {
+  font-size: x-large;
+}
+
+.plusPolice {
+  font-size: large;
+}
+
+.lilipute {
+  font-size: x-small;
+}
+
+.txtcenter {
+  text-align: center;
+}

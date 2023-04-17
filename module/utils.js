@@ -238,74 +238,23 @@ function quelRang(objAvecRang) {
   return reponse;
 }
 
-/**
- * repartiVal : corrige les valeurs des rangs pour respecter la règle des consommations de points
- * max est la valeur max de value, système à retenue, on peut indiquer val fixe ou val relatif
- *
- * @param {*} objAvecRang : un objet rang contenant rang1 jusqu'à rang4
- * @param {number} [modif=0] : modification de la somme : rang1 est l'unité et rang4 le poids le plus fort, 
- * @param {number} [bfixe=0] : la modification est-elle absolue ou relative (par défaut relative)
- * 
- * retourne un objet : {somme, dep} avec la somme des nouvelles values et le dépassement si y a.
- */
-function repartiVal(objAvecRang, modif = 0, bfixe = 0){
-  let tot = 0; let obj = {};
-  if(bfixe) {
-    if(modif < 0 ) modif = -modif; // valeur toujours positive
-    tot = modif; 
-  } else {
-    for(let i = 1; i < 4 ; i++) {
-      obj = objAvecRang.rangs["rang"+1];
-      if( obj.value > obj.max) {
-        tot += obj.value - obj.max;
-        obj.value = obj.max;
-      }
-      tot += obj.value; 
-    }
-    tot += modif; // correction supplémentaire
+function AppliqueEtatValeur(parent) {
+  // objectif : repercuter la valeur de l'état sur les rangs 10 => 10 première case remplies
+  let i = parent.value;
+  for(const rang in parent.rangs) {
+    if(parent.rangs[rang].max < i ) {
+      parent.rangs[rang].value = parent.rangs[rang].max;
+      i -= parent.rangs[rang].max;
+    } else if(i > 0) {
+      parent.rangs[rang].value = i;
+      i = 0;
+    } else parent.rangs[rang].value = 0; // mettre à zero le "reste"
   }
-  // nous avons le total, répartissons le 
-  let rep = tot; // sauvont le total
-  for(let i = 1; i < 4 ; i++) {
-    obj = objAvecRang.rangs["rang"+1];
-    if( (rep - obj.max) > 0) {
-      obj.value = obj.max;
-      rep -= obj.value;
-    } else { // ce coup-ci c'est inf, on doit y mettre la somme
-      obj.value = rep;
-      rep = 0; 
-    }
-  }
-  return { 'somme': tot, 'dep' : rep};
 }
 
-/**
- * remet les aspects ou la liste (de 1 à 3) en commancant par le haut
- * valide pour : le jet et l'initiative
- *
- * @param {*} parent : jet ou initiative
- */
-function packId(parent) {
-  let tab = []; let c = "";
-  for(let i =1; i < 4 ; i++) {
-    c =parent["idAspect"+i];
-    if( c != "") {
-      tab.push(c);
-    }
-  }
-  let lng = tab.length;
-  if(lng > 0) {
-    for(let i =0; i < 3 ; i++) {
-      if(i >= lng) {
-        parent["idAspect"+(i+1)]="";
-      } else {
-        parent["idAspect"+(i+1)]=tab[i];
-      }
-    }
-  }
-  
-}
+//----------------------------------------------------------------
+//----------------------------------------------------------------
 /***
  * EXPORT ---------------
  */
-export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut, quelRang, packId, repartiVal}
+export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut, quelRang, AppliqueEtatValeur }

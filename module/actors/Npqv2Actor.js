@@ -3,7 +3,7 @@
  * @extends {Actor}
  * pas de default !
  */
-import { quelRang, repartiVal } from "../utils.js";
+import { quelRang, AppliqueEtatValeur } from "../utils.js";
 
  export class npqv2Actor extends Actor {
     prepareData() {
@@ -54,6 +54,9 @@ import { quelRang, repartiVal } from "../utils.js";
         //const data = actorData.data;
         const data = actorData.system;
 
+        // migration template -----------------------------------------------
+        //if(actorData.system.formulaSR === undefined) context.system.formulaSR = ""; // migrantion template
+
         // début du traitement des états ------ certain traitement pourraient être dans la partie feuille (sheet)
         const lesEtats=['DPdM','fatigue','faiblesse','tension']; // Mes quatre type d'état
         const EtatsMin =[ 0, 3, 3 , 3 ];
@@ -63,27 +66,32 @@ import { quelRang, repartiVal } from "../utils.js";
         // faudra surment repoter cela qqpart pour que cela soit pris en compte au maj
         // faire traitement pour le cas du magic (cmp sorcier ou magicien)
         for(i = 0;i < lesEtats.length; i++) {
+          data.etats[lesEtats[i]].max = 0;
           for(let j = 1; j < 5; j++) {// attention faudra modifier le dernier rang vis à vis de autres
+            if(data.etats[lesEtats[i]].rangs["rang"+j].offset === undefined) data.etats[lesEtats[i]].rangs["rang"+j].offset = EtatsMin[lesEtats[i]]; // correction tant que le champs n'est pas créer automatiquement
             data.etats[lesEtats[i]].rangs["rang"+j].seuil = data.etats.diff["rang"+j];
-            data.etats[lesEtats[i]].rangs["rang"+j].max = data.etats[lesEtats[i]].cmp + EtatsMin[i];
+            data.etats[lesEtats[i]].rangs["rang"+j].max = data.etats[lesEtats[i]].cmp + data.etats[lesEtats[i]].rangs["rang"+j].offset; // doit être fait au momen du changement
+            data.etats[lesEtats[i]].max += data.etats[lesEtats[i]].rangs["rang"+j].max;
           }
         }
         //----------------- equilibrage des états -------------------------------
-        let etatEtats= [];
+        // let etatEtats= [];
         for(i = 0;i < lesEtats.length; i++) {
-          etatEtats[i] = repartiVal(data.etats[lesEtats[i]]);
+        //   etatEtats[i] = this.repartiVal(data.etats[lesEtats[i]]);
+          AppliqueEtatValeur(data.etats[lesEtats[i]]);
         }
 
         //----------------- Calcul de la valeur d'état : seuil de réussite -------------------------------
-        
         if(data.etats.incMagie >0) i = 1; // la magie n'est pas compté dans le seuil de calcul
         let seuilRangFinal = 0;
         let curRang = 0;
         for(i = 0;i < lesEtats.length; i++) {
           curRang = quelRang(data.etats[lesEtats[i]])
+          data.etats[lesEtats[i]].seuilAct = data.etats.diff["rang"+curRang];
           if(curRang > seuilRangFinal) seuilRangFinal = curRang;
         }
         data.etats.value = data.etats.diff["rang"+seuilRangFinal]; //tableau des seuil
+        data.jet.seuil = data.etats.value ;
         
         // mettre ici les bonus ! Pour l'instant hors système 
         // const bonus = {"score":0,"dommage":"","pinit":0,"PdM":0,"PdV":0};
@@ -155,5 +163,24 @@ import { quelRang, repartiVal } from "../utils.js";
     
         // Process additional NPC data here.
       }
-    
+
+// _onUpdate(data, options, userId) {
+
+//   if(data.system.etats !== undefined) { // modif de la partie état
+//     for( const txtetat in data.system.etats)  {
+//       if(data.system.etats[txtetat].rangs !== undefined) { // modi
+//         for(const txtrng in data.system.etats[txtetat].rangs) {
+//           if(data.system.etats[txtetat].rangs[txtrng].max !== undefined) { // c'est max qui est changé => effort doit être recalculer
+//             data.system.etats[txtetat].rangs[txtrng].offset = data.system.etats[txtetat].rangs[txtrng].max - data.system.etats[txtetat].rangs[txtrng].cmp
+//           }
+//         } 
+//       }     
+//       if(data.system.etats[txtetat].cmp !== undefined) { // changement
+
+//       }
+//     } 
+//   }
+//   super._onUpdate(data, options, userId);  
+// }
+
     }

@@ -29,47 +29,31 @@
         <table>
           <tbody>
             <tr>
-              <td colspan="4">
-                Effort : <input class="normal-input" type="text" size="2em" name="system.etats.effort.value" value="{{system.etats.fatigue.value}}" data-dtype="Number"/>
+              <td class="plusPolice" colspan="4">
+                Effort : <i class="fas fa-plus-square rollable" data-cmd="trans.fatigue.effort"></i> <input class="normal-input" type="text" size="1em" name="system.etats.effort.value" value="{{system.etats.effort.value}}" data-dtype="Number"/>
+                <span class="grdPolice">{{{effortTxt}}}</span><i class="fad fa-sync rollable" data-cmd="reset.effort"></i>
               </td>
             </tr>
             <tr >
               <td class="taille-M4">
-                Fatigues Niv: <input class="normal-input" type="text" size="2em" name="system.etats.fatigue.cmp" value="{{system.etats.fatigue.cmp}}" data-dtype="Number"/>
-                <br>
-                {{#each system.etats.fatigue.rangs as |rang index|}}
-                  <input class="normal-input" type="text" size="2em" name="system.etats.fatigue.rangs.{{index}}.value" value="{{rang.value}}" data-dtype="Number"/> / {{rang.max}} | {{rang.seuil}} <br>
-                {{/each}}
+                <h3>Fatigue</h3>
+                Val. Actuelle : {{system.etats.fatigue.value}} / {{system.etats.fatigue.max}}<br>
+                Seuil :{{ system.etats.fatigue.seuilAct}}
               </td>
               <td class="taille-M4">
-                Faiblesse Niv: <input class="normal-input" type="text" size="2em" name="system.etats.faiblesse.cmp" value="{{system.etats.faiblesse.cmp}}" data-dtype="Number"/>
-                <br>
-                {{#each system.etats.faiblesse.rangs as |rang index|}}
-                  <input class="normal-input" type="text" size="2em" name="system.etats.faiblesse.rangs.{{index}}.value" value="{{rang.value}}" data-dtype="Number"/> / {{rang.max}} | {{rang.seuil}} <br>
-                {{/each}}
+                <h3>Faiblesse (Tot: {{system.etats.faiblesse.max}})</h3>
+                Val. Actuelle : {{system.etats.faiblesse.value}}<br>
+                Seuil : {{system.etats.faiblesse.seuilAct}}
               </td>
               <td class="taille-M4">
-                Tension Niv: <input class="normal-input" type="text" size="2em" name="system.etats.tension.cmp" value="{{system.etats.tension.cmp}}" data-dtype="Number"/>
-                <br>
-                <span class="reduitTaille">
-                  {{#for 1 system.etats.tension.rangs.rang1.max 1}}
-                    {{#iff system.etats.tension.rangs.rang1.value '>=' @index}}
-                      <i data-name="system.etats.tension.rangs.rang1" data-value="{{@index}}" data-type="etats" class="fillable fas fa-square"></i>
-                    {{else}}
-                      <i data-name="system.traits.{{trait.name}}.value" data-name="system.etats.tension.rangs.rang1" data-value="{{@index}}" data-type="etats" class="fillable far fa-square"></i>
-                    {{/iff}}
-                  {{/for}}
-                </span>
-                {{#each system.etats.tension.rangs as |rang index|}}
-                  <input class="normal-input" type="text" size="2em" name="system.etats.tension.rangs.{{index}}.value" value="{{rang.value}}" data-dtype="Number"/> / {{rang.max}} | {{rang.seuil}} <br>
-                {{/each}}
+                <h3>Tension (Tot : {{system.etats.tension.max}})</h3>
+                Val. Actuelle : {{system.etats.tension.value}}<br>
+                Seuil : {{system.etats.tension.seuilAct}}
               </td>
               <td class="taille-M4">
-                Dép. de PdM. Niv: <input class="normal-input" type="text" size="2em" name="system.etats.DPdM.cmp" value="{{system.etats.DPdM.cmp}}" data-dtype="Number"/> 
-                <br>
-                {{#each system.etats.DPdM.rangs as |rang index|}}
-                  <input class="normal-input" type="text" size="2em" name="system.etats.DPdM.rangs.{{index}}.value" value="{{rang.value}}" data-dtype="Number"/> / {{rang.max}} | {{rang.seuil}} <br>
-                {{/each}}
+                <h3>Dép. de PdM.(T: {{system.etats.DPdM.max}})</h3>
+                Val. Actuelle : {{system.etats.DPdM.value}}<br>
+                Seuil : {{system.etats.DPdM.seuilAct}}
               </td>
             </tr>
           </tbody>
@@ -78,9 +62,11 @@
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">
     {{!-- Default tab is specified in actor-sheet.mjs --}}
-    <a class="item" data-tab="description">Description</a>
-    <a class="item" data-tab="caracteristiques">caracs</a>
-    <a class="item" data-tab="Secret">Secrets</a>
+    <a class="item" data-tab="description"><h2>Description</h2></a>
+    <a class="item" data-tab="caracteristiques"><h2>{{localize  "int.cmpAspects" }}</h2></a>
+    <a class="item" data-tab="etats"><h2>Etats</h2></a>
+    <a class="item" data-tab="equip"><h2>{{localize  "int.equipements" }}</h2></a>
+    <a class="item" data-tab="secrets"><h2>Secrets</h2></a>
 
   </nav>
 
@@ -102,10 +88,10 @@
             {{#each system.cmp as |cmp key|}}
             <div class="attribd normal-left-input">
               <label for="system.cmp.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" data-cmd="add.cmp">{{localize  cmp.label }}&nbsp;</label>
-              <input class="normal-input" type="text" size="3em" name="system.cmp.{{key}}.value" value="{{cmp.value}}" data-dtype="Number"/>
-              <span class="align-center rollable" data-roll="{{key}}" data-cmd="jet.direct"><i class="fas fa-dice"></i></span>
+              <input class="normal-input" type="text" size="1em" name="system.cmp.{{key}}.value" value="{{cmp.value}}" data-dtype="Number"/>
               <span class="align-center rollable" data-roll="{{key}}" data-cmd="jet.paris"><i class="fad fa-dice"></i></span>
               <span class="align-center rollable" data-roll="{{key}}" data-cmd="initCmp"><i class="fas fa-info-square"></i></span>
+              <span class="align-center lilipute"><input class="normal-input" type="text" size="1em" title="Xp" name="system.cmp.{{key}}.xp" value="{{cmp.xp}}" data-dtype="Number"/></span>
               &nbsp;
             </div>
             {{/each}}
@@ -127,18 +113,73 @@
             </span>
           </div>
           {{/each}}
+          <br>
+          <h2>{{localize  "int.armes" }}</h2>
+          {{#each armes as |arme key|}}
+          <div>
+            <span>
+              {{#if system.estActif}}
+                <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+              {{else}}
+                <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+              {{/if}} 
+              &nbsp;
+              {{arme.name}}
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+              <br>(Me:{{arme.system.menace}}, Co:{{arme.system.couverture}}) 
+            </span>
+          </div>
+          {{/each}}
+          <br>
+          <h2>{{localize  "int.armures" }}</h2>
+          {{#each armures as |armure key|}}
+          <div>
+            <span>
+              {{#if armure.system.estActif}}
+                <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+              {{else}}
+                <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+              {{/if}} 
+              &nbsp;
+              {{armure.name}}
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+              <br>(Pr:{{armure.system.protection}}, So:{{armure.system.solidite}}) 
+            </span>
+          </div>
+          {{/each}}
+          <br>
+          <h2>{{localize  "int.sequelle" }}</h2>
+          {{#each sequelles as |aspect key|}}
+          <div>
+            <span> 
+              <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{aspect._id}}" data-cmd="add.asp">{{aspect.name}} </a>
+            </span>
+            <span>
+              ({{aspect.system.NbDes}})
+              <span class="attrib-mod align-center rollable" title="{{localize  'nfo.addInit' }}" data-roll="{{_id}}" data-cmd="initAsp"><i class="fas fa-info-square"></i></span>
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            </span>
+          </div>
+          {{/each}}
         </section>
         <section>
           <h2>{{localize  "int.gestionCmb" }}</h1>
           <h3>{{localize  "int.cmpSituation" }}</h3>
             <select  name="system.cmpCirconstance">
               {{selectOptions lstCMP selected=system.cmpCirconstance}}
-            </select><br><span>Seuil de rupture : {{seuilRupture}}</span>
-            <span>Action(s) : {{nbActions}} </span>
+            </select><br><span class="plusPolice">Seuil de rupture : </span><span class="grdPolice">{{seuilRupture}} <i class="fad fa-sync rollable" data-cmd="calc.rupture"></i></span>
+            <br><span >formule : {{system.formulaSR}} </span><br>
+            <span class="plusPolice">Action(s) : </span><span class="grdPolice">{{nbActions}} </span><span class="plusPolice"> / passe</span><br>
             <br>
           <h3><a class="attrib-mod rollable" title="{{localize  'nfo.lancerInit' }}" data-roll="{{aspect._id}}" data-cmd="lancerInit">{{localize  "int.init" }} {{system.initiative.value}} <i class="fas fa-info-square"></i></a></h3>
           
-            <span>Effort : - {{system.initiative.ptEffort}}</span>
+            <span>Effort : - {{system.initiative.ptEffort}}</span><br>
             {{#each system.initiative.lstIteAff as |asp key|}}
             <div>
               <a class="attrib-mod rollable" data-roll="{{asp.id}}" data-cmd="remove.init.{{key}}">{{asp.label}} ({{asp.NbDes}}) <i class="fas fa-minus-square"></i></a>
@@ -170,6 +211,199 @@
           </div>
         </section>
       </section>
+    </div>
+    <div class="tab items" data-group="primary" data-tab="etats">
+      <table>
+        <tbody>
+          <tr>
+            <td class="taille-M4">
+              <h3>Fatigue <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.cmp" value="{{system.etats.fatigue.cmp}}" data-dtype="Number"/></h3>
+              <span>
+              Xp : <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.xp" value="{{system.etats.fatigue.xp}}" data-dtype="Number"/>
+              Nb cases : 5
+              <br>
+              Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.value" value="{{system.etats.fatigue.value}}" data-dtype="Number"/>
+              </span>
+              <br>
+              <table>
+                <tr>
+                  <td width="32px">+/-</td><td>Actuel</td><td class="txtcenter" width="31px">Seuil</td>
+                </tr>
+                
+                {{#each system.etats.fatigue.rangs as |rang index|}}
+                <tr>
+                  <td><input class="normal-input" type="text" size="1em" name="system.etats.fatigue.rangs.{{index}}.offset" value="{{rang.offset}}" data-dtype="Number"/></td>
+                  <td>{{{rang.ligne}}}</td> 
+                  <td class="txtcenter">{{rang.seuil}} </td>
+                </tr>
+                {{/each}}
+               
+              </table>
+            </td>
+            <td class="taille-M4">
+              <h3>Faiblesse <input class="normal-input" type="text" size="1em" name="system.etats.faiblesse.cmp" value="{{system.etats.faiblesse.cmp}}" data-dtype="Number"/></h3>
+              Xp : <input class="normal-input" type="text" size="1em" name="system.etats.faiblesse.xp" value="{{system.etats.faiblesse.xp}}" data-dtype="Number"/>
+              Nb cases : 5
+              <br>
+              Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.etats.faiblesse.value" value="{{system.etats.faiblesse.value}}" data-dtype="Number"/>              
+              <br>
+              <table>
+                <tr>
+                  <td width="32px">+/-</td><td>Actuel</td><td class="txtcenter" width="31px">Seuil</td>
+                </tr>
+                
+                {{#each system.etats.faiblesse.rangs as |rang index|}}
+                <tr>
+                  <td><input class="normal-input" type="text" size="1em" name="system.etats.faiblesse.rangs.{{index}}.offset" value="{{rang.offset}}" data-dtype="Number"/></td>
+                  <td>{{{rang.ligne}}}</td> 
+                  <td class="txtcenter">{{rang.seuil}} </td>
+                </tr>
+                {{/each}}
+               
+              </table>      
+            </td>
+            <td class="taille-M4">
+              <h3>Tension <input class="normal-input" type="text" size="1em" name="system.etats.tension.cmp" value="{{system.etats.tension.cmp}}" data-dtype="Number"/></h3>
+              <span>
+              Xp : <input class="normal-input" type="text" size="1em" name="system.etats.tension.xp" value="{{system.etats.tension.xp}}" data-dtype="Number"/>
+              Nb cases : 5              
+              <br>
+              Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.etats.tension.value" value="{{system.etats.tension.value}}" data-dtype="Number"/>
+              <br>
+              <table>
+                <tr>
+                  <td width="32px">+/-</td><td>Actuel</td><td class="txtcenter" width="31px">Seuil</td>
+                </tr>
+                
+                {{#each system.etats.tension.rangs as |rang index|}}
+                <tr>
+                  <td><input class="normal-input" type="text" size="1em" name="system.etats.tension.rangs.{{index}}.offset" value="{{rang.offset}}" data-dtype="Number"/></td>
+                  <td>{{{rang.ligne}}}</td> 
+                  <td class="txtcenter">{{rang.seuil}} </td>
+                </tr>
+                {{/each}}
+               
+              </table>      
+            </td>
+            <td class="taille-M4">
+              <h3>Dép. Magie <input class="normal-input" type="text" size="1em" name="system.etats.DPdM.cmp" value="{{system.etats.DPdM.cmp}}" data-dtype="Number"/></h3>
+              <span>
+              Xp : <input class="normal-input" type="text" size="1em" name="system.etats.DPdM.xp" value="{{system.etats.DPdM.xp}}" data-dtype="Number"/>
+              Nb cases : 5                     
+              <br>
+              Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.etats.DPdM.value" value="{{system.etats.DPdM.value}}" data-dtype="Number"/>
+              <br>
+              <table>
+                <tr>
+                  <td width="32px">+/-</td><td>Actuel</td><td class="txtcenter" width="31px">Seuil</td>
+                </tr>
+                
+                {{#each system.etats.DPdM.rangs as |rang index|}}
+                <tr>
+                  <td><input class="normal-input" type="text" size="1em" name="system.etats.DPdM.rangs.{{index}}.offset" value="{{rang.offset}}" data-dtype="Number"/></td>
+                  <td>{{{rang.ligne}}}</td> 
+                  <td class="txtcenter">{{rang.seuil}} </td>
+                </tr>
+                {{/each}}
+               
+              </table>      
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div> 
+    <div class="tab items" data-group="primary" data-tab="equip">
+      <h1>Equipements</h1>
+      <h2>{{localize  "int.general" }}</h2>
+      {{#each gears as |gear key|}}
+      <div>
+        <span>
+          {{#if system.estActif}}
+            <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+          {{else}}
+            <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+          {{/if}} 
+          &nbsp;
+          {{gear.name}} (Me:{{gear.system.menace}}, Co:{{gear.system.couverture}}) 
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+          &nbsp;
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+          
+        </span>
+      </div>
+      {{/each}}
+      <br>
+      <h2>{{localize  "int.armes" }}</h2>
+      {{#each armes as |arme key|}}
+      <div>
+        <span>
+          {{#if system.estActif}}
+            <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+          {{else}}
+            <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+          {{/if}} 
+          &nbsp;
+          {{arme.name}} (Me:{{arme.system.menace}}, Co:{{arme.system.couverture}}) 
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+          &nbsp;
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+        </span>
+      </div>
+      {{/each}}
+      <br>
+      <h2>{{localize  "int.armures" }}</h2>
+      {{#each armures as |armure key|}}
+      <div>
+        <span>
+          {{#if armure.system.estActif}}
+            <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+          {{else}}
+            <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+          {{/if}} 
+          &nbsp;
+          {{armure.name}}
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+          &nbsp;
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+          <br>(Pr:{{armure.system.protection}}, So:{{armure.system.solidite}}) 
+        </span>
+      </div>
+      {{/each}}
+
+    </div>
+    <div class="tab items" data-group="primary" data-tab="secrets">
+      <h2>{{localize  "int.secrets" }}</h2>
+      <table>
+        <tr>
+          <th width="5%"></th>
+          <th width="60%">Nom et description</th>
+          <th width="5%">Niv.</th>
+          <th width="25%">Nom Niv Max</th>
+          <th width="5%">Act.</th>
+        </tr>
+        {{#each secrets as |secret id|}}
+        <tr>
+          <td class="align-center">
+            <img src="{{secret.img}}" title="{{secret.name}}" width="24" height="24"/>
+          </td>
+          <td class="align-left">
+            {{secret.name}} ({{secret.system.nomGene}})
+          </td>
+          <td class="align-center">
+            {{secret.system.niveau}}
+          </td>
+          <td class="align-center"> 
+            {{secret.system.nomMax}}
+          </td>
+          <td>
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+            &nbsp;
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            </td>
+        </tr>
+        {{/each}}
+      </table>
     </div>
    </section> 
 </form>

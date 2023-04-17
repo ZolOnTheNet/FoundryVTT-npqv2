@@ -30,11 +30,12 @@
             "cmp":0,
             "xp":0,
             "value": 0,
+            "max": 12,
             "rangs": {
-              "rang1": { "value":0, "max":3},
-              "rang2": { "value":0, "max":3},
-              "rang3": { "value":0, "max":3},
-              "rang4": { "value":0, "max":3}
+              "rang1": { "value":0, "max":3, "offset": 3},
+              "rang2": { "value":0, "max":3, "offset": 3},
+              "rang3": { "value":0, "max":3, "offset": 3},
+              "rang4": { "value":0, "max":3, "offset": 3}
             }
           },
           "faiblesse": {
@@ -42,11 +43,12 @@
             "cmp":0,
             "xp":0,
             "value" : 0,
+            "max": 12,
             "rangs": {
-              "rang1": { "value":0, "max":3},
-              "rang2": { "value":0, "max":3},
-              "rang3": { "value":0, "max":3},
-              "rang4": { "value":0, "max":3}
+              "rang1": { "value":0, "max":3, "offset": 3},
+              "rang2": { "value":0, "max":3, "offset": 3},
+              "rang3": { "value":0, "max":3, "offset": 3},
+              "rang4": { "value":0, "max":3, "offset": 3}
             }
           },
           "tension": {
@@ -54,11 +56,12 @@
             "cmp":0,
             "xp":0,
             "value" : 0,
+            "max": 12,
             "rangs": {
-              "rang1": { "value":0, "max":3},
-              "rang2": { "value":0, "max":3},
-              "rang3": { "value":0, "max":3},
-              "rang4": { "value":0, "max":3}
+              "rang1": { "value":0, "max":3, "offset": 3},
+              "rang2": { "value":0, "max":3, "offset": 3},
+              "rang3": { "value":0, "max":3, "offset": 3},
+              "rang4": { "value":0, "max":3, "offset": 3}
             }
           },
           "DPdM": {
@@ -66,11 +69,12 @@
             "cmp":0,
             "xp":0,
             "value" : 0,
+            "max": 0,
             "rangs": {
-              "rang1": { "value":0, "max":0},
-              "rang2": { "value":0, "max":0},
-              "rang3": { "value":0, "max":0},
-              "rang4": { "value":0, "max":0}
+              "rang1": { "value":0, "max":0, "offset": 0},
+              "rang2": { "value":0, "max":0, "offset": 0},
+              "rang3": { "value":0, "max":0, "offset": 0},
+              "rang4": { "value":0, "max":0, "offset": 0}
             }
           },
           "effort": {
@@ -120,127 +124,127 @@
           "artisan": {
             "value": 1,
             "label":"k2m.artisan",
-            "xp":0              
+            "xp": 1
           },
           "artiste": {
             "value": 1,
             "label":"k2m.artiste",
-            "xp":0              
+            "xp": 1              
           },
           "athlete": {
             "value": 1,
             "label":"k2m.athlete",
-            "xp":0              
+            "xp": 1              
           },
           "bagarreur": {
             "value": 1,
             "label":"k2m.bagarreur",
-            "xp":0              
+            "xp": 1              
           },
           "bricoleur": {
             "value": 1,
             "label":"k2m.bricoleur",
-            "xp":0              
+            "xp": 1              
           },
           "campagnard": {
             "value": 1,
             "label":"k2m.campagnard",
-            "xp":0              
+            "xp": 1              
           },
           "citadin": {
             "value": 1,
             "label":"k2m.citadin",
-            "xp":0              
+            "xp": 1              
           },
           "erudit": {
             "value": 1,
             "label":"k2m.erudit",
-            "xp":0              
+            "xp": 1              
           },
           "gentilhomme": {
             "value": 1,
             "label":"k2m.gentilhomme",
-            "xp":0              
+            "xp": 1              
           },
           "gestionnaire": {
             "value": 1,
             "label":"k2m.gestionnaire",
-            "xp":0              
+            "xp": 1              
           },
           "guerrier": {
             "value": 1,
             "label":"k2m.guerrier",
-            "xp":0              
+            "xp": 1              
           },
           "intrigan": {
             "value": 1,
             "label":"k2m.intrigan",
-            "xp":0              
+            "xp": 1              
           },
           "larron": {
             "value": 1,
             "label":"k2m.larron",
-            "xp":0              
+            "xp": 1              
           },
           "magicien": {
             "value": 1,
             "label":"k2m.magicien",
-            "xp":0              
+            "xp": 1              
           },
           "marchand": {
             "value": 1,
             "label":"k2m.marchand",
-            "xp":0              
+            "xp": 1              
           },
           "matelot": {
             "value": 1,
             "label":"k2m.matelot",
-            "xp":0              
+            "xp": 1              
           },
           "medecin": {
             "value": 1,
             "label":"k2m.medecin",
-            "xp":0              
+            "xp": 1              
           },
           "orateur": {
             "value": 1,
             "label":"k2m.orateur",
-            "xp":0              
+            "xp": 1              
           },
           "saltimbanque": {
             "value": 1,
             "label":"k2m.saltimbanque",
-            "xp":0              
+            "xp": 1              
           },
           "soldat": {
             "value": 1,
             "label":"k2m.soldat",
-            "xp":0              
+            "xp": 1              
           },
           "sorcier": {
             "value": 1,
             "label":"k2m.sorcier",
-            "xp":0              
+            "xp": 1              
           },
           "rodeur": {
             "value": 1,
             "label":"k2m.rodeur",
-            "xp":0              
+            "xp": 1              
           },
           "tavernier": {
             "value": 1,
             "label":"k2m.tavernier",
-            "xp":0              
+            "xp": 1              
           },
           "veneur": {
             "value": 1,
             "label":"k2m.veneur",
-            "xp":0              
+            "xp": 1              
           },
           "voyageur": {
             "value": 1,
             "label":"k2m.voyageur",
-            "xp":0              
+            "xp": 1              
           }
         }
       },
@@ -262,7 +266,9 @@
         "ptEffort": 0
       },
       "nbActions":1,
-      "seuilRupture":2
+      "seuilRupture":2,
+      "formulaSR":"",
+      "estSRVar" : false
     },
     "figurant": {
       "templates": ["minibase","compteur","carac","jets"],
@@ -280,20 +286,36 @@
     "types": ["objet", "sort", "aspect", "avantage","ethnie", "secret","argent", "favori"],
     "objet": {
       "code":"objet",
+      "codeSpe" : "OBJET",
+      "estActif" : false,
+      "estADistance" : false,
       "description": "",
       "utilisation": "",
       "quantite": 1,
-      "poids": 0,
+      "poids": 0.0,
       "volume" : 0,
-      "typeObjet":"O",
+      "menace" : "0",
+      "couverture" : "0",
+      "protection" : "0",
+      "solidite" : 0,
+      "FP" : 0,
       "bonus":{
-        "score":0,
-        "deSup":0,
-        "dommage":"+0",
+        "NdDes":0,
+        "CodeDommage":"+0",
         "PdM":0,
-        "PdV":0
+        "PdF":0,
+        "PdT":0,
+        "PdFa" : 0
       },
-      "special":""
+      "special":"",
+      "aMunitions" : false,
+      "munitions":{
+        "unite1" : { "nom" : "munition stadard", "quantite":0, "menace" : "+0", "remarque": "" },
+        "unite2" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" },
+        "unite3" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" },
+        "unite4" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" },
+        "unite5" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" }
+      }
     },
     "aspect":{
       "codeSpe":"NORM",
@@ -313,10 +335,10 @@
       "niveau": 1,
       "coutMagie":1,
       "effet":"",
-      "XpDep":10,
-      "NbDes":0,
+      "Xp": 0,
+      "NbDes": 0,
       "urlweb":"https://www-lagep.cpe.fr/public/lemonde2k2/doku.php?id=k2:gents",
-      "XPa":0
+      "XPa": 0
     },
     "ethnie":{
       "description": "",

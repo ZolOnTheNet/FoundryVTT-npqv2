@@ -1,4 +1,4 @@
-import {lanceLesDes, simpleDialogue, lancerDeBrut, DialogueDommage, packId} from "../utils.js"
+import {lanceLesDes, simpleDialogue, lancerDeBrut, DialogueDommage, AppliqueEtatValeur } from "../utils.js"
 export default class npqv2ActorSheet extends ActorSheet {
 
     /** @override */
@@ -76,23 +76,36 @@ export default class npqv2ActorSheet extends ActorSheet {
         context.lstCMP[element] = element; // devra mettre le bon code de traduction (game.i18n.localize)
       };      // traitement des jets  création d'un mini objet { t, txt, d } pour type, texte, nbdés
       // "jet": { "codecmp":"artisan",  "idAspect1":"",  "idAspect2":"",  "idAspect3":"",  "nblancer":3, "paris":0, "seuil":6, "autoEffort":1, "coutMagique":0 }
-      if(context.lstCMP[context.system.jet.codecmp] == undefined) {
-        choixjets.push({"t":"cmp","txt": game.i18n.localize("int.aucun"), "d": 0 } );
-      } else choixjets.push({"t":"cmp","txt": game.i18n.localize(context.system.cmp[context.system.jet.codecmp].label), "d":context.system.cmp[context.system.jet.codecmp].value});
-      // Assign and return
-      for(let i = 1; i < 4; i++) {
-        let c = context.system.jet["idAspect"+i];
-        if( c === "aucun" || c ==="") {
-          choixjets.push({ "t":"asp","txt":"aucun", "d":0})
-        } else {
-          let lite = context.aspects.findIndex(elem => elem._id == c);
-          if( lite === 0) {// pas trouvé : vide ?
-            choixjets.push({ "t":"asp","txt":"aucun", "d":0})
-          } else {
-            choixjets.push({ "t":"asp","txt":context.aspects[lite].name, "d":context.aspects[lite].NbDes})
-          }
+      // if(context.lstCMP[context.system.jet.codecmp] == undefined) {
+      //   choixjets.push({"t":"cmp","txt": game.i18n.localize("int.aucun"), "d": 0 } );
+      // } else choixjets.push({"t":"cmp","txt": game.i18n.localize(context.system.cmp[context.system.jet.codecmp].label), "d":context.system.cmp[context.system.jet.codecmp].value});
+      // // Assign and return
+      // for(let i = 1; i < 4; i++) {
+      //   let c = context.system.jet["idAspect"+i];
+      //   if( c === "aucun" || c ==="") {
+      //     choixjets.push({ "t":"asp","txt":"aucun", "d":0})
+      //   } else {
+      //     let lite = context.aspects.findIndex(elem => elem._id == c);
+      //     if( lite === -1) {// pas trouvé : vide ?
+      //       choixjets.push({ "t":"asp","txt":"aucun", "d":0})
+      //     } else {
+      //       let de = context.aspects[lite].system.NbDes;
+      //       if(context.aspects[lite].system.codeSpe === 'SEQ') de = -1 * de; // on inverse
+      //       choixjets.push({ "t":"asp","txt":context.aspects[lite].name, "d": de})
+      //     }
+      //   }
+      // }
+      // --------- Gestion des états (generer les affichages)
+      const lesEtats=['DPdM','fatigue','faiblesse','tension']; // Mes quatre type d'état
+      //const EtatsMin =[ 0, 3, 3 , 3 ]; 
+      let valcour = 0
+      for(let i = 0 ;  i < lesEtats.length; i++) {
+        valcour = 0;
+        AppliqueEtatValeur(context.system.etats[lesEtats[i]])
+        for(let j = 1; j < 5 ; j++) {
+          context.system.etats[lesEtats[i]].rangs["rang"+j].ligne = this.visuRang(context.system.etats[lesEtats[i]].rangs["rang"+j], lesEtats[i], j, valcour);
+          valcour += context.system.etats[lesEtats[i]].rangs["rang"+j].max;
         }
-        //context.AttribV = { "for":"Force", "ag":"Agilité", "con":"Constitution", "p":"Présence", "ig":"Intelligence", "it":"Intuition", "v":"Volonté" };
       }
     }
  /**
@@ -111,7 +124,13 @@ export default class npqv2ActorSheet extends ActorSheet {
       // peut être quelque chose a faire !
     }else {      
       context.system.initiative.value = context.system.cmp[context.system.cmpCirconstance].value;
-      context.seuilRupture =  context.system.cmp[context.system.cmpCirconstance].value +1; // seuil de rupture (reprise de calcul)
+      // il peut y avoir des formules :       
+      //context.seuilRupture =  context.system.cmp[context.system.cmpCirconstance].value +1; // seuil de rupture (reprise de calcul)
+      if(context.bonus.formulaSR != "") {
+        context.system.formulaSR = context.bonus.formulaSR + " +" + ( context.system.cmp[context.system.cmpCirconstance].value +1);
+        context.seuilRupture = context.system.seuilRupture;
+        // sinon c'est fixe : donc pas de calcul
+      } else   context.seuilRupture =  context.system.cmp[context.system.cmpCirconstance].value +1 + context.bonus.seuilRupture;
       context.nbActions = Math.ceil(context.system.cmp[context.system.cmpCirconstance].value/2);
     }
     // faudra rajouter l'armure voir les bonus des armes (Co ?)
@@ -150,13 +169,16 @@ export default class npqv2ActorSheet extends ActorSheet {
           let ite = actorData.items.get(context.system.jet["idAspect"+i])
           context[c+"Label"] = ite.name;
           context[c+"CodeDe"] = ite.system.NbDes;
+          if(ite.system.codeSpe == 'SEQ') context[c+"CodeDe"] *= -1; // inverse
           if(i>1) nbEffort+=3; // l'effort est plus important
-          nbdes += ite.system.NbDes;
+          nbdes += context[c+"CodeDe"]; // peut être corigé par la notion de SEQuelle
         }
   
       }
       context.jetCoutEffort = nbEffort;
       context.system.jet.nblancer = nbdes;
+      //context.effortTxt = '<i data-cmd="set.etat.effort" data-roll="1" title="1" class="rollable fillable fas fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable far fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable fad fa-square"></i>'
+      context.effortTxt = this.visuEffort(context.system.etats.effort, nbEffort+ context.system.initiative.ptEffort);
     }
   }
     /**
@@ -171,13 +193,13 @@ export default class npqv2ActorSheet extends ActorSheet {
       const gear = [];
       const features = [];
       const aspects = [];
-      const choixjets = [];
+      const armes = [];
+      const armures = [];
       const sequelles = [];
-      const competences = [];
       const secrets = [];
       const favoris = [];
       const bourses = [];
-      const bonus = {"score":0,"deSup":0,"dommage":"","PdM":0,"PdV":0};
+      const bonus = { "seuilRupture" : 0, "formulaSR": "", "Me": "", "Co" : "", "Pr" : "", "So" : 0, "NdDes":0, "CodeDommage":"+0", "PdM":0, "PdF":0, "PdT":0, "PdFa" : 0 };
       const spells = {
         1: [],
         2: [],
@@ -220,32 +242,48 @@ export default class npqv2ActorSheet extends ActorSheet {
           }else if(i.system.codeSpe === 'SEQ') {
             sequelles.push(i);
           }
-          
-        } else if (i.type === 'sort'){
-/*          i.data.descRapide = (i.data.description+".").substring(0,(i.data.description+".").indexOf("."));
-          if(i.data.idLien != ""){
+
+        } else if (i.type === 'objet') {
+          // { "OBJET":"objet", "ARME" : "Arme", "ARMURE" : "Armure"} codeSpe
+          if(i.system.codeSpe === 'OBJET') {
+            gear.push(i);
+          }else if(i.system.codeSpe === 'ARME') {
+            armes.push(i);
+            if( i.system.estActif) {
+
+            }
+          }else if(i.system.codeSpe === 'ARMURE') {
+            armures.push(i);
+            if( i.system.estActif) {
+              if( Number.isNumeric(i.system.protection)) {  
+              bonus.seuilRupture += i.system.protection;
+              } else {
+                if(i.system.protection.indexOf("d") + i.system.protection.indexOf("D")+2 ) {
+                  bonus.formulaSR += " + "+i.system.protection;
+                }
+              }
+            }
+          }
+        //} else if (i.type === 'sort'){
+/*          i.system.descRapide = (i.system.description+".").substring(0,(i.system.description+".").indexOf("."));
+          if(i.system.idLien != ""){
             // calcul si spécialisation
-            let it = context.actor.items.get(i.data.idLien);
-            i.data.scoreRel = i.data.score + it.data.data.score;
+            let it = context.actor.items.get(i.system.idLien);
           }else {
             i.data.scoreRel = i.data.score;
           }
           competences.push(i);
         */
-        }
-        /*
-        // Append to features.
-        else if (i.type === 'feature') {
-          features.push(i);
-        }
-        else if (i.type === 'secret') {
-          if(i.data.niveau >0 && i.data.niveau < i.data.niveauMax) {
-            i.data.nomMax = i.data["niv"+i.data.niveau].nom;  
-          } else  i.data.nomMax = "";
+        // }  else if (i.type === 'feature') {
+        //   features.push(i);
+        }  else if (i.type === 'secret') {
+          if(i.system.niveau >0 && i.system.niveau < i.system.niveauMax) {
+            i.system.nomMax = i.system["niv"+i.system.niveau].nom;  
+          } else  i.system.nomMax = "";
           secrets.push(i);
         }
         // ajouter dans les résumés des armes
-        else if( i.type === 'arme_resum'){
+/*        else if( i.type === 'arme_resum'){
           i.data.descRapide = i.data.special.substring(0,(i.data.special+".").indexOf('.'));
           i.data.NomAffiche = "-non déf-";
           if(i.data.desync == 0) {
@@ -293,36 +331,31 @@ export default class npqv2ActorSheet extends ActorSheet {
           } else i.data.AMunition = false;
           ArmesResum.push(i);
         }
+        */
         // Append to spells.
         else if (i.type === 'sort') {
-          i.data.descRapide = i.data.description.substring(0,(i.data.description+".").indexOf("."));
-          if(i.data.idLien != ""){
-            // calcul si spécialisation
-            let it = context.actor.items.get(i.data.idLien);
-            i.data.scoreRel = i.data.score + it.data.data.score;
-          }else {
-            i.data.scoreRel = i.data.score;
-          }
-          if (i.data.niveau != undefined) {
-            spells[i.data.niveau].push(i);
+          i.system.descRapide = i.system.description.substring(0,(i.system.description+".").indexOf("."));
+          if (i.system.niveau != undefined) {
+            spells[i.system.niveau].push(i);
           }
         }
         else if (i.type === 'argent') {
           bourses.push(i);
         }
-  */
+  
       }
+      if(bonus.formulaSR != "") bonus.formulaSR = ((bonus.seuilRupture == 0)?"": bonus.seuilRupture + " + " )+ bonus.formulaSR.substring(3); // on rajoute sur les deux
       context.gear = gear;
       context.features = features;
       context.spells = spells;
       context.aspects = aspects;
+      context.armes = armes;
+      context.armures = armures;
       context.sequelles = sequelles;
-      context.competences = competences;
       context.secrets = secrets;
       context.favoris = favoris;
       context.bourses = bourses;
-      // context.bonus = bonus;
-      //context.bonus = this.actor.system.data.bonus;
+      context.bonus = bonus;
     }
   
     _prepareItemsFig(context) {
@@ -419,7 +452,7 @@ export default class npqv2ActorSheet extends ActorSheet {
     event.preventDefault();
     const element = event.currentTarget;
     const dataset = element.dataset;
-    if(dataset.cmd === undefined || dataset.cmd=="") dataset.cmd ="add";
+    if(dataset.cmd === undefined || dataset.cmd=="") dataset.cmd ="uknw";
     let cmd = ""; let cmdArgs = []; let txtCode = dataset.roll; // soit l'id soit le code cmp
     if(dataset.cmd.indexOf(".") > 0 ){
       cmdArgs = dataset.cmd.split(".");
@@ -431,6 +464,45 @@ export default class npqv2ActorSheet extends ActorSheet {
     // Handle item rolls.
     // prétraitement suivant le rolltype et le champs
     switch(cmd) {
+      case 'add': 
+         //ajouter à la selection
+         let obj1 = { };
+         switch(cmdArgs[1]){ // actuellement : init, select
+          case 'cmp':
+              obj1 = { "system.jet.codecmp": txtCode };
+            break;
+          case 'asp':
+            if( this.document.system.jet.idAspect1 === "" || this.document.system.jet.idAspect1 == txtCode) {
+              obj1 = { "system.jet.idAspect1": txtCode };
+            } else if( this.document.system.jet.idAspect2 === "" || this.document.system.jet.idAspect2 == txtCode) {
+              obj1 = { "system.jet.idAspect2": txtCode };
+            } else { // toujorus la troisieme ! if( this.docment.system.jet.idAspect1 === "")
+              obj1 = { "system.jet.idAspect3": txtCode };
+            } 
+         }
+         this.document.update( obj1 );
+        break;
+      case 'activation':
+        let itemA = this.document.items.get(txtCode);
+        let testA =  cmdArgs[1] === "oui";
+        itemA.update({ 'system.estActif' : testA });
+        // en fonction si armure => changement dans la seuil de ruptures
+      case 'calc': // rafrechissement des valeurs ou forçage de calculs
+        if( cmdArgs[1] === "rupture") {
+          if(this.document.system.formulaSR == "") {
+              // pas besoin de le faire deux fois : voir getData
+            } else { // besoin de relancer la formule par contre... c'est this.
+            let r = new Roll(this.document.system.formulaSR);
+            r.evaluate({async :false }); // pas de jet dans le chat pour l'instant
+            this.document.update( { "system.seuilRupture" : r.total }); 
+            //console.log(this.document, "Tirage Rupture : ", r.total, r);
+          }
+        }
+        break;
+      case 'edit': // ouvrir pour modificaiton d'un aspect
+        const item = this.document.items.get(txtCode);
+        item.sheet.render(true);
+        break;
       case 'initCmp' : // changement de la compétence pour l'init, a partir du i de la compétence
         this.document.update( { "system.cmpCirconstance": txtCode })
         break;
@@ -454,28 +526,6 @@ export default class npqv2ActorSheet extends ActorSheet {
       case 'lancerJet':
         simpleDialogue(this.document.system.jet.nblancer, this.document.system.jet.paris, this.document.system.jet.seuil )
         break;
-      case 'add': 
-         //ajouter à la selection
-         let obj1 = { };
-         switch(cmdArgs[1]){ // actuellement : init, select
-          case 'cmp':
-              obj1 = { "system.jet.codecmp": txtCode };
-            break;
-          case 'asp':
-            if( this.document.system.jet.idAspect1 === "" || this.document.system.jet.idAspect1 == txtCode) {
-              obj1 = { "system.jet.idAspect1": txtCode };
-            } else if( this.document.system.jet.idAspect2 === "" || this.document.system.jet.idAspect2 == txtCode) {
-              obj1 = { "system.jet.idAspect2": txtCode };
-            } else { // toujorus la troisieme ! if( this.docment.system.jet.idAspect1 === "")
-              obj1 = { "system.jet.idAspect3": txtCode };
-            } 
-         }
-         this.document.update( obj1 );
-        break;
-      case 'edit': // ouvrir pour modificaiton d'un aspect
-        const item = this.document.items.get(txtCode);
-        item.sheet.render(true);
-        break;
       case 'remove':
         let ind =(cmdArgs[2] === 'cmp')? cmd: parseInt(cmdArgs[2])+1;
         switch(cmdArgs[1]){ // actuellement : init, select
@@ -485,7 +535,7 @@ export default class npqv2ActorSheet extends ActorSheet {
             obj["system.initiative.idAspect"+ind] = "";
             this.document.update(obj);
             // pack ?
-            packId(this.document.system.initiative);
+            this.packId(this.document.system.initiative);
             break;
           case 'select':
             if(cmdArgs[2]==='cmp') {
@@ -496,15 +546,42 @@ export default class npqv2ActorSheet extends ActorSheet {
               let obj= {};
               obj["system.jet.idAspect"+ind] = "";
               this.document.update(obj);
-              packId(this.document.system.jet);
+              this.packId(this.document.system.jet);
             }
             break;
         }
         break;
-      case 'sppr': // supprime l'aspect de la feuille de perso: dialog, pas encore
+        case 'reset':
+          if(cmdArgs[1]==='effort') { // recalcul de l'effort
+            let objUpd = { "system.etats.effort.value": 0};
+            objUpd[ "system.etats.effort.value"] = 10 -  this.document.system.etats.fatigue.value; 
+            if(objUpd[ "system.etats.effort.value"] < 0) objUpd[ "system.etats.effort.value"] = 0;
+            this.document.update( objUpd);
+          } // lancer de dés avec réserve ou pas
         break;
-      case 'roll': // lancer de dés avec réserve ou pas
+        case 'roll': // lancer de dés avec réserve ou pas
         break;
+      case 'suppr': // supprime l'aspect de la feuille de perso: dialog, pas encore
+        let itemD = this.document.items.get(txtCode);
+        if(itemD != undefined) itemD.delete();
+        break;
+      case 'set': // fixer par clique direct sur les petites case ou les valeurs
+        if(cmdArgs[1] === 'etat') {
+          //if(cmdArgs[2] === 'effort'
+          let champ = {};
+          champ["system.etats."+cmdArgs[2]+".value"] = parseInt(txtCode);
+          this.document.update( champ);
+        }
+        break;
+      case 'trans': 
+        if(cmdArgs[1] === 'fatigue' && cmdArgs[2] === 'effort') {
+          let objUpd = {};
+          objUpd['system.etats.effort.value'] = this.document.system.etats.effort.value + 6;
+          objUpd['system.etats.fatigue.value'] = this.document.system.etats.fatigue.value + 1;
+          this.document.update( objUpd);
+        }
+        break;
+    // fixer par clique
     //   case 'pourcode':
     //     if(dataset.label.substring(0,4) == "BDom") {
     //       dataset.rollType = 'dedirectdom';
@@ -519,118 +596,81 @@ export default class npqv2ActorSheet extends ActorSheet {
     //       dataset.rollType = 'recup';
     //     } else dataset.rollType = 'rien';
     //     break;
+      default:
+        console.log("ActorSheet > _onRoll : cmd inconnu =>",cmd,dataset);
     }
-    // // --------- garder pour le code
-/*     let expl = (game.explode)?"D6x6":"D6";
-    switch(dataset.rollType) {
-      
-      case 'cmp':
-        //  element.closest('.item').childNodes[11].childNodes[1].value  (pour la mise)
-        let res =  element.closest('.item').childNodes[11].childNodes[1].value ?  parseInt(element.closest('.item').childNodes[11].childNodes[1].value) :0;
-        // attention : roll + res == roll ori... ! a modifier
-        lanceLesDes(dataset.roll,res,expl,5)
-        break;
-      case 'item':
-        console.log("Compétence : trouver le code et ajouter les dés !");
-      case 'dedirect' : 
-        //game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
-        lanceLesDes(dataset.roll,0,expl,5)
-        break;
-      case 'debase' :
-        simpleDialogue(dataset.roll, 0, 5, CONFIG.explode)
-        break;
-      case 'dedirectdom': //lance le dés tel que 
-        lancerDeBrut(dataset.roll,"",true);
-        break;
-      case 'diagdom':
-        DialogueDommage(1,"1d6",dataset.roll);
-        break;
-      case 'lancerbrut':
-        lancerDeBrut(dataset.roll, "", false);
-*/
-      // if (dataset.rollType.substring(0,4) == 'item') {
-      //   const itemId = element.closest('.item').dataset.itemId;
-      //   const item = this.actor.items.get(itemId);
-      //   if(item) {
-      //     if(item.type == "arme_resum") {
-      //          if(dataset.rollType.substring(0,5) == "itemI"){
-      //            // lance le dé d'init, il faut le mettre dans init
-                
-      //            let formula = dataset.rollType.substring("ItemI=".length);
-      //            this.actor.data.data.attrder.initformule = formula + " + " + this.actor.data.data.attrder.pinit_finaux.value;
-      //            this.render(true);
-      //            /*
-      //            let roll = new Roll(formula, this.actor.getRollData());
-      //            let cm = roll.toMessage({
-      //              speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      //              flavor: "<b>Jet d'init</b>",
-      //              //content:"Super jet !!",
-      //              rollMode: game.settings.get('core', 'rollMode'),
-      //            });
-      //            */
-      //          } else if(dataset.rollType.substring(0,5) == "itemA"){
-      //           // utlisation de l'attribut comme reférence
-      //          } else if(dataset.rollType.substring(0,5) == "itemS"){
-      //           promptForLancer(element.closest('.item').firstElementChild.innerText,item.data.data.score,item.data.data.attributd, this.actor.data.data[item.data.data.attributd].value, 
-      //               item.data.data.degat).then(value => {
-      //             console.log("lancer de dés ",value);
-      //             console.log("acteur ",this.actor);
-      //             //jetdata = { "roll":r, "eval":txtEval, "score":scoreTot, "des": attr, "nom":txtNom, "Code":codeRet };
-      //             let qui = ChatMessage.getSpeaker({ actor: this.actor });
-      //             let jetdata = utils.lancerJet(value.txtNom, value.des, value.score + value.bonus, qui); 
-      //             utils.lanceDommage(jetdata.Code, value.dommage,qui)    
-      //           }).catch(e => 0);
-                
-      //          } else if(dataset.rollType.substring(0,5) == "itemD"){
-      //            // jet de dommage 
-      //             let formula = dataset.rollType.substring("ItemD=".length);
-      //             let label = "<h2>Jet de dommage</h2> ";
-      //             if(item.data.data.idarmeref != "") {
-      //               let arm = this.actor.items.get(item.data.data.idarmeref)
-      //               label = arm.data.name +" fait les dommages :";
-      //             }
-      //             label += "</h2>ayant pour dommage : ";
-      //             let roll = new Roll(formula, this.actor.getRollData());
-      //             let cm = roll.toMessage({
-      //                   speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      //                   flavor: label,
-      //                   //content:"Super jet !!",
-      //                   rollMode: game.settings.get('core', 'rollMode'),
-      //             });
-      //             //return utils.SimpleLancerSousCmp(this.actor, item.data,ChatMessage.getSpeaker({ actor: this.actor }));
-      //          }
-      //     }
-      //     else return item.roll();
-      //   }
-      // }
-     // case 'rien' :
-    // }
-
-    // Handle rolls that supply the formula directly.
-    // if (dataset.roll) {
-      // let label = dataset.label ? `[Attribut] ${dataset.label}` : '';
-      // if(dataset.form === undefined) dataset.form = "no";
-      // if(dataset.form == "yes") {
-      //   promptForLancer(label,25,dataset.label, dataset.roll,"").then(value => {
-      //     // on peut traiter si le score n'a pas été indiqué comme un simple lancé
-      //             console.log("lancer de dés ",value);
-      //             console.log("acteur ",this.actor);
-      //             //jetdata = { "roll":r, "eval":txtEval, "score":scoreTot, "des": attr, "nom":txtNom, "Code":codeRet };
-      //             let qui = ChatMessage.getSpeaker({ actor: this.actor });
-      //             let jetdata = utils.lancerJet(value.txtNom, value.des, value.score + value.bonus, qui); 
-      //             if(value.dommage != "") utils.lanceDommage(jetdata.Code, value.dommage,qui)    
-      //           }).catch(e => 0);
-       // game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
-     // } else {
-       //game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode);
-      // let roll = new Roll(dataset.roll, this.actor.getRollData());
-      // let cm = roll.toMessage({
-      //   speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      //   flavor: label,
-      //   //content:"Super jet !!",
-      //   rollMode: game.settings.get('core', 'rollMode'),
-      //   });
-   // }
   }
+
+  // ----------------------------------- Utils ------------------------------------------
+  // gestion des efforts 
+visuEffort(Effort, nbEffortWait = 0) {
+  let ret = ''; let max = (18 > Effort.max)? Effort.max: 18;
+  let i = 0; let e = Effort.value - nbEffortWait;
+  for(i = 1; i <= e; i++){
+    ret += '<span class="rollable txtUtiOui" data-cmd="set.etat.effort" data-roll="' + i + '" title="' + i + '" >'+i+' </span>'
+  }
+  if(nbEffortWait > 0) {
+    e += +nbEffortWait;
+    for(; i <= e; i++ ){
+      ret += '<span class="rollable txtUtiEnCours" data-cmd="set.etat.effort" data-roll="' + i + '" title="' + i + '" >'+i+' </span>'
+    }
+  }
+  for(; i <= max; i++){
+    ret += '<span class="rollable txtUtiNon" data-cmd="set.etat.effort" data-roll="' + i + '" title="' + i + '" >'+i+' </span>'
+  }
+  return ret ; 
+}
+
+
+/**
+ * visuRang : visualise un Rang founis en paramètre
+ *
+ * @param {*} rang : un rang { value, max, seuil} (seuil est rajouté dans obj Acteur)
+ * @memberof npqv2ActorSheet
+ * 
+ * <i data-name="system.etats.tension.rangs.rang1" data-value="{{@index}}" data-type="etats" class="fillable fas fa-square"></i>
+ * <i data-name="system.traits.{{trait.name}}.value" data-name="system.etats.tension.rangs.rang1" data-value="{{@index}}" data-type="etats" class="fillable far fa-square"></i>
+ * retourne un chaine html des petits carrés  data-cmd="set.etat.'+etat+'" data-roll="' (i + offset) '"
+ */
+visuRang(rang, etat, noRang, offset=0){
+  let ret = ''; let i = 1;
+  for(; i <= rang.value; i++) {
+    ret += '<i data-name="system.' + etat + '.rangs.rang' + noRang + '" title="' + (i + offset) + '" data-cmd="set.etat.'+etat+'" data-roll="' + (i + offset )+ '" data-type="etats" class="rollable fillable fas fa-square"></i>&nbsp;';
+    if(i % 5 == 0) ret += '&nbsp;'; // tout les 5 unités un espace
+  }
+  for(;i <= rang.max ; i++){
+    ret += '<i data-name="system.' + etat + '.rangs.rang' + noRang + '" title="' + (i + offset) + '" data-cmd="set.etat.'+etat+'" data-roll="' + (i + offset) + '" data-type="etats" class="rollable fillable far fa-square"></i>&nbsp;';
+    if(i % 5 == 0 ) ret += '&nbsp;'; // tout les 5 unités un espace
+  }
+  return ret;
+}
+/**
+ * remet les aspects ou la liste (de 1 à 3) en commancant par le haut
+ * valide pour : le jet et l'initiative
+ *
+ * @param {*} parent : jet ou initiative
+ */
+packId(parent) {
+  let tab = []; let c = "";
+  for(let i =1; i < 4 ; i++) {
+    c =parent["idAspect"+i];
+    if( c != "") {
+      tab.push(c);
+    }
+  }
+  let lng = tab.length;
+  if(lng > 0) {
+    for(let i =0; i < 3 ; i++) {
+      if(i >= lng) {
+        parent["idAspect"+(i+1)]="";
+      } else {
+        parent["idAspect"+(i+1)]=tab[i];
+      }
+    }
+  }
+  
+}
+
+
 }
  

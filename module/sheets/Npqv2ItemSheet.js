@@ -36,12 +36,6 @@
       // Use a safe clone of the item data for further operations.
       const itemSystem = context.item.system;
   
-      // Retrieve the roll data for TinyMCE editors.
-/*      context.rollData = {};
-      context.A1Acteur = false;
-      context.NomCmpV =  "";
-      context.NomCode = "";
-  */
       let actor = this.object?.parent ?? null;
       if (actor) {
     /*    context.rollData = actor.getRollData();
@@ -125,14 +119,11 @@
       // } 
   
       // attention modification du degrée de data.. !
-/*      context.data = itemData.data;
-      context.flags = itemData.flags;
-      context.TypeObjets = { "O":"Objet","C":"Arme Courte", "M":"Arme Moyenne","L":"Arme Longue" };
-      context.AttribV = { "for":"Force", "ag":"Agilité", "con":"Constitution", "p":"Présence", "ig":"Intelligence", "it":"Intuition", "v":"Volonté" };
-  */
       context.CodifAspect = { "NORM":"Standard", "SEQ":"séquelles", "PLUS":"plus", "SPE":"spécialité","EXTRA":"extra"};
+      context.CodifObjet = { "OBJET":"objet", "ARME" : "Arme", "ARMURE" : "Armure"}
   //    data.TypeValue = persodata.type; 
       context.system = itemSystem;
+      console.log("Context d'item", context )
       return context;
     }
   
