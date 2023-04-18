@@ -84,17 +84,17 @@
     <div class="tab items" data-group="primary" data-tab="caracteristiques">
       <section class="grid grid-3col">
         <section class="main flexcol">
-            <h2>{{localize  "int.cmps" }}</h2>
-            {{#each system.cmp as |cmp key|}}
-            <div class="attribd normal-left-input">
-              <label for="system.cmp.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" data-cmd="add.cmp">{{localize  cmp.label }}&nbsp;</label>
-              <input class="normal-input" type="text" size="1em" name="system.cmp.{{key}}.value" value="{{cmp.value}}" data-dtype="Number"/>
-              <span class="align-center rollable" data-roll="{{key}}" data-cmd="jet.paris"><i class="fad fa-dice"></i></span>
-              <span class="align-center rollable" data-roll="{{key}}" data-cmd="initCmp"><i class="fas fa-info-square"></i></span>
-              <span class="align-center lilipute"><input class="normal-input" type="text" size="1em" title="Xp" name="system.cmp.{{key}}.xp" value="{{cmp.xp}}" data-dtype="Number"/></span>
-              &nbsp;
-            </div>
-            {{/each}}
+          <h2>{{localize  "int.cmps" }}</h2>
+          {{#each system.cmp as |cmp key|}}
+          <div class="attribd normal-left-input">
+            <label for="system.cmp.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" data-cmd="add.cmp">{{localize  cmp.label }}&nbsp;</label>
+            <input class="normal-input" type="text" size="1em" name="system.cmp.{{key}}.value" value="{{cmp.value}}" data-dtype="Number"/>
+            <span class="align-center rollable" data-roll="{{key}}" data-cmd="jet.paris"><i class="fad fa-dice"></i></span>
+            <span class="align-center rollable" data-roll="{{key}}" data-cmd="initCmp"><i class="fas fa-info-square"></i></span>
+            <span class="align-center lilipute"><input class="normal-input" type="text" size="1em" title="Xp" name="system.cmp.{{key}}.xp" value="{{cmp.xp}}" data-dtype="Number"/></span>
+            &nbsp;
+          </div>
+          {{/each}}
         </section>
 
         <section class="main">
@@ -128,7 +128,9 @@
               <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
               &nbsp;
               <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
-              <br>(Me:{{arme.system.menace}}, Co:{{arme.system.couverture}}) 
+              <br>(Me:{{arme.system.menace}}, Co:{{arme.system.couverture}})
+              <i class="fad fa-sword rollable" data-roll="{{_id}}" data-cmd="arme.dommage"></i>
+              <i class="fad fa-shield rollable" data-roll="{{_id}}" data-cmd="arme.defense"></i>
             </span>
           </div>
           {{/each}}
@@ -178,8 +180,9 @@
             <span class="plusPolice">Action(s) : </span><span class="grdPolice">{{nbActions}} </span><span class="plusPolice"> / passe</span><br>
             <br>
           <h3><a class="attrib-mod rollable" title="{{localize  'nfo.lancerInit' }}" data-roll="{{aspect._id}}" data-cmd="lancerInit">{{localize  "int.init" }} {{system.initiative.value}} <i class="fas fa-info-square"></i></a></h3>
-          
-            <span>Effort : - {{system.initiative.ptEffort}}</span><br>
+            
+            <span>Perte d'Effort : {{system.initiative.ptEffort}}</span><br>
+            <span>Cmp : {{system.cmpCirconstance}} </span>
             {{#each system.initiative.lstIteAff as |asp key|}}
             <div>
               <a class="attrib-mod rollable" data-roll="{{asp.id}}" data-cmd="remove.init.{{key}}">{{asp.label}} ({{asp.NbDes}}) <i class="fas fa-minus-square"></i></a>
@@ -344,7 +347,9 @@
             <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
           {{/if}} 
           &nbsp;
-          {{arme.name}} (Me:{{arme.system.menace}}, Co:{{arme.system.couverture}}) 
+          {{arme.name}} (Me:{{arme.system.menace}}, Co:{{arme.system.couverture}})
+          <i class="fad fa-sword rollable" data-roll="{{_id}}" data-cmd="arme.dommage"></i>
+          <i class="fad fa-shield rollable" data-roll="{{_id}}" data-cmd="arme.defense"></i>
           <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
           &nbsp;
           <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>

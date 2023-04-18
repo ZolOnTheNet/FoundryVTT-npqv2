@@ -80,13 +80,14 @@
           "effort": {
             "label":"k2m.effort",
             "value":0,
-            "max":19
+            "max":18
           }
         }
       },
       "compteur":{
         "compteur":{
           "value":0,
+          "max": 12,
           "decoupe":4, 
           "diff": {
             "rang1":6,
@@ -271,8 +272,13 @@
       "estSRVar" : false
     },
     "figurant": {
-      "templates": ["minibase","compteur","carac","jets"],
-      "nivTresor": 0
+      "templates": ["minibase","compteur","carac"],
+      "estNbActionHaute": false,
+      "estInitHaute": false,
+      "valInit" : 0,
+      "bonusDrama" : 0,
+      "nivTresor": 0,
+      "totalXP": 0
     },
     "monstre": {
       "templates": ["minibase","compteur","carac","jets"],

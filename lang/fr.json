@@ -16,8 +16,10 @@
     "int.aucun" :"aucun",
     "int.equipements" : "Equipements",
     "int.cmpAspects" : "Cmp/Asp./Act.",
-    "int.generale": "Possessions",
+    "int.general": "Possessions",
     "int.secrets" : "Secrets",
+    "int.specialites" : "spécialités",
+    "int.extras" : "Extras",
 
     "nfo.clean" : "Effacer tout (jet).",
     "nfo.favoris" : "Ajouter aux favoris",

@@ -47,9 +47,11 @@ export default class npqv2ActorSheet extends ActorSheet {
       // Prepare NPC data and items.
       if (actorData.type == 'pnj') {
         this._prepareItems(context);
+        this._preparePNJData(context);
       }
       if (actorData.type == 'figurant') {
         this._prepareItemsFig(context);
+        this._preparePNJData(context);
       }
       // Add roll data for TinyMCE editors.
       context.rollData = context.actor.getRollData();
@@ -66,7 +68,6 @@ export default class npqv2ActorSheet extends ActorSheet {
      * @return {undefined}
      */
     _prepareCharacterData(context) {
-      // // Handle ability scores.
       const choixjets = [];
       // for (let [k, v] of Object.entries(context.data.attributs)) {
       //   v.label = game.i18n.localize(CONFIG.NPQV1.attributs[k]) ?? k;
@@ -75,26 +76,6 @@ export default class npqv2ActorSheet extends ActorSheet {
       for(const element in context.system.cmp){
         context.lstCMP[element] = element; // devra mettre le bon code de traduction (game.i18n.localize)
       };      // traitement des jets  création d'un mini objet { t, txt, d } pour type, texte, nbdés
-      // "jet": { "codecmp":"artisan",  "idAspect1":"",  "idAspect2":"",  "idAspect3":"",  "nblancer":3, "paris":0, "seuil":6, "autoEffort":1, "coutMagique":0 }
-      // if(context.lstCMP[context.system.jet.codecmp] == undefined) {
-      //   choixjets.push({"t":"cmp","txt": game.i18n.localize("int.aucun"), "d": 0 } );
-      // } else choixjets.push({"t":"cmp","txt": game.i18n.localize(context.system.cmp[context.system.jet.codecmp].label), "d":context.system.cmp[context.system.jet.codecmp].value});
-      // // Assign and return
-      // for(let i = 1; i < 4; i++) {
-      //   let c = context.system.jet["idAspect"+i];
-      //   if( c === "aucun" || c ==="") {
-      //     choixjets.push({ "t":"asp","txt":"aucun", "d":0})
-      //   } else {
-      //     let lite = context.aspects.findIndex(elem => elem._id == c);
-      //     if( lite === -1) {// pas trouvé : vide ?
-      //       choixjets.push({ "t":"asp","txt":"aucun", "d":0})
-      //     } else {
-      //       let de = context.aspects[lite].system.NbDes;
-      //       if(context.aspects[lite].system.codeSpe === 'SEQ') de = -1 * de; // on inverse
-      //       choixjets.push({ "t":"asp","txt":context.aspects[lite].name, "d": de})
-      //     }
-      //   }
-      // }
       // --------- Gestion des états (generer les affichages)
       const lesEtats=['DPdM','fatigue','faiblesse','tension']; // Mes quatre type d'état
       //const EtatsMin =[ 0, 3, 3 , 3 ]; 
@@ -190,7 +171,7 @@ export default class npqv2ActorSheet extends ActorSheet {
      */
     _prepareItems(context) {
       // Initialize containers.
-      const gear = [];
+      const gears = [];
       const features = [];
       const aspects = [];
       const armes = [];
@@ -200,7 +181,7 @@ export default class npqv2ActorSheet extends ActorSheet {
       const favoris = [];
       const bourses = [];
       const bonus = { "seuilRupture" : 0, "formulaSR": "", "Me": "", "Co" : "", "Pr" : "", "So" : 0, "NdDes":0, "CodeDommage":"+0", "PdM":0, "PdF":0, "PdT":0, "PdFa" : 0 };
-      const spells = {
+      const sorts = {
         1: [],
         2: [],
         3: [],
@@ -218,22 +199,6 @@ export default class npqv2ActorSheet extends ActorSheet {
   
       // Iterate through items, allocating to containers
       for (let i of context.items) {
-/*        i.img = i.img || DEFAULT_TOKEN;
-        // Append to gear.
-        if (i.type === 'objet') {
-          i.data.descRapide = i.data.description.substring(0,(i.data.description+".").indexOf("."));
-          i.data.utiRapide  = i.data.utilisation.substring(0,(i.data.utilisation+".").indexOf("."));
-          i.data.isArme = !(i.data.typeObjet=='O'); // c'est une arme si c'est pas un objet de type O
-          if(i.data.actif) {
-            bonus.score += (i.data.bonus.score != 0)?(i.data.bonus.score):0;
-            bonus.dommage += (i.data.bonus.dommage != "")?"+("+i.data.bonus.dommage+")":"";
-            bonus.deSup += (i.data.bonus.deSup != 0)?i.data.bonus.deSup:0;
-            bonus.PdM  += (i.data.bonus.PdM)?i.data.bonus.PdM:0;
-            bonus.PdV  += (i.data.bonus.PdV)?i.data.bonus.PdV:0;
-           }
-          gear.push(i);
-        }
-        else */
         if (i.type === 'aspect') {
           // on lui ajoute le résumé (pour l'instant jusqu'au premier point)
           //i.data.descRapide = (i.data.description).substring(0,(i.data.description+".").indexOf("."));
@@ -246,7 +211,7 @@ export default class npqv2ActorSheet extends ActorSheet {
         } else if (i.type === 'objet') {
           // { "OBJET":"objet", "ARME" : "Arme", "ARMURE" : "Armure"} codeSpe
           if(i.system.codeSpe === 'OBJET') {
-            gear.push(i);
+            gears.push(i);
           }else if(i.system.codeSpe === 'ARME') {
             armes.push(i);
             if( i.system.estActif) {
@@ -264,90 +229,28 @@ export default class npqv2ActorSheet extends ActorSheet {
               }
             }
           }
-        //} else if (i.type === 'sort'){
-/*          i.system.descRapide = (i.system.description+".").substring(0,(i.system.description+".").indexOf("."));
-          if(i.system.idLien != ""){
-            // calcul si spécialisation
-            let it = context.actor.items.get(i.system.idLien);
-          }else {
-            i.data.scoreRel = i.data.score;
-          }
-          competences.push(i);
-        */
-        // }  else if (i.type === 'feature') {
-        //   features.push(i);
         }  else if (i.type === 'secret') {
           if(i.system.niveau >0 && i.system.niveau < i.system.niveauMax) {
             i.system.nomMax = i.system["niv"+i.system.niveau].nom;  
           } else  i.system.nomMax = "";
           secrets.push(i);
         }
-        // ajouter dans les résumés des armes
-/*        else if( i.type === 'arme_resum'){
-          i.data.descRapide = i.data.special.substring(0,(i.data.special+".").indexOf('.'));
-          i.data.NomAffiche = "-non déf-";
-          if(i.data.desync == 0) {
-            i.data.score = 0;
-            i.data.deSup = 0;
-            i.data.degat ="";
-            i.data.bris = -1;
-          }
-          if(i.data.idarmeref !== "") {
-            //let a = context.items[i.data.idarmeref];
-            let a = context.actor.items.get(i.data.idarmeref);
-            if(a !== undefined){
-              // si synchro alors on ajouter les bonus 
-              i.data.NomAffiche = a.name;
-              if(i.data.desync == 0) {
-                // if(a.data.data.initiative ==""){
-                //   i.data.jetinit = a.data.data.pinitDes 
-                //   if(a.data.data.bonus.pinit != 0 ) i.data.jetinit += "+ (" +a.data.data.bonus.pinit +")";
-                // } else {
-                //   i.data.jetinit = a.data.data.initiative; // l'initiative de l'arme modifié
-                // }
-                i.data.score = i.data.score + a.data.data.bonus.score;
-                i.data.bris = a.data.data.bris; // a mettre dans objet
-                i.data.resistance = a.data.data.resistance // a metrte dans objet
-                i.data.degat = a.data.data.dommage ;
-                // ça fonctione pus comme ça !  : if(a.data.data.bonus.dommage !="+0") i.degat = i.degat + " +("+a.data.data.bonus.dommage+")";
-                //i.data.Bdc = a.data.data.attrder.BDomC ; // il faudra changer cela (peut être une liste)
-              }
-            } 
-          }
-          if(i.data.idcmpref !== ""){
-            //let c = context.items[i.data.idcmpref];
-            let c = context.actor.items.get(i.data.idcmpref);
-            if(c !== undefined){
-              i.data.NomAffiche = i.data.NomAffiche + "("+c.name+")";
-              i.data.BPro = c.data.data.BPro;
-              // calcul
-              if(i.data.desync == 0) {
-                i.data.score = i.data.score + c.data.data.score;
-              }    
-            } 
-          }
-          if(i.data.munitions > -1) {
-            i.data.AMunition = true;
-          } else i.data.AMunition = false;
-          ArmesResum.push(i);
-        }
-        */
         // Append to spells.
         else if (i.type === 'sort') {
           i.system.descRapide = i.system.description.substring(0,(i.system.description+".").indexOf("."));
           if (i.system.niveau != undefined) {
-            spells[i.system.niveau].push(i);
+            sorts[i.system.niveau].push(i);
           }
         }
         else if (i.type === 'argent') {
           bourses.push(i);
         }
-  
       }
+      // enlevons le "0 + " pour un bonus de seuildereupture à 0
       if(bonus.formulaSR != "") bonus.formulaSR = ((bonus.seuilRupture == 0)?"": bonus.seuilRupture + " + " )+ bonus.formulaSR.substring(3); // on rajoute sur les deux
-      context.gear = gear;
+      context.gears = gears;
       context.features = features;
-      context.spells = spells;
+      context.sorts = sorts;
       context.aspects = aspects;
       context.armes = armes;
       context.armures = armures;
@@ -360,13 +263,15 @@ export default class npqv2ActorSheet extends ActorSheet {
   
     _prepareItemsFig(context) {
       // tableau minimu des items. Specialité, extra et normalement, besogne sont des items "Aspects"
+      const gears = [];
       const armes = [];  // les armes utilisables par le figurant
       const armures = [];  // armure portée au moment de la rencontre
-      const specialite = []; // Aspect spécialité
-      const extra = []; // Aspect considéré comme extra si on réduit le compteur
+      const specialites = []; // Aspect spécialité
+      const extras = []; // Aspect considéré comme extra si on réduit le compteur
+      const sequelles = []; // pour la gestion de sequelles
       const secrets = []; // si on veut k²isé les figurants
       const bourses = []; // différentes bourses et trésort
-      const mago = false; 
+      const bonus = { "seuilRupture" : 0, "formulaSR": "", "Me": "", "Co" : "", "Pr" : "", "So" : 0, "NdDes":0, "CodeDommage":"+0", "PdM":0, "PdF":0, "PdT":0, "PdFa" : 0 };
       const sorts = { // si c'est un magicien
         1: [],
         2: [],
@@ -374,10 +279,82 @@ export default class npqv2ActorSheet extends ActorSheet {
         4: [],
         5: []
       };
-  
+      for (let i of context.items) {
+        if (i.type === 'aspect') {
+          // on lui ajoute le résumé (pour l'instant jusqu'au premier point)
+          //i.data.descRapide = (i.data.description).substring(0,(i.data.description+".").indexOf("."));
+          switch(i.system.codeSpe) {
+            case 'EXTRA':
+              extras.push(i); // astuce : on le met aussi en "spécialité"
+            case 'NORM':
+            case 'SPE':
+              specialites.push(i);
+              break;
+            case 'SEQ':
+              sequelles.push(i);
+              break;
+
+          }
+        } else if (i.type === 'objet') {
+          // { "OBJET":"objet", "ARME" : "Arme", "ARMURE" : "Armure"} codeSpe
+          if(i.system.codeSpe === 'OBJET') {
+            gears.push(i);
+          }else if(i.system.codeSpe === 'ARME') {
+            armes.push(i);
+          }else if(i.system.codeSpe === 'ARMURE') {
+            armures.push(i);
+            if( i.system.estActif) {
+              if( Number.isNumeric(i.system.protection)) {  
+                bonus.seuilRupture += i.system.protection;
+              } else {
+                if(i.system.protection.indexOf("d") + i.system.protection.indexOf("D")+2 ) {
+                  bonus.formulaSR += " + "+i.system.protection;
+                }
+              }
+            }
+          }
+        }  else if (i.type === 'secret') {
+          if(i.system.niveau >0 && i.system.niveau < i.system.niveauMax) {
+            i.system.nomMax = i.system["niv"+i.system.niveau].nom;  
+          } else  i.system.nomMax = "";
+          secrets.push(i);
+        }
+        // Append to spells.
+        else if (i.type === 'sort') {
+          i.system.descRapide = i.system.description.substring(0,(i.system.description+".").indexOf("."));
+          if (i.system.niveau != undefined) {
+            sorts[i.system.niveau].push(i);
+          }
+        }
+        else if (i.type === 'argent') {
+          bourses.push(i);
+        }
+      }
+      // enlevons le "0 + " pour un bonus de seuildereupture à 0
+      if(bonus.formulaSR != "") bonus.formulaSR = ((bonus.seuilRupture == 0)?"": bonus.seuilRupture + " + " )+ bonus.formulaSR.substring(3); // on rajoute sur les deux
+      context.gears = gears;
+      context.armes = armes;
+      context.armures = armures;
+      context.specialites = specialites;
+      context.extras = extras;
+      context.sequelles = sequelles;
+      context.secrets = secrets;
+      context.bourses = bourses;
+      context.bonus = bonus;
+      context.sorts = sorts;
 
     }
   
+    _preparePNJData(context) {
+      // prérapation des données calculé 
+      let calcSR = 0;
+      if(context.system.bonusDrama !== undefined && Number.isNumeric(context.system.bonusDrama)) calcSR = context.system.bonusDrama;
+      context.seuilRupture = context.system.valeur + calcSR; // faut rajouter l'amure 
+      context.nbActions = Math.ceil((context.estInitHaute ? context.system.plus : context.system.valeur) / 2);
+
+    }
+
+
     /* -------------------------------------------- */
   
     /** @override */
