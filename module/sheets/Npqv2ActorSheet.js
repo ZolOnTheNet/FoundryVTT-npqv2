@@ -83,7 +83,8 @@ export default class npqv2ActorSheet extends ActorSheet {
       // }
       context.lstCMP= { };
       for(const element in context.system.cmp){
-        context.lstCMP[element] = element; // devra mettre le bon code de traduction (game.i18n.localize)
+        context.lstCMP[element] = element; 
+        //element.labelT = game.i18n.localize(element.label);// devra mettre le bon code de traduction (game.i18n.localize) marche pas !
       };      // traitement des jets  création d'un mini objet { t, txt, d } pour type, texte, nbdés
       // --------- Gestion des états (generer les affichages)
       const lesEtats=['DPdM','fatigue','faiblesse','tension']; // Mes quatre type d'état
@@ -113,7 +114,7 @@ export default class npqv2ActorSheet extends ActorSheet {
     if(context.system.cmpCirconstance === ""){
       // peut être quelque chose a faire !
     }else {      
-      context.system.initiative.value = context.system.cmp[context.system.cmpCirconstance].value;
+      context.system.initEtat.value = context.system.cmp[context.system.cmpCirconstance].value;
       // il peut y avoir des formules :       
       //context.seuilRupture =  context.system.cmp[context.system.cmpCirconstance].value +1; // seuil de rupture (reprise de calcul)
       if(context.bonus.formulaSR != "") {
@@ -124,17 +125,17 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.nbActions = Math.ceil(context.system.cmp[context.system.cmpCirconstance].value/2);
     }
     // faudra rajouter l'armure voir les bonus des armes (Co ?)
-    context.system.initiative.ptEffort = 0; context.system.initiative.lstIteAff = []; // la liste des label et des des
+    context.system.initEtat.ptEffort = 0; context.system.initEtat.lstIteAff = []; // la liste des label et des des
     for(let i = 1; i < 4; i++) {
       c = "asp"+i;
-      if(context.system.initiative["idAspect"+i] === ""){
+      if(context.system.initEtat["idAspect"+i] === ""){
         // la aussi on laisse car peut être utile prochainement
       }else {
-        let ite = actorData.items.get(context.system.initiative["idAspect"+i]);
+        let ite = actorData.items.get(context.system.initEtat["idAspect"+i]);
         if(ite !== null) { // a tester !XXXX
-          context.system.initiative.lstIteAff.push( { "id" : context.system.initiative["idAspect"+i], "label": ite.name, "NbDes": ite.system.NbDes });  
-          if(i>1) context.system.initiative.ptEffort +=3; // l'effort est plus important
-          context.system.initiative.value += ite.system.NbDes; 
+          context.system.initEtat.lstIteAff.push( { "id" : context.system.initEtat["idAspect"+i], "label": ite.name, "NbDes": ite.system.NbDes });  
+          if(i>1) context.system.initEtat.ptEffort +=3; // l'effort est plus important
+          context.system.initEtat.value += ite.system.NbDes; 
         }
       }
 
@@ -168,7 +169,7 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.jetCoutEffort = nbEffort;
       context.system.jet.nblancer = nbdes;
       //context.effortTxt = '<i data-cmd="set.etat.effort" data-roll="1" title="1" class="rollable fillable fas fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable far fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable fad fa-square"></i>'
-      context.effortTxt = this.visuEffort(context.system.etats.effort, nbEffort+ context.system.initiative.ptEffort);
+      context.effortTxt = this.visuEffort(context.system.etats.effort, nbEffort+ context.system.initEtat.ptEffort);
     }
   }
     /**
@@ -535,12 +536,12 @@ export default class npqv2ActorSheet extends ActorSheet {
       case 'initAsp' :
         let i = 1;
         for(; i < 4; i++){
-          if(this.document.system.initiative["idAspect"+i] === "") break;
-          if(this.document.system.initiative["idAspect"+i] === txtCode) break; // evitons les doublons !
+          if(this.document.system.initEtat["idAspect"+i] === "") break;
+          if(this.document.system.initEtat["idAspect"+i] === txtCode) break; // evitons les doublons !
         } 
         if(i > 3) i = 3;
         let obj= {};
-        obj["system.initiative.idAspect"+i] = txtCode;
+        obj["system.initEtat.idAspect"+i] = txtCode;
         this.document.update(obj);
         break;
         case 'jet': // jet direct d'un compétence, idem paris
@@ -561,9 +562,9 @@ export default class npqv2ActorSheet extends ActorSheet {
         let ind =(cmdArgs[2] === 'cmp')? cmd: parseInt(cmdArgs[2])+1;
         switch(cmdArgs[1]){ // actuellement : init, select
           case 'init':
-            this.document.system.initiative["idAspect"+ind] = ""; // c'est oas bo mais ça marche !!!
+            this.document.system.initEtat["idAspect"+ind] = ""; // c'est oas bo mais ça marche !!!
             let obj= {};
-            obj["system.initiative.idAspect"+ind] = "";
+            obj["system.initEtat.idAspect"+ind] = "";
             this.document.update(obj);
             // pack ?
             this.packId(this.document.system.initiative);

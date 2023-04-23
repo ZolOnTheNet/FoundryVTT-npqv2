@@ -337,6 +337,7 @@
         "idAspect3":"",
         "ptEffort": 0
       },
+      "initiative":0,
       "nbActions":1,
       "seuilRupture":2,
       "formulaSR":"",
