@@ -7,7 +7,7 @@ import { simpleDialogue, lanceLesDes, DialogueDommage } from "./utils.js";
 import { updateInitiative } from "./updateInitiative.js";
 
 //  a metre au bon endroit
-function XXX(event, html, data){
+function EnventDuChat(event, html, data){
   const btn = $(event.currentTarget);
   const btnType = btn.data("apply");
   // cette partie peut être toujours utile ou non, mais nécessaire pour full, et DomApply
@@ -24,25 +24,40 @@ function XXX(event, html, data){
       console.log("appliquer les dommages !"); 
       let DomTot = parseInt(c.substring(st,ed));
       break;
-    case "double" : console.log("lancer dommage !"); break;
-    case "init"   : 
-      console.log("modifier l'init du perso !");
+    case "double" : console.log("lancer dommage !"); 
+      break;
+    case "attackTo"   : 
+      console.log("faire lancer la défense du personnage opposé !");
+      //on obtient ces cibles
+      let targets = ([...game.user.targets].length > 0) ? [...game.user.targets] : canvas.tokens.objects.children.filter(t => t._controlled);
       //on obtient le personnage en cours de selections
       let actor = ChatMessage.getSpeaker().actor;
       if(actor==null) {
         console.log("Selectionner un personnage");
       } else {
-        // let idcmb = game.combat.combatants.find(x => x.actorId=actor);
-        const result = parseInt(html.find(".dice-total").text())
- /*        //let id = "RdFhwUs3vkKPqVFB"
-        if(game.users.current.role == 4) {
-          game.combat.setInitiative(idcmb._id, result);
-        } else {
-          idcmb.update({ initiative: result})
-          game.actors.get(actor).update({ data: { initiative: result } });
-        }
- */    // piquer à seventhsea
-        updateInitiative(actor, result);
+        // faire une demande de défense, puis appliquer les calcul (@Nom)
+        // let template = "systems/hitos/templates/chat/chat-drama.html";
+        // dialogData = {
+        //     title: game.i18n.localize("Drama"),
+        //     total: result,
+        //     damage: damage,
+        //     dicesOld: dicesOld,
+        //     dices: dicesNew.sort((a, b) => a - b),
+        //     actor: actor.id,
+        //     mods: mods,
+        //     weaponDamage: weaponDamage,
+        //     weaponKindBonus: weaponKindBonus,
+        //     data: actor.system,
+        //     config: CONFIG.hitos,
+        // };
+        // html = await renderTemplate(template, dialogData);
+        // ChatMessage.create({
+        //     content: html,
+        //     speaker: {alias: actor.name},
+        //     type: CONST.CHAT_MESSAGE_TYPES.ROLL, 
+        //     rollMode: game.settings.get("core", "rollMode"),
+        //     roll: newRoll
+        // });
       }
       break;
   }
@@ -72,7 +87,7 @@ function registerHooks() {
 }
 
 Hooks.once("init", async function () {
-    console.log("NPQv3 | Initialisation du système NPQv3");
+    console.log("NPQv6 | Initialisation du système NPQv6");
 
   // Define custom Document classes
     CONFIG.Actor.documentClass = npqv2Actor;
@@ -84,6 +99,14 @@ Hooks.once("init", async function () {
       "Simplelancer" : lanceLesDes,
       "SimpleDom" : DialogueDommage
     };
+
+     // ça marche si on ouvre la feuille de perso, sinon c'est 0 (pas possible).
+     CONFIG.Combat.initiative = {
+      //  formula: "1d20 + @abilities.dex.mod",
+        formula: "@initEtat.value"
+        //,
+        //decimals: 2
+      };
 
     game.macroDialogue = simpleDialogue; // atransfere dans McDialogues
     game.macroSimpleJet = lanceLesDes;

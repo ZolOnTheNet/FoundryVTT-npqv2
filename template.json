@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["pj", "figurant", "monstre", "terrain"],
+    "types": ["pj", "pj7","figurant", "monstre", "terrain"],
     "templates": {
       "jets":{
         "jet": {
@@ -84,6 +84,28 @@
           }
         }
       },
+      "miniEtats":{
+        "etats": {
+          "fatigue": {
+            "label":"k2m.fatigue",
+            "cmp":0,
+            "xp":0,
+            "value": 0,
+            "max": 12
+          },
+          "effort": {
+            "label":"k2m.effort",
+            "value":0,
+            "max":18
+          },
+          "encaissement": {
+            "cmp":1,
+            "xp" : 1,
+            "value" : 0,
+            "physique" : 0
+          }
+        }
+      }, 
       "compteur":{
         "compteur":{
           "value":0,
@@ -249,6 +271,55 @@
           }
         }
       },
+      "cmps7": {
+        "cmp" : {
+          "artisan": {
+            "value": 1,
+            "label":"Artisan",
+            "xp": 1              
+          },
+          "artiste": {
+            "value": 1,
+            "label":"k2m.artiste",
+            "xp": 1              
+          },
+          "athlete": {
+            "value": 1,
+            "label":"k2m.athlete",
+            "xp": 1              
+          },
+          "erudit": {
+            "value": 1,
+            "label":"k2m.erudit",
+            "xp": 1              
+          },
+          "guerrier": {
+            "value": 1,
+            "label":"k2m.guerrier",
+            "xp": 1              
+          },
+          "magicien": {
+            "value": 1,
+            "label":"k2m.magicien",
+            "xp": 1              
+          },
+          "marchand": {
+            "value": 1,
+            "label":"k2m.marchand",
+            "xp": 1              
+          },
+          "rodeur": {
+            "value": 1,
+            "label":"k2m.rodeur",
+            "xp": 1              
+          },
+          "Tireur": {
+            "value": 1,
+            "label":"tireur",
+            "xp": 1              
+          }
+        }
+      },
       "carac": {
         "valeur":3,
         "plus":6,
@@ -259,7 +330,7 @@
     "pj": {
       "templates": ["base","etatsTot","cmps","jets"],
       "cmpCirconstance":"",
-      "initiative": {
+      "initEtat": {
         "value": 0,
         "idAspect1":"",
         "idAspect2":"",
@@ -271,18 +342,45 @@
       "formulaSR":"",
       "estSRVar" : false
     },
+    "pj7": {
+      "templates": ["base","miniEtats","cmps7","jets"],
+      "cmpCirconstance":"",
+      "initEtat": {
+        "cmp":1,
+        "xp":3,
+        "value": 0,
+        "formule":"",
+        "nbDi" : 2,
+        "idAspect1":"",
+        "idAspect2":"",
+        "idAspect3":"",
+        "ptEffort": 0,
+        "deVieConsom":0
+      },
+      "initiative" : -1,
+      "nbActions":1,
+      "seuilRupture":2,
+      "formulaSR":"",
+      "estSRVar" : false,
+      "cmpEncaissement":1,
+      "xpEncaissement" : 3,
+      "cmp2Encaissement" : "artisan"
+    },
     "figurant": {
+      "codeSpe" :"FIG",
+      "nd":1,
       "templates": ["minibase","compteur","carac"],
       "estNbActionHaute": false,
       "estInitHaute": false,
-      "valInit" : 0,
+      "initEtat": {
+        "value": 0,
+        "ptEffort": 0
+      },
       "bonusDrama" : 0,
+      "seuilRupture" : 0,
+      "parisDefaut" : 0,
       "nivTresor": 0,
       "totalXP": 0
-    },
-    "monstre": {
-      "templates": ["minibase","compteur","carac","jets"],
-      "nivTresor":2
     },
     "terrain":{
 
@@ -306,7 +404,7 @@
       "solidite" : 0,
       "FP" : 0,
       "bonus":{
-        "NdDes":0,
+        "NbDes":0,
         "CodeDommage":"+0",
         "PdM":0,
         "PdF":0,

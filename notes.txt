@@ -108,3 +108,15 @@ le système recherché sera sans points de magie, la fatigue prend le relais
 le favoris pour l'instant je ne vois que le jet de cmp
 l'utilisation d'arme ?
 Comment compter les amures : selection : porté ou pas ?
+
+TARGET
+pour obtenir la liste des targets, c'est le user (cof:) , je ne sais pas ce que donne canvas... mais le [...] donne un tableau (transforme un
+set en tableau)
+let targets = ([...game.user.targets].length > 0) ? [...game.user.targets] : canvas.tokens.objects.children.filter(t => t._controlled);
+
+INTERFACE
+pour envoyez une erreur :
+ui.notification.error("text") : message rouge
+ui.notifications.warn("coucou c'est moi") : message jaune
+ui.notifications.notify("coucou c'est moi aussi") : message bleu..
+

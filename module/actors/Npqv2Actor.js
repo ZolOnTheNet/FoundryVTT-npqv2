@@ -114,11 +114,16 @@ import { quelRang, AppliqueEtatValeur } from "../utils.js";
        */
       _prepareNpcData(actorData) {
         if (actorData.type == 'pj') return; // càd pour l'instant Monstre, figurants
+        if (actorData.type == 'pj7') return;
         const data = actorData.system;
-        // Make modifications to data here. For example:
-        //const data = actorData.data;
-        //data.xp = (data.cr * data.cr) * 100;
-         //----------------- Calcul de la valeur de compteur : seuil de réussite -------------------------------
+        let curRang = quelRang(data.compteur);
+        data.compteur.seuil = data.compteur.diff["rang"+curRang];
+        let valcour = 0
+        for(let j = 1; j < 5 ; j++) { // nombre de rang
+          valcour += data.compteur.rangs["rang"+j].max;
+          data.compteur.rangs["rang"+j].seuil = data.compteur.diff["rang"+j];
+        }
+        data.compteur.max = valcour; 
       }
     
       /**
