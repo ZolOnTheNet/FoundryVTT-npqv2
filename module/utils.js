@@ -200,7 +200,65 @@ function DialogueElementaire (titre = "lancer de dé", form="<h2>coucou</h2", fn
     }).render(true);
 
 }
+
+function repartiVal(objAvecRang, modif = 0, bfixe = 0){
+  let tot = 0; let obj = {};
+  if(bfixe) {
+    if(modif < 0 ) modif = -modif; // valeur toujours positive
+    tot = modif; 
+  } else {
+    for(let i = 1; i < 4 ; i++) {
+      obj = objAvecRang.rangs["rang"+1];
+      if( obj.value > obj.max) {
+        tot += obj.value - obj.max;
+        obj.value = obj.max;
+      }
+      tot += obj.value; 
+    }
+    tot += modif; // correction supplémentaire
+  }
+  // nous avons le total, répartissons le 
+  let rep = tot; // sauvont le total
+  for(let i = 1; i < 4 ; i++) {
+    obj = objAvecRang.rangs["rang"+1];
+    if( (rep - obj.max) > 0) {
+      obj.value = obj.max;
+      rep -= obj.value;
+    } else { // ce coup-ci c'est inf, on doit y mettre la somme
+      obj.value = rep;
+      rep = 0; 
+    }
+  }
+  return { 'somme': tot, 'dep' : rep};
+}
+
+/**
+ * remet les aspects ou la liste (de 1 à 3) en commancant par le haut
+ * valide pour : le jet et l'initiative
+ *
+ * @param {*} parent : jet ou initiative
+ */
+function packId(parent) {
+  let tab = []; let c = "";
+  for(let i =1; i < 4 ; i++) {
+    c =parent["idAspect"+i];
+    if( c != "") {
+      tab.push(c);
+    }
+  }
+  let lng = tab.length;
+  if(lng > 0) {
+    for(let i =0; i < 3 ; i++) {
+      if(i >= lng) {
+        parent["idAspect"+(i+1)]="";
+      } else {
+        parent["idAspect"+(i+1)]=tab[i];
+      }
+    }
+  }
+  
+}
 /***
  * EXPORT ---------------
  */
-export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut}
+export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut, quelRang, packId, repartiVal}
