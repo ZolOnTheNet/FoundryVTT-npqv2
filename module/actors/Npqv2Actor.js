@@ -65,10 +65,6 @@
        * Prepare NPC type specific data.
        */
       _prepareNpcData(actorData) {
-<<<<<<< Updated upstream
-        if (actorData.type !== 'pnj') return;
-    
-=======
         if (actorData.type == 'pj') return; // càd pour l'instant Monstre, figurants
         if (actorData.type == 'pj7') return;
         const data = actorData.system;
@@ -80,7 +76,6 @@
           data.compteur.rangs["rang"+j].seuil = data.compteur.diff["rang"+j];
         }
         data.compteur.max = valcour;
->>>>>>> Stashed changes
         // Make modifications to data here. For example:
         //const data = actorData.data;
         //data.xp = (data.cr * data.cr) * 100;

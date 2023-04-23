@@ -1,10 +1,7 @@
-<<<<<<< Updated upstream
-import {lanceLesDes, simpleDialogue, lancerDeBrut, DialogueDommage} from "../utils.js"
-=======
-import {lanceLesDes, simpleDialogue, lancerDeBrut, DialogueDommage, AppliqueEtatValeur } from "../utils.js"
+//import {lanceLesDes, simpleDialogue, lancerDeBrut, DialogueDommage, AppliqueEtatValeur } from "../utils.js"
+import { simpleDialogue} from "../utils.js"
 import { updateInitiative } from "../updateInitiative.js";
 
->>>>>>> Stashed changes
 export default class npqv2ActorSheet extends ActorSheet {
 
     /** @override */
@@ -38,8 +35,9 @@ export default class npqv2ActorSheet extends ActorSheet {
       const actorData = this.actor.data.toObject(false);
   
       // Add the actor's data to context.data for easier access, as well as flags.
-      context.data = actorData.data;
+      context.system = actorData.system;
       context.flags = actorData.flags;
+      // je ne sais pas trop 
       context.system.chatCom = { "_id": context._id }; // objet pour aider à la communication avec le chat.
       
       // Prepare character data and items.
@@ -48,30 +46,20 @@ export default class npqv2ActorSheet extends ActorSheet {
         this._prepareCharacterData(context);
       }
   
-<<<<<<< Updated upstream
-=======
       if(actorData.type == 'pj7') {
         this._prepareItems(context);
         this._prepareCharacterData7(context);
         this._prepareCharacterCmb7(actorData,context);
       }
       // ------ Les différents NPC ---------------
->>>>>>> Stashed changes
       // Prepare NPC data and items.
 /*      if (actorData.type == 'pnj') {
         this._prepareItems(context);
-<<<<<<< Updated upstream
-      }
-  
-      for (let att in context.data.attributs) {
-          context.data.attributs[att].code = att;
-=======
         this._preparePNJData(context);
       } */
       if (actorData.type == 'figurant') {
         this._prepareItemsFig(context);
         this._preparePNJData(context);
->>>>>>> Stashed changes
       }
       // Add roll data for TinyMCE editors.
       context.rollData = context.actor.getRollData();
@@ -97,9 +85,6 @@ export default class npqv2ActorSheet extends ActorSheet {
       //   v.label = game.i18n.localize(CONFIG.NPQV1.attributs[k]) ?? k;
       // }
     }
-<<<<<<< Updated upstream
-  
-=======
  /**
   *  cacul sur la partie lancé de dés 
   *
@@ -178,7 +163,6 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.effortTxt = this.visuEffort(context.system.etats.effort, nbEffort+ context.system.initEtat.ptEffort);
     }
   }
->>>>>>> Stashed changes
     /**
      * Organize and classify Items for Character sheets.
      *
@@ -243,18 +227,6 @@ export default class npqv2ActorSheet extends ActorSheet {
           }else {
             i.data.scoreRel = i.data.score;
           }
-<<<<<<< Updated upstream
-          competences.push(i);
-        }
-        // Append to features.
-        else if (i.type === 'feature') {
-          features.push(i);
-        }
-        else if (i.type === 'secret') {
-          if(i.data.niveau >0 && i.data.niveau < i.data.niveauMax) {
-            i.data.nomMax = i.data["niv"+i.data.niveau].nom;  
-          } else  i.data.nomMax = "";
-=======
 
         } else if (i.type === 'objet') {
           // { "OBJET":"objet", "ARME" : "Arme", "ARMURE" : "Armure"} codeSpe
@@ -284,7 +256,6 @@ export default class npqv2ActorSheet extends ActorSheet {
           if(i.system.niveau >0 && i.system.niveau < i.system.niveauMax) {
             i.system.nomMax = i.system["niv"+i.system.niveau].nom;  
           } else  i.system.nomMax = "";
->>>>>>> Stashed changes
           secrets.push(i);
         }
         // ajouter dans les résumés des armes
@@ -368,9 +339,6 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.bonus = this.actor.data.data.bonus;
     }
   
-<<<<<<< Updated upstream
-  
-=======
     _prepareItemsFig(context) {
       // tableau minimu des items. Specialité, extra et normalement, besogne sont des items "Aspects"
       const gears = [];
@@ -486,42 +454,12 @@ export default class npqv2ActorSheet extends ActorSheet {
     }
 
 
->>>>>>> Stashed changes
     /* -------------------------------------------- */
   
     /** @override */
     activateListeners(html) {
       super.activateListeners(html);
-<<<<<<< Updated upstream
-  
-      // Render the item sheet for viewing/editing prior to the editable check.
-      html.find('.item-edit').click(ev => {
-        const li = $(ev.currentTarget).parents(".item");
-        const item = this.actor.items.get(li.data("itemId"));
-        item.sheet.render(true);
-      });
-  
-      // -------------------------------------------------------------
-      // Everything below here is only needed if the sheet is editable
-      if (!this.isEditable) return;
-  
-      // Add Inventory Item
-      html.find('.item-create').click(this._onItemCreate.bind(this));
-  
-      // Delete Inventory Item
-      html.find('.item-delete').click(ev => {
-        const li = $(ev.currentTarget).parents(".item");
-        const item = this.actor.items.get(li.data("itemId"));
-        item.delete();
-        li.slideUp(200, () => this.render(false));
-      });
-  
-    //   // Active Effect management
-    //   html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
-  
-=======
  
->>>>>>> Stashed changes
       // Rollable abilities.
       html.find('.rollable').click(this._onRoll.bind(this));
   
@@ -567,15 +505,6 @@ export default class npqv2ActorSheet extends ActorSheet {
     if(dataset.rollType === undefined || dataset.rollType=="") dataset.rollType ="debase";
     // Handle item rolls.
     // prétraitement suivant le rolltype et le champs
-<<<<<<< Updated upstream
-    switch(dataset.rollType) {
-      case 'attribr_direct':
-        if(dataset.label.substring(0,4) == "BDom") {
-          dataset.rollType = 'dedirectdom';
-        } else if(dataset.label.substring(0,4) == "Recup") {
-          dataset.rollType = 'recup';
-        } else dataset.rollType = 'rien';
-=======
     if(this.type === "pj7") {
       onRoll7(dataset,cmdArgs, txtCode);
       return ;
@@ -598,7 +527,6 @@ export default class npqv2ActorSheet extends ActorSheet {
             } 
          }
          this.document.update( obj1 );
->>>>>>> Stashed changes
         break;
       case 'attribr':
         if(dataset.label.substring(0,4) == "BDom") {
@@ -607,8 +535,6 @@ export default class npqv2ActorSheet extends ActorSheet {
           dataset.rollType = 'recup';
         } else dataset.rollType = 'rien';
         break;
-<<<<<<< Updated upstream
-=======
       case 'edit': // ouvrir pour modificaiton d'un aspect
         const item = this.document.items.get(txtCode);
         item.sheet.render(true);
@@ -728,109 +654,9 @@ export default class npqv2ActorSheet extends ActorSheet {
     //     break;
       default:
         console.log("ActorSheet > _onRoll : cmd inconnu =>",cmd,dataset);
->>>>>>> Stashed changes
     }
-    let expl = (game.explode)?"D6x6":"D6";
-    switch(dataset.rollType) {
-      
-      case 'cmp':
-        //  element.closest('.item').childNodes[11].childNodes[1].value  (pour la mise)
-        let res =  element.closest('.item').childNodes[11].childNodes[1].value ?  parseInt(element.closest('.item').childNodes[11].childNodes[1].value) :0;
-        // attention : roll + res == roll ori... ! a modifier
-        lanceLesDes(dataset.roll,res,expl,5)
-        break;
-      case 'item':
-        console.log("Compétence : trouver le code et ajouter les dés !");
-      case 'dedirect' : 
-        //game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
-        lanceLesDes(dataset.roll,0,expl,5)
-        break;
-      case 'debase' :
-        simpleDialogue(dataset.roll, 0, 5, CONFIG.explode)
-        break;
-      case 'dedirectdom': //lance le dés tel que 
-        lancerDeBrut(dataset.roll,"",true);
-        break;
-      case 'diagdom':
-        DialogueDommage(1,"1d6",dataset.roll);
-        break;
-      case 'lancerbrut':
-        lancerDeBrut(dataset.roll, "", false);
-      // if (dataset.rollType.substring(0,4) == 'item') {
-      //   const itemId = element.closest('.item').dataset.itemId;
-      //   const item = this.actor.items.get(itemId);
-      //   if(item) {
-      //     if(item.type == "arme_resum") {
-      //          if(dataset.rollType.substring(0,5) == "itemI"){
-      //            // lance le dé d'init, il faut le mettre dans init
-                
-      //            let formula = dataset.rollType.substring("ItemI=".length);
-      //            this.actor.data.data.attrder.initformule = formula + " + " + this.actor.data.data.attrder.pinit_finaux.value;
-      //            this.render(true);
-      //            /*
-      //            let roll = new Roll(formula, this.actor.getRollData());
-      //            let cm = roll.toMessage({
-      //              speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      //              flavor: "<b>Jet d'init</b>",
-      //              //content:"Super jet !!",
-      //              rollMode: game.settings.get('core', 'rollMode'),
-      //            });
-      //            */
-      //          } else if(dataset.rollType.substring(0,5) == "itemA"){
-      //           // utlisation de l'attribut comme reférence
-      //          } else if(dataset.rollType.substring(0,5) == "itemS"){
-      //           promptForLancer(element.closest('.item').firstElementChild.innerText,item.data.data.score,item.data.data.attributd, this.actor.data.data[item.data.data.attributd].value, 
-      //               item.data.data.degat).then(value => {
-      //             console.log("lancer de dés ",value);
-      //             console.log("acteur ",this.actor);
-      //             //jetdata = { "roll":r, "eval":txtEval, "score":scoreTot, "des": attr, "nom":txtNom, "Code":codeRet };
-      //             let qui = ChatMessage.getSpeaker({ actor: this.actor });
-      //             let jetdata = utils.lancerJet(value.txtNom, value.des, value.score + value.bonus, qui); 
-      //             utils.lanceDommage(jetdata.Code, value.dommage,qui)    
-      //           }).catch(e => 0);
-                
-      //          } else if(dataset.rollType.substring(0,5) == "itemD"){
-      //            // jet de dommage 
-      //             let formula = dataset.rollType.substring("ItemD=".length);
-      //             let label = "<h2>Jet de dommage</h2> ";
-      //             if(item.data.data.idarmeref != "") {
-      //               let arm = this.actor.items.get(item.data.data.idarmeref)
-      //               label = arm.data.name +" fait les dommages :";
-      //             }
-      //             label += "</h2>ayant pour dommage : ";
-      //             let roll = new Roll(formula, this.actor.getRollData());
-      //             let cm = roll.toMessage({
-      //                   speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      //                   flavor: label,
-      //                   //content:"Super jet !!",
-      //                   rollMode: game.settings.get('core', 'rollMode'),
-      //             });
-      //             //return utils.SimpleLancerSousCmp(this.actor, item.data,ChatMessage.getSpeaker({ actor: this.actor }));
-      //          }
-      //     }
-      //     else return item.roll();
-      //   }
-      // }
-      case 'rien' :
-    }
+  }
 
-<<<<<<< Updated upstream
-    // Handle rolls that supply the formula directly.
-    if (dataset.roll) {
-      // let label = dataset.label ? `[Attribut] ${dataset.label}` : '';
-      // if(dataset.form === undefined) dataset.form = "no";
-      // if(dataset.form == "yes") {
-      //   promptForLancer(label,25,dataset.label, dataset.roll,"").then(value => {
-      //     // on peut traiter si le score n'a pas été indiqué comme un simple lancé
-      //             console.log("lancer de dés ",value);
-      //             console.log("acteur ",this.actor);
-      //             //jetdata = { "roll":r, "eval":txtEval, "score":scoreTot, "des": attr, "nom":txtNom, "Code":codeRet };
-      //             let qui = ChatMessage.getSpeaker({ actor: this.actor });
-      //             let jetdata = utils.lancerJet(value.txtNom, value.des, value.score + value.bonus, qui); 
-      //             if(value.dommage != "") utils.lanceDommage(jetdata.Code, value.dommage,qui)    
-      //           }).catch(e => 0);
-       // game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode)
-=======
 
 /**
  * visuRang : visualise un Rang founis en paramètre
@@ -873,7 +699,6 @@ packId(parent) {
     for(let i =0; i < 3 ; i++) {
       if(i >= lng) {
         parent["idAspect"+(i+1)]="";
->>>>>>> Stashed changes
       } else {
         //game.macroDialogue(dataset.roll, 0, 5, CONFIG.explode);
       // let roll = new Roll(dataset.roll, this.actor.getRollData());
@@ -883,11 +708,9 @@ packId(parent) {
       //   //content:"Super jet !!",
       //   rollMode: game.settings.get('core', 'rollMode'),
       //   });
+      }
     }
   }
-<<<<<<< Updated upstream
-=======
-  
 }
 
 /*----------------------------------------------------------------
@@ -1122,7 +945,6 @@ onRoll7(dataset,cmdArgs, txtCode){
       console.log("ActorSheet > _onRoll : cmd inconnu =>",cmd,dataset);
   }
 
->>>>>>> Stashed changes
 }
 
 }

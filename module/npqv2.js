@@ -119,9 +119,6 @@ Hooks.once("init", async function () {
     Actors.registerSheet("npqv2", npqv2ActorSheet, { makeDefault: true });
     
     registerHooks();
-<<<<<<< Updated upstream
-
-=======
     // ----------------------------------
     // piquer de sevensea : svnsea2e. Hooks.once("init",...)
     // ajoute : for et iff à Handlebars
@@ -172,7 +169,6 @@ Hooks.once("init", async function () {
         return opts.inverse(this);
       }
     });
->>>>>>> Stashed changes
     return preloadHandlebarsTemplates();
 })
 

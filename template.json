@@ -1,14 +1,4 @@
 {
-<<<<<<< Updated upstream
-    "Actor": {
-      "types": ["pj", "figurant", "mi-boss", "Boss"],
-      "templates": {
-        "base": {
-          "PdV": {
-            "value": 15,
-            "min": 0,
-            "max": 15
-=======
   "Actor": {
     "types": ["pj", "pj7", "figurant", "monstre", "terrain"],
     "templates": {
@@ -34,7 +24,6 @@
             "rang2":9,
             "rang3":12,
             "rang4":15
->>>>>>> Stashed changes
           },
           "PdM": {
             "value": 5,
@@ -141,112 +130,6 @@
           }
         }
       },
-<<<<<<< Updated upstream
-      "pj": {
-        "templates": ["base","attr","attrb"],
-        "ethnie":"",
-        "chance":5,
-        "Heroisme":1
-      },
-      "points2danger":{
-        "points":5
-      },
-      "figurant": {
-        "templates": ["minibase"],
-        "nivTresor": 0
-      },
-      "mini-boss-f": {
-        "templates": ["minibase","attr","attrb"],
-        "nivTresor":2
-      },
-      "mini-boss-b": {
-        "templates": ["base","attr","attrb"],
-        "nivTresor":2
-      },
-      "Boss" : {
-        "templates": ["base","attr","attrb"],
-        "nivTresor":4
-      }
-    },
-    "Item": {
-      "types": ["objet", "domaine", "sort", "competence", "avantage","ethnie", "secret","argent", "arme_resum"],
-      "objet": {
-        "description": "",
-        "utilisation": "",
-        "quantite": 1,
-        "poids": 0,
-        "volume" : 0,
-        "typeObjet":"O",
-        "bonus":{
-          "score":0,
-          "deSup":0,
-          "dommage":"+0",
-          "PdM":0,
-          "PdV":0
-        },
-        "special":""
-      },
-      "domaine": {
-        "description": "Petit texte de présentation du domaine. Il est en format simple pour être mis sans difficulté en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "attributd":"for",
-        "score":15,
-        "code":"Dom",
-        "NbDes":0,
-        "XPa":0
-      },
-      "competence":{
-        "codeSpe":"",
-        "idLien":"",
-        "description":"Petit texte de présentation de la compétence, pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "attributd":"for",
-        "score":25,
-        "code":"cmp",
-        "NbDes":0,
-        "XPa":0,
-        "EstPro":false
-      },
-      "sort": {
-        "codeSpe":"",
-        "idLien":"",
-        "description": "Petit texte de présentation du sortilège, pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "niveau": 1,
-        "coutMagie":1,
-        "effet":"",
-        "score":10,
-        "attributd":"ig"
-      },
-      "avantage":{
-        "description": "Petit texte de présentation de l'avantage ou désavantage. Pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "bonus":"",
-        "bonusAffect":""
-      },
-      "ethnie":{
-        "description": "",
-        "nom":"Gent",
-        "urlweb":"https://www-lagep.cpe.fr/public/lemonde2k2/doku.php?id=k2:gents",
-        "secrets":"",
-        "abrv":"gent"
-      },
-      "secret":{
-        "nomGene":"Position sociale",
-        "description": "",
-        "niveau":0,
-        "niveauMax":5,
-        "niv1": {
-          "nom":"basse echelle",
-          "description" :"au début de l'échelle sociale",
-          "effet":"1D6 sur la table de l'origine"
-        },
-        "niv2": {
-          "nom":"classe ouvrière",
-          "description" :"famille de travailleur",
-          "effet":"2D6 sur la table de l'origine"
-        },"dommarmeEnMainf":false,
-        "niv5": {
-          "nom":"classe aisée",
-          "description" :"famille d'ingénieur ou de bourgeois",
-          "effet":"5D6 sur la table de l'origine"
-=======
       "miniEtats":{
         "etats": {
           "fatigue": {
@@ -288,7 +171,6 @@
             "rang3": { "value":0, "max":3},
             "rang4": { "value":0, "max":3}
           }       
->>>>>>> Stashed changes
         }
       },
       "argent": {
@@ -302,24 +184,6 @@
         "pourpre":0,
         "autres":""
       },
-<<<<<<< Updated upstream
-      "arme_resum":{
-        "armeEnMain":false,
-        "idarmeref":"",
-        "idcmpref":"",
-        "desync":0,
-        "attributd":"for",
-        "DeCmp":10,        
-        "degat":"1D10",
-        "BDom":"1d4",
-        "special":"",
-        "resistance":1,
-        "bris":5,
-        "munitions":-1,
-        "reserve":0,
-        "lancer":1
-      }
-=======
       "minibase":  {
         "type":"PNJ",
         "Origine":"",
@@ -692,7 +556,6 @@
       "paris" : 0,
       "idArmes" : "",
       "idLstArmure" : "" 
->>>>>>> Stashed changes
     }
   }
-  
+}
