@@ -1,0 +1,255 @@
+<form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
+
+    {{!-- Sheet Header --}}
+    <header class="sheet-flex-form" >
+        <table style="width: 100%">
+            <tbody>
+              <tr>
+                <td rowspan="2" width="20%">
+                    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="120"/>
+                    <select  name="system.codeSpe">
+                      {{selectOptions lstCodeSpe selected=system.codeSpe}}
+                    </select>
+                    <input class="normal-input" size="1em" name="nd" type="text" value="{{nd}}" title="niveau de dangerosité"/>
+                </td>
+                <td width="55%">
+                    <h1 class="charname" > <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+                </td>
+                <td>
+                  (valeur 
+                  <span class="align-center rollable" data-roll="valeur" data-cmd="jet.direct.fig" title="Lancer direct tous les dés de valeur"><i class="fas fa-dice"></i></span>
+                  / plus
+                  <span class="align-center rollable" data-roll="plus" data-cmd="jet.direct.fig" title="Lancer direct tous les dés de plus"><i class="fas fa-dice"></i></span>
+                  )
+                  <br>
+                  (&nbsp;<input type="text" size="1em"  class="normal-left-input" name="system.valeur" value="{{system.valeur}}" data-dtype="Number"/>&nbsp;
+                  <span class="align-center rollable" data-roll="valeur" data-cmd="jet.paris.val"  title="Lancer avec paris de valeur"><i class="fad fa-dice"></i></span>
+                   / &nbsp; 
+                  <input type="text"  class="normal-left-input" size="1em" name="system.plus" value="{{system.plus}}" data-dtype="Number"/> 
+                  <span class="align-center rollable" data-roll="plus" data-cmd="jet.paris.plus"  title="Lancer avec paris de plus"><i class="fad fa-dice"></i></span>
+                  )                
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input type="text" name="system.besogne" value="{{system.besogne}}" placeholder="Besogne"/>
+                </td>
+                <td>
+                  <input type="text" name="system.ethnie" value="{{system.ethnie}}" placeholder="Ethnie"/>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+    </header>
+    
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      {{!-- Default tab is specified in actor-sheet.mjs --}}
+      <a class="item" data-tab="description"><h2>Description</h2></a>
+      <a class="item" data-tab="caracteristiques"><h2>caracs</h2></a>
+      <a class="item" data-tab="items"><h2>Equipements</h2></a>
+      <a class="item" data-tab="Secret"><h2>Secrets</h2></a>
+    </nav>
+  
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+  
+      {{!-- Biography Tab --}}
+      <div class="tab biography" data-group="primary" data-tab="description">
+        {{!-- If you want TinyMCE editors to output inline rolls when rendered, you need to pass the actor's roll data to the rollData property. --}}
+        {{editor system.biography target="system.biography" rollData=rollData button=true owner=owner editable=editable}}
+      </div>
+  
+      {{!-- les caracteristiques --}}
+      <div class="tab items" data-group="primary" data-tab="caracteristiques">
+        <section class="grid grid-2col">
+          <section class="main flexcol">
+            <h2>{{localize  "int.specialites" }} <input class="normal-input" type="text" size="1em" name="system.special" value="{{system.special}}" data-dtype="Number"/> (Paris <input class="normal-input" type="text" size="1em" name="system.parisDefaut" value="{{system.parisDefaut}}" data-dtype="Number"/>)</h2>
+            {{#each specialites as |aspect key|}}
+            <div>
+              <span> 
+                <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{aspect._id}}" data-cmd="jet.paris.fig.{{../system.special}}">{{aspect.name}} </a>
+              </span>
+              <span>
+                <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.direct.fig.{{../system.special}}" title="Lancer direct tous les dés"><i class="fas fa-dice"></i></span>
+                <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.paris.fig.{{../system.special}}"  title="Lancer avec paris"><i class="fad fa-dice"></i></span>
+                <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+                &nbsp;
+                <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+              </span>
+            </div>
+            {{/each}}
+            <br>
+            <h2>{{localize  "int.extras" }} <input class="normal-input" type="text" size="1em" name="system.extra" value="{{system.extra}}" data-dtype="Number"/></h2>
+            {{#each extras as |aspect key|}}
+            <div>
+              <span> 
+                <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{../system.special}}" data-cmd="jet.paris.fig.{{../system.special}}">{{aspect.name}} </a>
+              </span>
+              <span>
+                <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.direct.fig.{{../system.special}}" title="Lancer direct tous les dés"><i class="fas fa-dice"></i></span>
+                <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.paris.fig.{{../system.special}}"  title="Lancer avec paris"><i class="fad fa-dice"></i></span>
+                <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+                &nbsp;
+                <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+              </span>
+            </div>
+            {{/each}}
+            <br>
+            <h2>{{localize  "int.armes" }}</h2>
+            {{#each armes as |arme key|}}
+            <div>
+              <span>
+                {{#if system.estActif}}
+                  <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+                {{else}}
+                  <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+                {{/if}} 
+                &nbsp;
+                {{arme.name}}
+                <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+                &nbsp;
+                <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+                <br>(Me:{{arme.system.menace}}, Co:{{arme.system.couverture}})
+                <i class="fad fa-sword rollable" data-roll="{{_id}}" data-cmd="arme.dommage"></i>
+                <i class="fad fa-shield rollable" data-roll="{{_id}}" data-cmd="arme.defense"></i>
+              </span>
+            </div>
+            {{/each}}
+            <br>
+            <h2>{{localize  "int.armures" }}</h2>
+            {{#each armures as |armure key|}}
+            <div>
+              <span>
+                {{#if armure.system.estActif}}
+                  <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+                {{else}}
+                  <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+                {{/if}} 
+                &nbsp;
+                {{armure.name}}
+                <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+                &nbsp;
+                <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+                <br>(Pr:{{armure.system.protection}}, So:{{armure.system.solidite}}) 
+              </span>
+            </div>
+            {{/each}}
+            <br>
+            <h2>{{localize  "int.sequelle" }}</h2>
+            {{#each sequelles as |aspect key|}}
+            <div>
+              <span> 
+                <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{aspect._id}}" data-cmd="add.asp">{{aspect.name}} </a>
+              </span>
+              <span>
+                ({{aspect.system.NbDes}})
+                <span class="attrib-mod align-center rollable" title="{{localize  'nfo.addInit' }}" data-roll="{{_id}}" data-cmd="initAsp"><i class="fas fa-info-square"></i></span>
+                <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+                &nbsp;
+                <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+              </span>
+            </div>
+            {{/each}}
+          </section>
+          <section class="main">
+            Seuil de Rupture : <span class="plusPolice">{{seuilRupture}} </span> (compris Bonus : <input class="normal-input lilipute" type="text" size="1em" name="system.bonusDrama" value="{{system.bonusDrama}}" data-dtype="Number"/>)
+            <br><span >formule : {{system.formulaSR}} </span><i class="fad fa-sync rollable" data-cmd="calc.rupture"></i><br>
+            initiative <i class="fas fa-info-square rollable" data-roll="{{_id}}" data-cmd="lancerInit"></i>
+            {{#if system.estInitHaute}}
+              <i class="fas fa-plus-square rollable" data-roll="" data-cmd="fig.init.valeur"></i>
+            {{else}}
+              <i class="fad fa-minus-square rollable" data-roll="" data-cmd="fig.init.plus"></i>
+            {{/if}}
+            :  <input class="normal-input" type="text" size="1em" name="system.initEtat.value" value="{{system.initEtat.value}}" data-dtype="Number"/>
+            <br>
+            Action : <span class="grdPolice">{{nbActions}} </span>
+            <br>
+            <h3>Compteur <input class="normal-input" type="text" size="1em" name="system.compteur.max" value="{{system.compteur.max}}" data-dtype="Number"/>
+              Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.compteur.value" value="{{system.compteur.value}}" data-dtype="Number"/> </h3>
+            <table>
+              <tr>
+                <td width="32px">Max</td><td>Actuel</td><td class="txtcenter" width="31px">Seuil</td>
+              </tr>
+              {{#each system.compteur.rangs as |rang index|}}
+              <tr>
+                <td><input class="normal-input" type="text" size="1em" name="system.compteur.rangs.{{index}}.max" value="{{rang.max}}" data-dtype="Number"/></td>
+                <td>{{{rang.ligne}}}</td> 
+                <td class="txtcenter">{{rang.seuil}} </td>
+              </tr>
+              {{/each}}
+            </table>
+          </section> 
+        </section> 
+      </div>
+
+      {{!-- Owned Items Tab --}}
+      <div class="tab items" data-group="primary" data-tab="items">
+        <h2>{{localize  "int.general" }}</h2>
+        {{#each gears as |gear key|}}
+        <div>
+          <span>
+            {{#if system.estActif}}
+              <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+            {{else}}
+              <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+            {{/if}} 
+            &nbsp;
+            {{gear.name}} (Me:{{gear.system.menace}}, Co:{{gear.system.couverture}}) 
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+            &nbsp;
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            
+          </span>
+        </div>
+        {{/each}}
+        <br>      
+      
+        <h2>{{localize  "int.armes" }}</h2>
+        {{#each armes as |arme key|}}
+        <div>
+          <span>
+            {{#if system.estActif}}
+              <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+            {{else}}
+              <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+            {{/if}} 
+            &nbsp;
+            {{arme.name}}
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+            &nbsp;
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            <br>(Me:{{arme.system.menace}}, Co:{{arme.system.couverture}})
+            <i class="fad fa-sword rollable" data-roll="{{_id}}" data-cmd="arme.dommage"></i>
+            <i class="fad fa-shield rollable" data-roll="{{_id}}" data-cmd="arme.defense"></i>
+          </span>
+        </div>
+        {{/each}}
+        <br>
+        <h2>{{localize  "int.armures" }}</h2>
+        {{#each armures as |armure key|}}
+        <div>
+          <span>
+            {{#if armure.system.estActif}}
+              <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+            {{else}}
+              <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+            {{/if}} 
+            &nbsp;
+            {{armure.name}}
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+            &nbsp;
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            <br>(Pr:{{armure.system.protection}}, So:{{armure.system.solidite}}) 
+          </span>
+        </div>
+        {{/each}}
+        <br>
+      </div>
+      {{!-- Active Effects Tab --}}
+      <div class="tab effects flexcol" data-group="primary" data-tab="Secrets">
+      </div>
+  
+    </section>
+  </form>
+  

@@ -1,0 +1,308 @@
+<form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
+    {{!-- Sheet Header --}}
+    <header class="sheet-flex-form" >
+      <table >
+          <tbody>
+            <tr>
+              <td rowspan="2">
+                  <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="120"/>
+              </td>
+              <td width="60%">
+                  <h1 class="charname" ><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+              </td>
+              <td style="text-align: center">
+                XP  dép. /  tot     <br>
+                <input type="text" size="4em"  style="width: auto;" name="system.XP.value" value="{{system.XP.value}}" data-dtype="Number"/> / <input type="text"  style="width: auto;" size="4em" name="system.XP.max" value="{{system.XP.max}}" data-dtype="Number"/>                 
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="text" name="system.besogne" value="{{system.besogne}}" placeholder="Archétype"/>
+              </td>
+              <td>
+                <input type="text" name="system.ethnie" value="{{system.ethnie}}" placeholder="Ethnie"/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table>
+          <tbody>
+            <tr>
+              <td class="plusPolice">
+                Effort : <i class="fas fa-plus-square rollable" data-cmd="trans.fatigue.effort"></i> <input class="normal-input" type="text" size="1em" name="system.etats.effort.value" value="{{system.etats.effort.value}}" data-dtype="Number"/>
+                <span class="grdPolice">{{{effortTxt}}}</span><i class="fad fa-sync rollable" data-cmd="reset.effort"></i>
+              </td>
+            </tr>
+            <tr >
+              <td >
+                <span class="plusPolice">Fatigue</span> Val. Actuelle : {{system.etats.fatigue.value}} / {{system.etats.fatigue.max}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  </header>
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    {{!-- Default tab is specified in actor-sheet.mjs --}}
+    <a class="item" data-tab="description"><h2>Description</h2></a>
+    <a class="item" data-tab="caracteristiques"><h2>{{localize  "int.cmpAspects" }}</h2></a>
+    <a class="item" data-tab="equip"><h2>{{localize  "int.equipements" }}</h2></a>
+    <a class="item" data-tab="secrets"><h2>Secrets</h2></a>
+
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Biography Tab --}}
+    <div class="tab biography" data-group="primary" data-tab="description">
+      {{!-- If you want TinyMCE editors to output inline rolls when rendered, you need to pass the actor's roll data to the rollData property. --}}
+      {{editor system.biography target="system.biography" rollData=rollData button=true owner=owner editable=editable}}
+    </div>
+
+    {{!-- les caracteristiques --}}
+    {{!-- rollable = jet, data-roll = id ou l'info, data-cmd= cmd . --}}
+    <div class="tab items" data-group="primary" data-tab="caracteristiques">
+      <section class="grid grid-3col">
+        <section class="main flexcol">
+          <h2>{{localize  "int.cmps" }}</h2>
+          {{#each system.cmp as |cmp key|}}
+          <div class="attribd normal-left-input">
+            <label for="system.cmp.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" data-cmd="add.cmp">{{localize  cmp.label }}&nbsp;</label>
+            <input class="normal-input" type="text" size="1em" name="system.cmp.{{key}}.value" value="{{cmp.value}}" data-dtype="Number"/>
+            <span class="align-center rollable" data-roll="{{key}}" data-cmd="jet.paris"><i class="fad fa-dice"></i></span>
+            <span class="align-center rollable" data-roll="{{key}}" data-cmd="initCmp"><i class="fas fa-info-square"></i></span>
+            <span class="align-center lilipute"><input class="normal-input" type="text" size="1em" title="Xp" name="system.cmp.{{key}}.xp" value="{{cmp.xp}}" data-dtype="Number"/></span>
+            &nbsp;
+          </div>
+          {{/each}}
+        </section>
+
+        <section class="main">
+          <h2>{{localize  "int.aspects" }}</h2>
+          {{#each aspects as |aspect key|}}
+          <div>
+            <span> 
+              <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{aspect._id}}" data-cmd="add.asp">{{aspect.name}} </a>
+            </span>
+            <span>
+              <span class="attrib-mod align-center rollable" title="{{localize  'nfo.addInit' }}" data-roll="{{_id}}" data-cmd="initAsp"><i class="fas fa-info-square"></i></span>
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            </span>
+          </div>
+          {{/each}}
+          <br>
+          <h2>{{localize  "int.armes" }}</h2>
+          {{#each armes as |arme key|}}
+          <div>
+            <span>
+              {{#if system.estActif}}
+                <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+              {{else}}
+                <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+              {{/if}} 
+              &nbsp;
+              {{arme.name}}
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+              <br>(Me:{{arme.system.menace}}, Co:{{arme.system.couverture}})
+              <i class="fad fa-sword rollable" data-roll="{{_id}}" data-cmd="arme.dommage"></i>
+              <i class="fad fa-shield rollable" data-roll="{{_id}}" data-cmd="arme.defense"></i>
+            </span>
+          </div>
+          {{/each}}
+          <br>
+          <h2>{{localize  "int.armures" }}</h2>
+          {{#each armures as |armure key|}}
+          <div>
+            <span>
+              {{#if armure.system.estActif}}
+                <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+              {{else}}
+                <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+              {{/if}} 
+              &nbsp;
+              {{armure.name}}
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+              <br>(Pr:{{armure.system.protection}}, So:{{armure.system.solidite}}) 
+            </span>
+          </div>
+          {{/each}}
+          <br>
+          <h2>{{localize  "int.sequelle" }}</h2>
+          {{#each sequelles as |aspect key|}}
+          <div>
+            <span> 
+              <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{aspect._id}}" data-cmd="add.asp">{{aspect.name}} </a>
+            </span>
+            <span>
+              ({{aspect.system.NbDes}})
+              <span class="attrib-mod align-center rollable" title="{{localize  'nfo.addInit' }}" data-roll="{{_id}}" data-cmd="initAsp"><i class="fas fa-info-square"></i></span>
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            </span>
+          </div>
+          {{/each}}
+        </section>
+        <section>
+          <h2>{{localize  "int.gestionCmb" }}</h1>
+          <h3>{{localize  "int.cmpSituation" }}</h3>
+            <select  name="system.cmpCirconstance">
+              {{selectOptions lstCMP selected=system.cmpCirconstance}}
+            </select><br><span class="plusPolice">Encaissement : </span><span class="grdPolice">{{seuilRupture}} <i class="fad fa-sync rollable" data-cmd="calc.rupture"></i></span>
+            <br><span >formule : {{system.formulaSR}} </span><br>
+            <br>
+          <h3><a class="attrib-mod rollable" title="{{localize  'nfo.lancerInit' }}" data-roll="{{aspect._id}}" data-cmd="lancerInit">
+            {{localize  "int.init" }} {{system.initEtat.value}} <i class="fas fa-info-square"></i></a>
+          </h3>
+            <span>
+              <label for="system.initEtat.cmp" class="resource-label flexlarge align-left" >Cmp. Initiative.&nbsp;</label>
+              <input class="normal-input" type="text" size="1em" name="system.initEtat.cmp" value="{{system.initEtat.cmp}}" data-dtype="Number"/>
+              <span class="align-center lilipute"><input class="normal-input" type="text" size="1em" title="Xp" name="system.initEtat.xp" value="{{system.initEtat.xp}}" data-dtype="Number"/></span>
+            </span>
+            <span>Perte d'Effort : {{system.initEtat.ptEffort}}</span><br>
+            <span>Cmp : {{system.cmpCirconstance}} </span>
+            {{#each system.initEtat.lstIteAff as |asp key|}}
+            <div>
+              <a class="attrib-mod rollable" data-roll="{{asp.id}}" data-cmd="remove.init.{{key}}">{{asp.label}} ({{asp.NbDes}}) <i class="fas fa-minus-square"></i></a>
+            </div>
+            {{/each}}
+            <br>
+          <h3>
+            <a class="attrib-mod rollable" data-roll=" { 'nde' : {{system.jet.nblancer}}, 'paris' : {{system.jet.paris}}, 'seuil' : {{system.jet.seuil}}  }" data-cmd="lancerJet">{{localize  "int.selection" }} <i class="fas fa-dice"></i></a>
+            <span><a class="rollable" title="{{localize  'nfo.favoris' }}" data-roll="" data-cmd="favoris.add" ><i class="fas fa-star"></i> </a></span>
+            <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="favoris.clean"><i class="fas fa-sync-alt"></i> </a></span>
+          </h3>
+          {{!-- le jet "jet": { "codecmp":"artisan",  "idAspect1":"",  "idAspect2":"",  "idAspect3":"",  "nblancer":3, "paris":0, "seuil":6, "autoEffort":1, "coutMagique":0 } --}}
+          <div>
+            <a class="attrib-mod rollable" data-roll="{{system.jet.codecmp}}" data-cmd="remove.select.cmp">{{codeLabel}} ({{codeCmpDe}})</a><a class="attrib-mod rollable" data-roll="{{system.jet.codecmp}}" data-cmd="remove.select.cmp"><i class="fas fa-minus-square"></i></a>
+          </div>
+          <div>
+            <a class="attrib-mod rollable" data-roll="{{system.jet.idAspect1}}" data-cmd="remove.select.0">{{asp1Label}} ({{asp1CodeDe}})</a><a class="attrib-mod rollable" data-roll="{{system.jet.idAspect1}}" data-cmd="remove.select.0"><i class="fas fa-minus-square"></i></a>
+          </div>
+          <div>
+            <a class="attrib-mod rollable" data-roll="{{system.jet.idAspect2}}" data-cmd="remove.select.1">{{asp2Label}} ({{asp2CodeDe}})</a><a class="attrib-mod rollable" data-roll="{{system.jet.idAspect2}}" data-cmd="remove.select.1"><i class="fas fa-minus-square"></i></a>
+          </div>
+          <div>
+            <a class="attrib-mod rollable" data-roll="{{system.jet.idAspect3}}" data-cmd="remove.select.2">{{asp3Label}} ({{asp3CodeDe}})</a><a class="attrib-mod rollable" data-roll="{{system.jet.idAspect3}}" data-cmd="remove.select.2"><i class="fas fa-minus-square"></i></a>
+          </div>
+          <div>
+            <span>#Dés : {{system.jet.nblancer}}</span><span> - Paris : <input class="normal-input" type="text" size="4em" name="system.jet.paris" value="{{system.jet.paris}}" data-dtype="Number"/></span>
+            <br><span>seuil : <strong>{{system.jet.seuil}}</strong> </span>
+            <span>Effort : <strong>{{jetCoutEffort}}</strong></span><span> Auto : {{system.jet.autoEffort}}</span>
+          </div>
+        </section>
+      </section>
+    </div>
+    <div class="tab items" data-group="primary" data-tab="etats">
+      <h3>Fatigue <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.cmp" value="{{system.etats.fatigue.cmp}}" data-dtype="Number"/></h3>
+      <span>
+      Xp : <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.xp" value="{{system.etats.fatigue.xp}}" data-dtype="Number"/>
+      Nb cases : 5
+      <br>
+      Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.value" value="{{system.etats.fatigue.value}}" data-dtype="Number"/>
+      </span>
+      <br>
+    </div> 
+    <div class="tab items" data-group="primary" data-tab="equip">
+      <h1>Equipements</h1>
+      <h2>{{localize  "int.general" }}</h2>
+      {{#each gears as |gear key|}}
+      <div>
+        <span>
+          {{#if system.estActif}}
+            <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+          {{else}}
+            <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+          {{/if}} 
+          &nbsp;
+          {{gear.name}} (Me:{{gear.system.menace}}, Co:{{gear.system.couverture}}) 
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+          &nbsp;
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+          
+        </span>
+      </div>
+      {{/each}}
+      <br>
+      <h2>{{localize  "int.armes" }}</h2>
+      {{#each armes as |arme key|}}
+      <div>
+        <span>
+          {{#if system.estActif}}
+            <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+          {{else}}
+            <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+          {{/if}} 
+          &nbsp;
+          {{arme.name}} (Me:{{arme.system.menace}}, Co:{{arme.system.couverture}})
+          <i class="fad fa-sword rollable" data-roll="{{_id}}" data-cmd="arme.dommage"></i>
+          <i class="fad fa-shield rollable" data-roll="{{_id}}" data-cmd="arme.defense"></i>
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+          &nbsp;
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+        </span>
+      </div>
+      {{/each}}
+      <br>
+      <h2>{{localize  "int.armures" }}</h2>
+      {{#each armures as |armure key|}}
+      <div>
+        <span>
+          {{#if armure.system.estActif}}
+            <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+          {{else}}
+            <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+          {{/if}} 
+          &nbsp;
+          {{armure.name}}
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+          &nbsp;
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+          <br>(Pr:{{armure.system.protection}}, So:{{armure.system.solidite}}) 
+        </span>
+      </div>
+      {{/each}}
+
+    </div>
+    <div class="tab items" data-group="primary" data-tab="secrets">
+      <h2>{{localize  "int.secrets" }}</h2>
+      <table>
+        <tr>
+          <th width="5%"></th>
+          <th width="60%">Nom et description</th>
+          <th width="5%">Niv.</th>
+          <th width="25%">Nom Niv Max</th>
+          <th width="5%">Act.</th>
+        </tr>
+        {{#each secrets as |secret id|}}
+        <tr>
+          <td class="align-center">
+            <img src="{{secret.img}}" title="{{secret.name}}" width="24" height="24"/>
+          </td>
+          <td class="align-left">
+            {{secret.name}} ({{secret.system.nomGene}})
+          </td>
+          <td class="align-center">
+            {{secret.system.niveau}}
+          </td>
+          <td class="align-center"> 
+            {{secret.system.nomMax}}
+          </td>
+          <td>
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+            &nbsp;
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            </td>
+        </tr>
+        {{/each}}
+      </table>
+    </div>
+   </section> 
+</form>

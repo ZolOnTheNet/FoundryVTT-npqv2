@@ -2,7 +2,7 @@
 * lanceLesDes : lancer le nombre de dé (lancer), avec le nombre de dé en réserve (res)
 *               la difficulté(diff)
 */
-function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5 ){
+function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5, obj = {} ){
   let r = new Roll(""+(lancer)+formDe);
   r.evaluate({async :false });
   let resultat = r.total; // r.total entier, r.result chaine de caractère
@@ -11,10 +11,20 @@ function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5 ){
   if (nbsucces > 0) nbsucces += parseInt(res);
 // --------------------------------------------
 
+<<<<<<< Updated upstream
   let monTexte = "Votre jet ("+ lancer + "D6) ainsi que "+ parseInt(res)+ 
 " succès en réserve contre une difficulté de "+ diff + ', vous donne <font size="+5"><b>'+nbsucces+
 ' mises</b></font> à jouer.<br><a class="btn apply-dmg" data-apply="init"><i class="fas fas fa-swords" title="report Initiative"></i></a> &lt;Init __ Lancer Dom&gt;'+ 
 '<a class="btn apply-dmg" data-apply="full"><i class="fas fa-user-minus" title="lancer les dommage"></i></a>';
+=======
+  let monTexte = "";
+  let strObj = JSON.stringify(obj).replaceAll('"','|');
+  if(isSucces >0 ) monTexte= "Votre jet ("+ lancer + "D6) ainsi que "+ parseInt(res)+ 
+" succès en réserve contre un seuil de "+ diff + ', vous donne <font size="+5"><b>'+nbsucces+
+' qualité</b></font>.<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
+'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
+  else monTexte = "Désolé ! mais vous n'avez pas réussi votre jet (="+ resultat+") contre une difficulte de : "+diff+".<br>"; 
+>>>>>>> Stashed changes
   // sortie du texte
    let chatData = {
         user: game.user._id,
@@ -32,23 +42,38 @@ function handleSubmit(html) {
   const formDataObject = formData.toObject();
 
   // expects an object: { input-1: 'some value' }
-//  console.log('output form data object', formDataObject);
+ console.log('output form data object', formDataObject);
 //  console.log('Nb dés', formDataObject);
 //  console.log('Réserve', formDataObject["reserve"]);
   // ne mache pas : game.chatMessageLancerDes("coucou",5,3,5);
 // traitement de retour du dialogue
   let res = parseInt( formDataObject["reserve"]);
   let nbdes = parseInt( formDataObject["nbdes"]);
+<<<<<<< Updated upstream
   let diff = parseInt( formDataObject["difficulte"]);
   let expl = (formDataObject["exploser"] === null)? 0 : parseInt( formDataObject["exploser"]); 
+=======
+  let diff = parseInt( formDataObject["seuil"]);
+  let bonus = parseInt( formDataObject["bonus"]);
+  let obj = JSON.parse(formDataObject["obj"].replaceAll("|",'"'));
+//  let expl = (formDataObject["exploser"] === null)? 0 : parseInt( formDataObject["exploser"]); 
+>>>>>>> Stashed changes
   // au moins un dé à lancer !
   if(res >= nbdes) res = nbdes-1;
   let lancer = nbdes - res; 
+<<<<<<< Updated upstream
   let formDe = (expl ==0)? "D6":"D6x6";
   lanceLesDes(lancer, res, formDe, diff)
 }
 
  function simpleDialogue(nbdes = 5, reserve = 0, diff = 5, expl = 0){
+=======
+  let formDe = "D6";
+  lanceLesDes(lancer, res, formDe, diff, obj);
+}
+
+ function simpleDialogue(nbdes = 5, paris = 0, seuil = 6, obj = {}){
+>>>>>>> Stashed changes
   let i = 10;
   let sp = ChatMessage.getSpeaker();
   let form = `<form>
@@ -66,6 +91,7 @@ function handleSubmit(html) {
                 <td><input name="difficulte" type="integer" value=`+diff+` /></td></tr>
         </tbody>
         </table>
+        <input name="obj" type="text" value='`+JSON.stringify(obj).replaceAll('"','|')+`' />
     </form>`;
     DialogueElementaire("lancer de dé pour "+sp.alias, form, handleSubmit);
 }
@@ -83,12 +109,12 @@ function justeDesFaces(BDom = "1d6") { // il faudra renforcer les tests ici (pas
   return ret;
 }
 
-function lanceLesDom(NbMises = 2, DommageArm = "1d6", BDom = "d6"){
+function lanceLesDom(NbMises = 2, DommageArm = "1d6", BDom = "d6", obj={}){
   // pour BDom faudra faire des tests : pas de chiffre avant (ou sinon prendre en compte), attention au + (deux dés)
-  NbMises--; let Dommage = "";
-  BDom = justeDesFaces(BDom);
-  if( BDom)
-  Dommage = (NbMises < 1)?DommageArm: DommageArm+"+"+NbMises+BDom; 
+  // NbMises--; let Dommage = "";
+  // BDom = justeDesFaces(BDom);
+  // if( BDom)
+  // Dommage = (NbMises < 1)?DommageArm: DommageArm+"+"+NbMises+BDom; 
   
   let r = new Roll(Dommage);
   r.evaluate({async :false });

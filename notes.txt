@@ -79,3 +79,46 @@ function handleSubmit(html) {
 }
 
 simpleDialogue();
+<<<<<<< Updated upstream
+=======
+
+
+///////////////////////////
+La gestion des personnages
+les états sont Fatigue, Faiblesse, Tension, Point de Magie
+  ils ont 4 rangs, qui peuvent être déséquilibré (value = valeur actuel, max = valeur du rang)
+les difficultés sont : 6,9,12,15
+
+Attention :
+Actuellement seul peut être le Pj est fait
+dans les PNJ : nous avons le Boss = PJ, le figurant (qui as valeur, domaine, spécialités, et extra ainsi que compteur), le montre qui peut avoir beaucou plus de rang de compteur...
+
+templates.json : 
+"types": ["pj", "figurant", "monstre"],
+
+et 
+"Boss" : {
+      "templates": ["base","etats","cmps"],
+      "nivTresor":4
+    },
+
+pour les monstres : les rangs peut être mis à de plus grandes valeurs (regroupant les différents rangs suivants), de découpage se fera par une réf : decoupe donnant le nombre par ligne
+
+Pour la magie c'est pas encore réelement fait : quelques points pour les dépenser ou donner quelques bonus (de 0 à 5)
+le système recherché sera sans points de magie, la fatigue prend le relais
+
+le favoris pour l'instant je ne vois que le jet de cmp
+l'utilisation d'arme ?
+Comment compter les amures : selection : porté ou pas ?
+
+TARGET
+pour obtenir la liste des targets, c'est le user (cof:) , je ne sais pas ce que donne canvas... mais le [...] donne un tableau (transforme un
+set en tableau)
+let targets = ([...game.user.targets].length > 0) ? [...game.user.targets] : canvas.tokens.objects.children.filter(t => t._controlled);
+
+INTERFACE
+pour envoyez une erreur :
+ui.notification.error("text") : message rouge
+ui.notifications.warn("coucou c'est moi") : message jaune
+ui.notifications.notify("coucou c'est moi aussi") : message bleu..
+>>>>>>> Stashed changes

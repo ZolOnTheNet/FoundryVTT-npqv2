@@ -1,4 +1,5 @@
 <form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
+<<<<<<< Updated upstream
 
   {{!-- Sheet Header --}}
   <table width="100%" style="height: 150px;" border="0">
@@ -53,6 +54,68 @@
     </tbody>
   </table>
  
+=======
+    {{!-- Sheet Header --}}
+    <header class="sheet-flex-form" >
+      <table >
+          <tbody>
+            <tr>
+              <td rowspan="2">
+                  <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="120"/>
+              </td>
+              <td width="60%">
+                  <h1 class="charname" ><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+              </td>
+              <td style="text-align: center">
+                XP  dép. /  tot     <br>
+                <input type="text" size="4em"  style="width: auto;" name="system.XP.value" value="{{system.XP.value}}" data-dtype="Number"/> / <input type="text"  style="width: auto;" size="4em" name="system.XP.max" value="{{system.XP.max}}" data-dtype="Number"/>                 
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="text" name="system.besogne" value="{{system.besogne}}" placeholder="Besogne"/>
+              </td>
+              <td>
+                <input type="text" name="system.ethnie" value="{{system.ethnie}}" placeholder="Ethnie"/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table>
+          <tbody>
+            <tr>
+              <td class="plusPolice" colspan="4">
+                Effort : <i class="fas fa-plus-square rollable" data-cmd="trans.fatigue.effort"></i> <input class="normal-input" type="text" size="1em" name="system.etats.effort.value" value="{{system.etats.effort.value}}" data-dtype="Number"/>
+                <span class="grdPolice">{{{effortTxt}}}</span><i class="fad fa-sync rollable" data-cmd="reset.effort"></i>
+              </td>
+            </tr>
+            <tr >
+              <td class="taille-M4">
+                <h3>Fatigue</h3>
+                Val. Actuelle : {{system.etats.fatigue.value}} / {{system.etats.fatigue.max}}<br>
+                Seuil :{{ system.etats.fatigue.seuilAct}}
+              </td>
+              <td class="taille-M4">
+                <h3>Faiblesse (Tot: {{system.etats.faiblesse.max}})</h3>
+                Val. Actuelle : {{system.etats.faiblesse.value}}<br>
+                Seuil : {{system.etats.faiblesse.seuilAct}}
+              </td>
+              <td class="taille-M4">
+                <h3>Tension (Tot : {{system.etats.tension.max}})</h3>
+                Val. Actuelle : {{system.etats.tension.value}}<br>
+                Seuil : {{system.etats.tension.seuilAct}}
+              </td>
+              <td class="taille-M4">
+                <h3>Dép. de PdM.(T: {{system.etats.DPdM.max}})</h3>
+                Val. Actuelle : {{system.etats.DPdM.value}}<br>
+                Seuil : {{system.etats.DPdM.seuilAct}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  </header>
+  {{!-- Sheet Tab Navigation --}}
+>>>>>>> Stashed changes
   <nav class="sheet-tabs tabs" data-group="primary">
     {{!-- Default tab is specified in actor-sheet.mjs --}}
     <a class="item" data-tab="bibiography">Bibio.</a>
@@ -77,6 +140,7 @@
    
     <div class="tab features" data-group="primary" data-tab="features">
       <section class="grid grid-3col">
+<<<<<<< Updated upstream
         <aside class="sidebar">
           <div class="abilities flexcol">
             {{#each data.attributs as |attrib key|}}
@@ -84,6 +148,111 @@
               <label for="data.attributs.{{attrib.code}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{attrib.value}}" data-label="Jet de {{attrib.label}}" data-roll-type="dedirect" >{{attrib.label}} </label>
               <input type="text" name="data.attributs.{{attrib.code}}.value" value="{{attrib.value}}" data-dtype="Number"/>
               <span class="attrib-mod rollable" data-roll="{{attrib.value}}" data-roll-type="debase" data-label="Jet en {{attrib.label}}"> {{attrib.abrv}}</span>
+=======
+        <section class="main flexcol">
+          <h2>{{localize  "int.cmps" }}</h2>
+          {{#each system.cmp as |cmp key|}}
+          <div class="attribd normal-left-input">
+            <label for="system.cmp.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" data-cmd="add.cmp">{{localize  cmp.label }}&nbsp;</label>
+            <input class="normal-input" type="text" size="1em" name="system.cmp.{{key}}.value" value="{{cmp.value}}" data-dtype="Number"/>
+            <span class="align-center rollable" data-roll="{{key}}" data-cmd="jet.paris"><i class="fad fa-dice"></i></span>
+            <span class="align-center rollable" data-roll="{{key}}" data-cmd="initCmp"><i class="fas fa-info-square"></i></span>
+            <span class="align-center lilipute"><input class="normal-input" type="text" size="1em" title="Xp" name="system.cmp.{{key}}.xp" value="{{cmp.xp}}" data-dtype="Number"/></span>
+            &nbsp;
+          </div>
+          {{/each}}
+        </section>
+
+        <section class="main">
+          <h2>{{localize  "int.aspects" }}</h2>
+          {{#each aspects as |aspect key|}}
+          <div>
+            <span> 
+              <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{aspect._id}}" data-cmd="add.asp">{{aspect.name}} </a>
+            </span>
+            <span>
+              ({{aspect.system.NbDes}})
+              <span class="attrib-mod align-center rollable" title="{{localize  'nfo.addInit' }}" data-roll="{{_id}}" data-cmd="initAsp"><i class="fas fa-info-square"></i></span>
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            </span>
+          </div>
+          {{/each}}
+          <br>
+          <h2>{{localize  "int.armes" }}</h2>
+          {{#each armes as |arme key|}}
+          <div>
+            <span>
+              {{#if system.estActif}}
+                <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+              {{else}}
+                <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+              {{/if}} 
+              &nbsp;
+              {{arme.name}}
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+              <br>(Me:{{arme.system.menace}}, Co:{{arme.system.couverture}})
+              <i class="fad fa-sword rollable" data-roll="{{_id}}" data-cmd="arme.dommage"></i>
+              <i class="fad fa-shield rollable" data-roll="{{_id}}" data-cmd="arme.defense"></i>
+            </span>
+          </div>
+          {{/each}}
+          <br>
+          <h2>{{localize  "int.armures" }}</h2>
+          {{#each armures as |armure key|}}
+          <div>
+            <span>
+              {{#if armure.system.estActif}}
+                <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+              {{else}}
+                <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+              {{/if}} 
+              &nbsp;
+              {{armure.name}}
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+              <br>(Pr:{{armure.system.protection}}, So:{{armure.system.solidite}}) 
+            </span>
+          </div>
+          {{/each}}
+          <br>
+          <h2>{{localize  "int.sequelle" }}</h2>
+          {{#each sequelles as |aspect key|}}
+          <div>
+            <span> 
+              <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{aspect._id}}" data-cmd="add.asp">{{aspect.name}} </a>
+            </span>
+            <span>
+              ({{aspect.system.NbDes}})
+              <span class="attrib-mod align-center rollable" title="{{localize  'nfo.addInit' }}" data-roll="{{_id}}" data-cmd="initAsp"><i class="fas fa-info-square"></i></span>
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+              &nbsp;
+              <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            </span>
+          </div>
+          {{/each}}
+        </section>
+        <section>
+          <h2>{{localize  "int.gestionCmb" }}</h1>
+          <h3>{{localize  "int.cmpSituation" }}</h3>
+            <select  name="system.cmpCirconstance">
+              {{selectOptions lstCMP selected=system.cmpCirconstance}}
+            </select><br><span class="plusPolice">Seuil de rupture : </span><span class="grdPolice">{{seuilRupture}} <i class="fad fa-sync rollable" data-cmd="calc.rupture"></i></span>
+            <br><span >formule : {{system.formulaSR}} </span><br>
+            <span class="plusPolice">Action(s) : </span><span class="grdPolice">{{nbActions}} </span><span class="plusPolice"> / passe</span><br>
+            <br>
+          <h3><a class="attrib-mod rollable" title="{{localize  'nfo.lancerInit' }}" data-roll="{{aspect._id}}" data-cmd="lancerInit">{{localize  "int.init" }} {{system.initEtat.value}} <i class="fas fa-info-square"></i></a></h3>
+
+            <span>Perte d'Effort : {{system.initEtat.ptEffort}}</span><br>
+            <span>Cmp : {{system.cmpCirconstance}} </span>
+            {{#each system.initEtat.lstIteAff as |asp key|}}
+            <div>
+              <a class="attrib-mod rollable" data-roll="{{asp.id}}" data-cmd="remove.init.{{key}}">{{asp.label}} ({{asp.NbDes}}) <i class="fas fa-minus-square"></i></a>
+>>>>>>> Stashed changes
             </div>
             {{/each}}
           </div>
