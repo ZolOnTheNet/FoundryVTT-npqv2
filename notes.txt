@@ -120,3 +120,8 @@ ui.notification.error("text") : message rouge
 ui.notifications.warn("coucou c'est moi") : message jaune
 ui.notifications.notify("coucou c'est moi aussi") : message bleu..
 
+//----------------------------- les cartes à jouer
+ dc = game.cards.get("kZ56B6woCuqqE5B3") -- le jeu de cartes
+ dc.dealDialog()
+ dc.deal( [ game.cards.get("0WVKDZAaFnenQ2U0") ],1, {chatNotification: true }) // 0WVK... Main Joueur 1
+ 

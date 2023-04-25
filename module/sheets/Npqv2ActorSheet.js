@@ -1,5 +1,7 @@
 import {lanceLesDes, simpleDialogue, lancerDeBrut, DialogueDommage, AppliqueEtatValeur } from "../utils.js";
+import {lanceLesDes7, simpleDialogue7, lancerInit7 } from "../utils7.js";
 import { updateInitiative } from "../updateInitiative.js";
+
 export default class npqv2ActorSheet extends ActorSheet {
 
     /** @override */
@@ -121,7 +123,7 @@ export default class npqv2ActorSheet extends ActorSheet {
         context.system.formulaSR = context.bonus.formulaSR + " +" + ( context.system.cmp[context.system.cmpCirconstance].value +1);
         context.seuilRupture = context.system.seuilRupture;
         // sinon c'est fixe : donc pas de calcul
-      } else   context.seuilRupture =  context.system.cmp[context.system.cmpCirconstance].value +1 + context.bonus.seuilRupture;
+      } else   context.seuilRupture =  context.system.cmp[context.system.cmpCirconstance].value +1 + parseInt(context.bonus.seuilRupture);
       context.nbActions = Math.ceil(context.system.cmp[context.system.cmpCirconstance].value/2);
     }
     // faudra rajouter l'armure voir les bonus des armes (Co ?)
@@ -473,8 +475,8 @@ export default class npqv2ActorSheet extends ActorSheet {
       cmdArgs[0] = cmd;
     }
     // Handle item rolls.
-    if(this.type === "pj7") {
-      onRoll7(dataset,cmdArgs, txtCode);
+    if(this.document.type === "pj7") {
+      this.onRoll7(dataset,cmdArgs, txtCode);
       return ;
     } // prétraitement suivant le rolltype et le champs
     switch(cmd) {
@@ -860,19 +862,31 @@ onRoll7(dataset,cmdArgs, txtCode){
       obj["system.initEtat.idAspect"+i] = txtCode;
       this.document.update(obj);
       break;
-    case 'jet': // jet direct d'un compétence, idem paris
-      if(cmdArgs[2] === 'fig') {
-        simpleDialogue(parseInt(cmdArgs[3]) , this.actor.system.parisDefaut,  this.actor.system.compteur.seuil,this.actor.system.chatCom);
-      } else  simpleDialogue(this.actor.system.cmp[txtCode].value , 0, this.actor.system.etats.value);
-      break;
+    // case 'jet': // jet direct d'un compétence, idem paris
+    //   if(this.system.jet.valAttr = this.system.cmps[context.system.jet.codecmp].value !="") this.system.jet.valAttr = this.system.cmps[context.system.jet.codecmp].value;
+    //   simpleDialogue7(this.system.jet,this.system.chatCom);
+    //   break;
     case 'lancerInit': // modification de l'init, si dans le + dépense de l'éffort, l'info est dans this.document.system.initEtat.
-      updateInitiative(this.document._id, this.document.system.initEtat.value);
-      if(cmdArgs[1] !== 'fig'){ // pour les personnages ;-)
-        //consommation de l'effort et réinit de la selection l'intiative XXXX
+    this.document.system.initEtat.value 
+      let rep = lancerInit7(this.document.system.initEtat.formule);
+      if(rep.initEffort !== undefined) {
+        let ObjU = { };
+        ObjU["system.initEtat.value"] = rep.total;
+        ObjU["system.etats.effort.value"]= rep.initEffort;
+        this.document.update(ObjU);
       }
+      updateInitiative(this.document._id, this.document.system.initEtat.value);
       break;
+    case 'jet':
     case 'lancerJet':
-      simpleDialogue(this.document.system.jet.nblancer, this.document.system.jet.paris, this.document.system.jet.seuil )
+      const sys = this.document.system;
+      let jetP = jQuery.extend(true, {}, sys.jet); // clone profond
+      if(sys.cmp[sys.jet.codecmp].value !="") 
+          jetP.valAttr = sys.cmp[sys.jet.codecmp].value;
+      for(let i =1 ; i < 4 ; i++){
+          jetP["idAspectL"+i] = (jetP["idAspect"+i]==="")? "" : this.document.items.get(jetP["idAspect"+i]).name;
+      }
+      simpleDialogue7(jetP, this.document.system.chatCom );
       break;
     case 'remove':
       let ind =(cmdArgs[2] === 'cmp')? cmd: parseInt(cmdArgs[2])+1;
