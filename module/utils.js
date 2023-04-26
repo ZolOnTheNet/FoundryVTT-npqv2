@@ -1,3 +1,19 @@
+/* --------- constantes tableaux -------
+ *
+ */
+// tableau D6 des score pré calculé 
+const tabD6 =  { 
+  "de1" : [ 1, 2, 3, 4, 5, 6],
+  "de2" : [ 2, 5, 6, 7, 9, 11],
+  "de3" : [ 5, 8, 9, 11, 12, 16],
+  "de4" : [ 8, 11, 13, 14, 16, 18],
+  "de5" : [ 10, 14, 16, 18, 20, 22],
+  "de6" : [ 13, 17, 20, 21, 23, 25],
+  "de7" : [ 16, 20, 23, 25, 27, 29],
+  "de8" : [ 17, 24, 26, 28, 31, 33]
+ };
+ 
+
 /*----------------------------------------------------------------
 * lanceLesDes : lancer le nombre de dé (lancer), avec le nombre de dé en réserve (res)
 *               la difficulté(diff)
@@ -20,15 +36,17 @@ function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5 , obj = {} ){
 // --------------------------------------------
 let monTexte = "";
 let strObj = JSON.stringify(obj).replaceAll('"','|');
-if(isSucces >0 ) monTexte= "Votre jet ("+ lancer + "D6) ainsi que "+ parseInt(res)+ 
-" succès en réserve contre un seuil de "+ diff + ', vous donne <font size="+5"><b>'+nbsucces+
-' qualité</b></font>.<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
-'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
+if(isSucces >0 ) monTexte= "Bravo : Votre jet ("+ lancer + "D6) ainsi que "+ parseInt(res)+ 
+" succès en réserve contre un seuil de "+ diff + ', vous donne <font size="+5"><b>'+nbsucces+ ' qualité</b></font>.<br>'+
+//'Voici vos choix possible :<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
+//'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
+".";
 else monTexte = "Désolé ! mais vous n'avez pas réussi votre jet (="+ resultat+") contre une difficulte de : "+diff+".<br>"; 
   // sortie du texte
+  let speak = obj._uid?game.actors.get(obj._uid).name: ChatMessage.getSpeaker();
    let chatData = {
         user: game.user._id,
-        speaker: ChatMessage.getSpeaker(),
+        speaker: speak,
         flavor: monTexte,
         rollMode: game.settings.get("core", "rollMode"),
         roll: r

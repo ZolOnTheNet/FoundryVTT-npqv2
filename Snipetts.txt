@@ -1,0 +1,9 @@
+  <div class="tab items" data-group="primary" data-tab="etats">
+    <h3>Fatigue <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.cmp" value="{{system.etats.fatigue.cmp}}" data-dtype="Number"/></h3>
+    <span>
+    Xp : <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.xp" value="{{system.etats.fatigue.xp}}" data-dtype="Number"/>
+    Nb cases : 5
+    <br>
+    Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.value" value="{{system.etats.fatigue.value}}" data-dtype="Number"/>
+    </span>
+    <br>

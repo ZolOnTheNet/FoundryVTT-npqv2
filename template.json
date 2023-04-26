@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["pj", "pj7","figurant", "monstre", "terrain"],
+    "types": ["pj", "pj6", "pj7", "pion", "figurant", "monstre", "terrain"],
     "templates": {
       "jets":{
         "jet": {
@@ -12,7 +12,8 @@
           "paris":0,
           "seuil":6,
           "autoEffort":1,
-          "coutMagique":0
+          "coutMagique":0,
+          "nomRaccourci":""
         }
       },
       "etatsTot": {
@@ -86,13 +87,26 @@
       },
       "miniEtats":{
         "etats": {
+          "incMagie":0,
+          "diff": {
+            "rang1":6,
+            "rang2":9,
+            "rang3":12,
+            "rang4":15
+          },
           "fatigue": {
             "label":"k2m.fatigue",
             "cmp":0,
             "xp":0,
             "value": 0,
-            "max": 12
-          },
+            "max": 12,
+            "rangs": {
+              "rang1": { "value":0, "max":3, "offset": 3},
+              "rang2": { "value":0, "max":3, "offset": 3},
+              "rang3": { "value":0, "max":3, "offset": 3},
+              "rang4": { "value":0, "max":3, "offset": 3}
+            }       
+            },
           "effort": {
             "label":"k2m.effort",
             "value":0,
@@ -275,7 +289,7 @@
         "cmp" : {
           "artisan": {
             "value": 1,
-            "label":"Artisan",
+            "label":"k2m.artisan",
             "xp": 1              
           },
           "artiste": {
@@ -313,7 +327,12 @@
             "label":"k2m.rodeur",
             "xp": 1              
           },
-          "Tireur": {
+          "roublard": {
+            "value": 1,
+            "label":"k2m.roublard",
+            "xp": 1              
+          },
+          "tireur": {
             "value": 1,
             "label":"tireur",
             "xp": 1              
@@ -327,7 +346,7 @@
         "extra" : 12
       }
     },
-    "pj": {
+    "pj6": {
       "templates": ["base","etatsTot","cmps","jets"],
       "cmpCirconstance":"",
       "initEtat": {
@@ -343,7 +362,7 @@
       "formulaSR":"",
       "estSRVar" : false
     },
-    "pj7": {
+    "pj": {
       "templates": ["base","miniEtats","cmps7","jets"],
       "cmpCirconstance":"",
       "initEtat": {
@@ -366,6 +385,23 @@
       "cmpEncaissement":1,
       "xpEncaissement" : 3,
       "cmp2Encaissement" : "artisan"
+    },
+    "pj7": {
+      "nePasUtilier":"Oui"
+    },
+    "pion" : {
+      "codeSpe" :"PIO",
+      "nd":1,
+      "cmp": {
+        "valeur" : 1,
+        "attaque" : 3
+      },
+      "seuilRupture":1,
+      "initEtat": {
+        "value":0
+      },
+      "nivTresor":0,
+      "totalXP":0
     },
     "figurant": {
       "codeSpe" :"FIG",

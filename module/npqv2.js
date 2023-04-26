@@ -87,18 +87,30 @@ function registerHooks() {
 }
 
 Hooks.once("init", async function () {
-    console.log("NPQv6 | Initialisation du système NPQv6");
+    console.log("NPQv7 | Initialisation du système NPQv7");
 
   // Define custom Document classes
     CONFIG.Actor.documentClass = npqv2Actor;
     CONFIG.Item.documentClass = npqv2Item;
     CONFIG.explode = false;
     
+    /**
+     * Pour les Macro, on ajoute les petites fonction des macros sympa
+     * Simplelancer est sympa...
+     */
     game.McDialogues = {
       "SimpleCmp": simpleDialogue,
       "Simplelancer" : lanceLesDes,
       "SimpleDom" : DialogueDommage
     };
+
+    /** constantes du jeu ajouter 
+     * 
+     */
+    game.Constantes = {
+      "cranDe" : [ "1", "d2", "d3","d4", "d6", "d8","d10", "d12", "d15","d20","d24", "d30"],
+      "deBonus" : [ "1d2", "1d4", "1d6", "1d8", "1d10", "1d12"] // astuce pour que val à 1 donne D4
+    }
 
      // ça marche si on ouvre la feuille de perso, sinon c'est 0 (pas possible).
      CONFIG.Combat.initiative = {
