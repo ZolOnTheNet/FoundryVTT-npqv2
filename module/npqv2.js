@@ -11,6 +11,8 @@ function EnventDuChat(event, html, data){
   const btn = $(event.currentTarget);
   const btnType = btn.data("apply");
   // cette partie peut être toujours utile ou non, mais nécessaire pour full, et DomApply
+  console.log("EventDuChat:",btn);
+  return;
   let c = html.find(".flavor-text").text();
   let st = c.indexOf("donne ") + "donne ".length;
   let ed = c.indexOf(" ", st);
@@ -68,7 +70,8 @@ function registerHooks() {
   Hooks.on("renderChatMessage", (message, html, data) => {
     // Affiche ou non les boutons d'application des dommages
 //     if (game.settings.get("cof", "displayChatDamageButtonsToAll")) {
-        html.find(".apply-dmg").click(ev => XXX(ev, html, data));    
+  html.find(".apply-dmg").click((ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, data));
+        html.find(".apply-cmd").click((ev) =>EnventDuChat(ev, html, data));
 //     }
     // else {
     //     if (game.user.isGM){

@@ -42,15 +42,16 @@ function lanceLesDes7(nbDes = 4, bonus=0, obj = {}, diff=[10,15,20]  ){
 
   }
     // sortie du texte
-     let chatData = {
-          user: game.user._id,
-          speaker: ChatMessage.getSpeaker(),
-          flavor: monTexte,
-          rollMode: game.settings.get("core", "rollMode"),
-          roll: r
-      };
-      //ChatMessage.create(chatData);
-     let cm = r.toMessage(chatData);
+  let speak = obj._uid?game.actors.get(obj._uid).name: ChatMessage.getSpeaker();
+  let chatData = {
+      user: game.user._id,
+      speaker: speak,
+      flavor: monTexte,
+      rollMode: game.settings.get("core", "rollMode"),
+      roll: r
+  };
+  //ChatMessage.create(chatData);
+  let cm = r.toMessage(chatData);
   }
   
   function handleSubmit(html) {
@@ -130,7 +131,7 @@ function lanceLesDes7(nbDes = 4, bonus=0, obj = {}, diff=[10,15,20]  ){
  */
 
 function DialogueElementaire (titre = "lancer de dé", form="<h2>coucou</h2", fnctCallBack = null) {
-    new Dialog({
+  const confirmation = new Dialog({
       title: titre,
       content: form,
       buttons: {
@@ -138,7 +139,7 @@ function DialogueElementaire (titre = "lancer de dé", form="<h2>coucou</h2", fn
           submit: { label: "Submit", callback: fnctCallBack },
       },
       }).render(true);
-  
+      console.log("test dialogue",confirmation);
   }
 
 function lancerInit7(formule) {

@@ -39,7 +39,7 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.system = actorData.system;  // peut être changer data en système après relecture
       context.flags = actorData.flags;
 
-      context.system.chatCom = { "_id": context._id }; // objet pour aider à la communication avec le chat.
+      context.system.chatCom = { "_id": actorData._id, "armurePortee" : [] }; // objet pour aider à la communication avec le chat.
   
       // Prepare character data and items.
 
@@ -128,11 +128,12 @@ export default class npqv2ActorSheet extends ActorSheet {
               context.system.chatCom["armeEnMain"] = i._id;
               context.system.chatCom["domF"] = i.system.menace;
               context.system.chatCom["bonusDom"] = i.system.bonus.CodeDommage;
-              context.system.chatCom["NbDes"] = i.system.NbDes;
+              context.system.chatCom["NbDes"] = i.system.bonus.NbDes;
             }
           }else if(i.system.codeSpe === 'ARMURE') {
             armures.push(i);
             if( i.system.estActif) {
+              context.system.chatCom["armurePortee"].push(i._id);
               if( Number.isNumeric(i.system.protection)) {  
               bonus.seuilRupture += i.system.protection;
               } else {
@@ -215,14 +216,15 @@ export default class npqv2ActorSheet extends ActorSheet {
           }else if(i.system.codeSpe === 'ARME') {
             armes.push(i);
             if( i.system.estActif) {
-              context.system.chatCom["armeEnMain"] = i._id;
+              context.system.chatCom["armePortee"] = i._id;
               context.system.chatCom["domF"] = i.system.menace;
               context.system.chatCom["bonusDom"] = i.system.bonus.CodeDommage;
-              context.system.chatCom["NbDes"] = i.system.NbDes;
+              context.system.chatCom["NbDes"] = i.system.bonus.NbDes;
             }
           }else if(i.system.codeSpe === 'ARMURE') {
             armures.push(i);
             if( i.system.estActif) {
+              context.system.chatCom["armurePortee"].push(i._id);
               if( Number.isNumeric(i.system.protection)) {  
                 bonus.seuilRupture += i.system.protection;
               } else {
@@ -285,6 +287,8 @@ export default class npqv2ActorSheet extends ActorSheet {
         if(Number.isNumeric(context.bonus.seuilRupture)) context.bonus.seuilRupture = parseInt(context.bonus.seuilRupture);
         context.seuilRupture =  context.system.valeur+1+context.system.bonusDrama + context.bonus.seuilRupture;
       }
+      context.system.chatCom.formulaSR = context.system.formulaSR;
+      context.system.chatCom.SeuilRupture = context.system.SeuilRupture;
       context.lstCodeSpe = { "MON": "Monstre", "FIG" : "Figurant"};
     }
 
@@ -492,7 +496,8 @@ _prepareCharacterCmb7(actorData, context){
   }else {      
     // traitement de la formule de l'init (et des points Efforts)
     //context.system.initEtat.value = context.system.cmp[context.system.cmpCirconstance].value;
-    context.system.initEtat.nbDi = context.FormuleInitDi[context.system.initEtat.cmp] + (context.system.initEtat.idAspect1 === ""?0:1) + (context.system.initEtat.idAspect2 === ""?0:1) + (context.system.initEtat.idAspect3 === ""?0:1);
+    context.system.initEtat.nbDi = context.FormuleInitDi[context.system.initEtat.cmp];
+    //let BonusNb = (context.system.initEtat.idAspect1 === ""?0:1) + (context.system.initEtat.idAspect2 === ""?0:1) + (context.system.initEtat.idAspect3 === ""?0:1);
     context.system.initEtat.formule = context.system.initEtat.nbDi+context.DeInit[context.system.cmp[context.system.cmpCirconstance].value] + context.FormuleInitBonus[context.system.initEtat.cmp] ;
     // il peut y avoir des formules :       
     //context.seuilRupture =  context.system.cmp[context.system.cmpCirconstance].value +1; // seuil de rupture (reprise de calcul)
@@ -510,6 +515,7 @@ _prepareCharacterCmb7(actorData, context){
   }
   // faudra rajouter l'armure voir les bonus des armes (Co ?)
   context.system.initEtat.ptEffort = 0; context.system.initEtat.lstIteAff = []; // la liste des label et des des
+  context.system.initEtat.value = context.system.initEtat.sommeDes
   for(let i = 1; i < 4; i++) {
     c = "asp"+i;
     if(context.system.initEtat["idAspect"+i] === ""){
@@ -519,42 +525,41 @@ _prepareCharacterCmb7(actorData, context){
       if(ite !== null) { // a tester !XXXX
         context.system.initEtat.lstIteAff.push( { "id" : context.system.initEtat["idAspect"+i], "label": ite.name, "NbDes": ite.system.NbDes });  
         if(i>1) context.system.initEtat.ptEffort +=3; // l'effort est plus important
-        context.system.initEtat.value += 1;  // les inits ne donne qu'un dé
+        context.system.initEtat.value += ite.system.NbDes;  // les inits prenne 1 Dé
       }
     }
-
+  }
   // calcul lié au jet générique **************************
   // on addition les nombre de dés/ le nombre d'effort
   let nbdes = 0; let nbEffort = 0;
-    if(context.system.jet.codecmp === ""){
-      context.codeLabel = "aucune"
-      context.codeCmpDe = "-"
-    }else {
-      context.codeLabel = context.system.jet.codecmp; // il faudra la traduire
-      context.codeCmpDe = context.system.cmp[context.codeLabel].value;
-      nbdes = context.codeCmpDe;
-    }
-    
-    for(let i = 1; i < 4; i++) {
-      c = "asp"+i;
-      if(context.system.jet["idAspect"+i] === ""){
-        context[c+"Label"] = "aucun";
-        context[c+"CodeDe"] = 0;
-      }else {
-        let ite = actorData.items.get(context.system.jet["idAspect"+i])
-        context[c+"Label"] = ite.name;
-        context[c+"CodeDe"] = ite.system.NbDes;
-        if(ite.system.codeSpe == 'SEQ') context[c+"CodeDe"] *= -1; // inverse
-        if(i>1) nbEffort+=3; // l'effort est plus important
-        nbdes += context[c+"CodeDe"]; // peut être corigé par la notion de SEQuelle
-      }
-
-    }
-    context.jetCoutEffort = nbEffort;
-    context.system.jet.nblancer = nbdes;
-    //context.effortTxt = '<i data-cmd="set.etat.effort" data-roll="1" title="1" class="rollable fillable fas fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable far fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable fad fa-square"></i>'
-    context.effortTxt = this.visuEffort(context.system.etats.effort, nbEffort+ context.system.initEtat.ptEffort);
+  if(context.system.jet.codecmp === ""){
+    context.codeLabel = "aucune"
+    context.codeCmpDe = "-"
+  }else {
+    context.codeLabel = context.system.jet.codecmp; // il faudra la traduire
+    context.codeCmpDe = context.system.cmp[context.codeLabel].value;
+    nbdes = context.codeCmpDe;
   }
+  
+  for(let i = 1; i < 4; i++) {
+    c = "asp"+i;
+    if(context.system.jet["idAspect"+i] === ""){
+      context[c+"Label"] = "aucun";
+      context[c+"CodeDe"] = 0;
+    }else {
+      let ite = actorData.items.get(context.system.jet["idAspect"+i])
+      context[c+"Label"] = ite.name;
+      context[c+"CodeDe"] = ite.system.NbDes;
+      if(ite.system.codeSpe == 'SEQ') context[c+"CodeDe"] *= -1; // inverse
+      if(i>1) nbEffort+=3; // l'effort est plus important
+      nbdes += context[c+"CodeDe"]; // peut être corigé par la notion de SEQuelle
+    }
+
+  }
+  context.jetCoutEffort = nbEffort;
+  context.system.jet.nblancer = nbdes;
+  //context.effortTxt = '<i data-cmd="set.etat.effort" data-roll="1" title="1" class="rollable fillable fas fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable far fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable fad fa-square"></i>'
+  context.effortTxt = this.visuEffort(context.system.etats.effort, nbEffort+ context.system.initEtat.ptEffort);
 }
 
 /**
@@ -617,9 +622,11 @@ onRoll7(dataset,cmdArgs, txtCode){
         if(this.document.system.initEtat["idAspect"+i] === txtCode) break; // evitons les doublons !
       } 
       if(i > 3) i = 3;
-      let obj= {};
-      obj["system.initEtat.idAspect"+i] = txtCode;
-      this.document.update(obj);
+      this.document.system.initEtat["idAspect"+i] = txtCode;
+      // let obj= {};
+      // obj["system.initEtat.idAspect"+i] = txtCode;
+      // this.document.update(obj);
+      this.document.update({ "system.initEtat" : this.document.system.initEtat});
       break;
     // case 'jet': // jet direct d'un compétence, idem paris
     //   if(this.system.jet.valAttr = this.system.cmps[context.system.jet.codecmp].value !="") this.system.jet.valAttr = this.system.cmps[context.system.jet.codecmp].value;
@@ -630,13 +637,19 @@ onRoll7(dataset,cmdArgs, txtCode){
       let rep = lancerInit7(this.document.system.initEtat.formule);
       if(rep.initEffort !== undefined) {
         let ObjU = { };
-        ObjU["system.initEtat.value"] = rep.total;
+        ObjU["system.initEtat.sommeDes"] = rep.total;
         ObjU["system.etats.effort.value"]= rep.initEffort;
         this.document.update(ObjU);
       }
       updateInitiative(this.document._id, this.document.system.initEtat.value);
       break;
     case 'jet':
+      switch(cmdArgs[2]){
+        case 'attaque':
+          break;
+        case 'defence':
+          break;
+      }
     case 'lancerJet':
       // const sys = this.document.system;
       // let jetP = jQuery.extend(true, {}, sys.jet); // clone profond
@@ -646,7 +659,11 @@ onRoll7(dataset,cmdArgs, txtCode){
       //     jetP["idAspectL"+i] = (jetP["idAspect"+i]==="")? "" : this.document.items.get(jetP["idAspect"+i]).name;
       // }
       // simpleDialogue7(jetP, this.document.system.chatCom );
-      simpleDialogue(this.actor.system.cmp[txtCode].value , 0, this.actor.system.etats.value, { _uid: this.document._uid});
+      // { 'nde' : {{system.jet.nblancer}}, 'paris' : {{system.jet.paris}}, 'seuil' : {{system.jet.seuil}}, 'nbEffort': {{jetCoutEffort}},  'Auto' : {{system.jet.autoEffort}}  }
+      let objRel =(cmdArgs[2]==="paris")? { "nde" : this.document.system.cmp.value, "paris":0, "seuil": this.document.system.value, 'nbEffort': 0,  'Auto' : 1 } : 
+                                          //objRel = JSON.parse(txtCode.replaceAll("'",'"')); // aime pas avoir des ' au lieu des "
+                                          { "nde" : this.document.system.jet.nblancer, "paris": this.document.system.jet.paris, "seuil": this.document.system.value, 'nbEffort': this.document.system.jet.coutEffort,  'Auto' : this.document.system.jet.autoEffort }
+      simpleDialogue(objRel.nde , objRel.paris, objRel.seuil, { _id: this.document._id, "nbEffort": objRel.nbEfort, "Auto": objRel.auto });
       break;
     case 'remove':
       let ind =(cmdArgs[2] === 'cmp')? cmd: parseInt(cmdArgs[2])+1;
@@ -798,39 +815,39 @@ onRoll7(dataset,cmdArgs, txtCode){
           context.system.initEtat.value += ite.system.NbDes; 
         }
       }
-
+    }
     // calcul lié au jet générique **************************
     // on addition les nombre de dés/ le nombre d'effort
     let nbdes = 0; let nbEffort = 0;
-      if(context.system.jet.codecmp === ""){
-        context.codeLabel = "aucune"
-        context.codeCmpDe = "-"
-      }else {
-        context.codeLabel = context.system.jet.codecmp; // il faudra la traduire
-        context.codeCmpDe = context.system.cmp[context.codeLabel].value;
-        nbdes = context.codeCmpDe;
-      }
-      
-      for(let i = 1; i < 4; i++) {
-        c = "asp"+i;
-        if(context.system.jet["idAspect"+i] === ""){
-          context[c+"Label"] = "aucun";
-          context[c+"CodeDe"] = 0;
-        }else {
-          let ite = actorData.items.get(context.system.jet["idAspect"+i])
-          context[c+"Label"] = ite.name;
-          context[c+"CodeDe"] = ite.system.NbDes;
-          if(ite.system.codeSpe == 'SEQ') context[c+"CodeDe"] *= -1; // inverse
-          if(i>1) nbEffort+=3; // l'effort est plus important
-          nbdes += context[c+"CodeDe"]; // peut être corigé par la notion de SEQuelle
-        }
-  
-      }
-      context.jetCoutEffort = nbEffort;
-      context.system.jet.nblancer = nbdes;
-      //context.effortTxt = '<i data-cmd="set.etat.effort" data-roll="1" title="1" class="rollable fillable fas fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable far fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable fad fa-square"></i>'
-      context.effortTxt = this.visuEffort(context.system.etats.effort, nbEffort+ context.system.initEtat.ptEffort);
+    if(context.system.jet.codecmp === ""){
+      context.codeLabel = "aucune"
+      context.codeCmpDe = "-"
+    }else {
+      context.codeLabel = context.system.jet.codecmp; // il faudra la traduire
+      context.codeCmpDe = context.system.cmp[context.codeLabel].value;
+      nbdes = context.codeCmpDe;
     }
+    
+    for(let i = 1; i < 4; i++) {
+      c = "asp"+i;
+      if(context.system.jet["idAspect"+i] === ""){
+        context[c+"Label"] = "aucun";
+        context[c+"CodeDe"] = 0;
+      }else {
+        let ite = actorData.items.get(context.system.jet["idAspect"+i])
+        context[c+"Label"] = ite.name;
+        context[c+"CodeDe"] = ite.system.NbDes;
+        if(ite.system.codeSpe == 'SEQ') context[c+"CodeDe"] *= -1; // inverse
+        if(i>1) nbEffort+=3; // l'effort est plus important
+        nbdes += context[c+"CodeDe"]; // peut être corigé par la notion de SEQuelle
+      }
+
+    }
+    context.jetCoutEffort = nbEffort;
+    context.system.jet.coutEffort = nbEffort; // synchros
+    context.system.jet.nblancer = nbdes;
+    //context.effortTxt = '<i data-cmd="set.etat.effort" data-roll="1" title="1" class="rollable fillable fas fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable far fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable fad fa-square"></i>'
+    context.effortTxt = this.visuEffort(context.system.etats.effort, context.system.jet.coutEffort + context.system.initEtat.ptEffort);
   }
 
   onRoll6(dataset,cmdArgs, txtCode){

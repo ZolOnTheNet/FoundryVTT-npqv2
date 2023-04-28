@@ -226,7 +226,7 @@ _prepareCharacterData6(actorData) {
   }
 
   //----------------- Calcul de la valeur d'état : seuil de réussite -------------------------------
-  if(data.etats.incMagie >0) i = 1; // la magie n'est pas compté dans le seuil de calcul
+  //if(data.etats.incMagie >0) i = 1; // la magie n'est pas compté dans le seuil de calcul
   let seuilRangFinal = 0;
   let curRang = 0;
   for(i = 0;i < lesEtats.length; i++) {

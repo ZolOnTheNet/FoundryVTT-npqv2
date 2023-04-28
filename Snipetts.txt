@@ -7,3 +7,5 @@
     Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.value" value="{{system.etats.fatigue.value}}" data-dtype="Number"/>
     </span>
     <br>
+
+    <i class="fas fa-bolt"></i> Eclair ! 

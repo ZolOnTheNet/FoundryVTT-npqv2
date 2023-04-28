@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["pj", "pj6", "pj7", "pion", "figurant", "monstre", "terrain"],
+    "types": ["pj", "pj6", "pion", "figurant", "monstre", "terrain"],
     "templates": {
       "jets":{
         "jet": {
@@ -11,8 +11,18 @@
           "nblancer":3,
           "paris":0,
           "seuil":6,
+          "coutEffort":0,
           "autoEffort":1,
           "coutMagique":0,
+          "resultat": {
+            "code": "NORM",
+            "score": 0,
+            "nbQualites" : 0,
+            "cibles" : "",
+            "info": "",
+            "MeFormule":"",
+            "MeTot" : 0
+          },
           "nomRaccourci":""
         }
       },
@@ -370,6 +380,7 @@
         "xp":3,
         "value": 0,
         "formule":"",
+        "sommeDes":0,
         "nbDi" : 2,
         "idAspect1":"",
         "idAspect2":"",
@@ -386,10 +397,7 @@
       "xpEncaissement" : 3,
       "cmp2Encaissement" : "artisan"
     },
-    "pj7": {
-      "nePasUtilier":"Oui"
-    },
-    "pion" : {
+   "pion" : {
       "codeSpe" :"PIO",
       "nd":1,
       "cmp": {

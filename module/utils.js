@@ -38,6 +38,8 @@ let monTexte = "";
 let strObj = JSON.stringify(obj).replaceAll('"','|');
 if(isSucces >0 ) monTexte= "Bravo : Votre jet ("+ lancer + "D6) ainsi que "+ parseInt(res)+ 
 " succès en réserve contre un seuil de "+ diff + ', vous donne <font size="+5"><b>'+nbsucces+ ' qualité</b></font>.<br>'+
+'vous avez le choix de :<br>'+
+'<i class="apply-cmd fad fa-sword rollable" data-roll="" data-cmd="arme.dommage"></i>'+
 //'Voici vos choix possible :<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
 //'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
 ".";
@@ -58,7 +60,8 @@ else monTexte = "Désolé ! mais vous n'avez pas réussi votre jet (="+ resultat
 function handleSubmit(html) {
   const formElement = html[0].querySelector('form');
   const formData = new FormDataExtended(formElement);
-  const formDataObject = formData.toObject();
+  //const formDataObject = formData.toObject(); //version 9
+  const formDataObject = formData.object; // version 10 de foundry
 
   // expects an object: { input-1: 'some value' }
   console.log('output form data object', formDataObject);
@@ -78,10 +81,11 @@ function handleSubmit(html) {
   if(res >= nbdes) res = nbdes-1;
   let lancer = nbdes - res; 
   let formDe = "D6";
-  lanceLesDes(lancer, res, formDe, diff, obj)
+  // ici récupérer _id si <> "" ou undef est enlever les effort !!! 
+  lanceLesDes(lancer, res, formDe, diff, obj);
 }
 
- function simpleDialogue(nbdes = 5, paris = 0, seuil = 6, obj = {}){
+ function simpleDialogue(nbdes = 5, paris = 0, seuil = 6, obj = {}){ // XXXX faut refaire tous les appels sauf 1
   let i = 10;
   let sp = ChatMessage.getSpeaker();
   let form = `<form>

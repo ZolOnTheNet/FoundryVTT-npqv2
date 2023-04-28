@@ -35,7 +35,7 @@
           </tr>
           <tr >
             <td >
-              <span class="plusPolice">Fatigue</span> Val. Actuelle : {{system.etats.fatigue.value}} / {{system.etats.fatigue.max}}
+              <span class="plusPolice">Fatigue</span> : {{system.etats.fatigue.value}} / {{system.etats.fatigue.max}}
               {{#each system.etats.fatigue.rangs as |rang index|}}
                 {{{rang.ligne}}}
                 ({{rang.seuil}})
@@ -74,9 +74,9 @@
         <div class="attribd normal-left-input">
           <label for="system.cmp.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" data-cmd="add.cmp">{{localize  cmp.label }}&nbsp;</label>
           <input class="normal-input" type="text" size="1em" name="system.cmp.{{key}}.value" value="{{cmp.value}}" data-dtype="Number"/>
-          <span> ({{cmp.desbonus}})&nbsp;</span>
-          <span class="align-center rollable" data-roll="{{key}}" data-cmd="jet.paris"><i class="fad fa-dice"></i></span>
-          <span class="align-center rollable" data-roll="{{key}}" data-cmd="initCmp"><i class="fas fa-info-square"></i></span>
+          <span> ({{cmp.debonus}})&nbsp;</span>
+          <span class="align-center rollable" title="Jet direct avec paris" data-roll="{{key}}" data-cmd="lancerJet.paris"><i class="fad fa-dice"></i></span>
+          <span class="align-center rollable" title="Attribut de circonstance" data-roll="{{key}}" data-cmd="initCmp"><i class="fas fa-info-square"></i></span>
           <span class="align-center lilipute"><input class="normal-input" type="text" size="1em" title="Xp" name="system.cmp.{{key}}.xp" value="{{cmp.xp}}" data-dtype="Number"/></span>
           &nbsp;
         </div>
@@ -194,7 +194,7 @@
             <span class="align-center lilipute">Xp : <input class="normal-input" type="text" size="1em" title="Xp" name="system.initEtat.xp" value="{{system.initEtat.xp}}" data-dtype="Number"/></span>
           </span>
           <br><span>Formule : {{system.initEtat.formule}}</span>
-          <br>
+          <br> <span>Perte d'Effort : {{system.initiative.ptEffort}}</span>
           <br><span>Cmp : {{system.cmpCirconstance}} </span>
           {{#each system.initEtat.lstIteAff as |asp key|}}
           <div>
@@ -203,7 +203,9 @@
           {{/each}}
         <h3>
           <br>
-          <a class="attrib-mod rollable" data-roll=" { 'nde' : {{system.jet.nblancer}}, 'paris' : {{system.jet.paris}}, 'seuil' : {{system.jet.seuil}}  }" data-cmd="lancerJet">{{localize  "int.selection" }} <i class="fas fa-dice"></i></a>
+          <a class="attrib-mod rollable" title="Jet normal" data-cmd="lancerJet" data-roll="{{_id}}">{{localize  "int.selection" }} <i class="fas fa-dice"></i></a>
+          <i class="fad fa-sword rollable" title="Jet pour attaque" data-cmd="jet.attaque" data-roll=" { 'nde' : {{system.jet.nblancer}}, 'paris' : {{system.jet.paris}}, 'seuil' : {{system.jet.seuil}}, 'nbEffort': {{jetCoutEffort}},  'Auto' : {{system.jet.autoEffort}}  }"></i>
+          <i class="fad fa-shield rollable" title="Jet pour la défense" data-cmd="jet.defense" data-roll=" { 'nde' : {{system.jet.nblancer}}, 'paris' : {{system.jet.paris}}, 'seuil' : {{system.jet.seuil}}, 'nbEffort': {{jetCoutEffort}},  'Auto' : {{system.jet.autoEffort}}  }"></i>
           <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="favoris.clean"><i class="fas fa-sync-alt"></i> </a></span>
         </h3>
         {{!-- le jet "jet": { "codecmp":"artisan",  "idAspect1":"",  "idAspect2":"",  "idAspect3":"",  "nblancer":3, "paris":0, "seuil":6, "autoEffort":1, "coutMagique":0 } --}}
@@ -221,7 +223,7 @@
         </div>
         <div>
           <span>Effort : <strong>{{jetCoutEffort}}</strong></span><span class="lilipute"> Auto : {{system.jet.autoEffort}}</span>
-          <br>Raccouci : <input class="normal-input" type="text" size="12em" name="system.jet.nomRaccourci" value="{{system.jet.nomRaccourci}}" data-dtype="Text"/> <span><a class="rollable" title="{{localize  'nfo.favoris' }}" data-roll="" data-cmd="favoris.add" ><i class="fas fa-star"></i> </a></span>
+          <br>Raccouci : <input class="normal-input" type="text" size="12em" name="system.jet.nomRaccourci" value="{{system.jet.nomRaccourci}}" data-dtype="Text"/> <span><a class="rollable" title="{{localize  'nfo.favoris' }}" data-roll="" data-cmd="favoris.add" ><i class="far fa-star"></i> </a></span>
         </div>
       </section>
     </section>
