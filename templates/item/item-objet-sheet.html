@@ -67,13 +67,13 @@
           <input size="4em" class="normal-input" type="text" name="system.volume" value="{{system.volume}}" data-dtype="Number"/>
           <br>
           <label for="system.menace" class="resource-label align-left">{{localize  "k2m.menace" }}</label>
-          <input size="4em" class="normal-input" type="text" name="system.menace" value="{{system.menace}}" data-dtype="Text"/>
+          <input size="4em" class="normal-input" type="text" name="system.menace" value="{{system.menace}}" data-dtype="String"/>
           <br>
           <label for="system.couverture" class="resource-label align-left">{{localize  "k2m.couverture" }}</label>
           <input size="4em" class="normal-input" type="text" name="system.couverture" value="{{system.couverture}}" data-dtype="Number"/>
           <br>
           <label for="system.protection" class="resource-label align-left">{{localize  "k2m.protection" }}</label>
-          <input size="4em" class="normal-input" type="text" name="system.protection" value="{{system.protection}}" data-dtype="Text"/>
+          <input size="4em" class="normal-input" type="text" name="system.protection" value="{{system.protection}}" data-dtype="String"/>
           <br>
           <label for="system.solidite" class="resource-label align-left">{{localize  "k2m.solidite" }}</label>
           <input size="1em" class="normal-input" type="text" name="system.solidite" value="{{system.solidite}}" data-dtype="Number"/>
@@ -89,7 +89,7 @@
           <input class="normal-input" type="text" size="4em" name="system.bonus.NbDes" value="{{system.bonus.NbDes}}" data-dtype="Number"/><br>
           <br>
           <label for="system.bonus.CodeDommage" class="resource-label flexlarge align-left">{{localize  "k2m.CodeDommage" }}</label>
-          <input class="normal-input" type="text" size="5em" name="system.bonus.CodeDommage" value="{{system.bonus.CodeDommage}}" data-dtype="Text"/>
+          <input class="normal-input" type="text" size="5em" name="system.bonus.CodeDommage" value="{{system.bonus.CodeDommage}}" data-dtype="String"/>
           <br>
           <label for="system.bonus.PdM" class="resource-label flexlarge align-left">{{localize  "k2m.PdM" }}</label>
           <input class="normal-input" type="text" size="1em" name="system.bonus.PdM" value="{{system.bonus.PdM}}" data-dtype="Number"/>
@@ -102,6 +102,15 @@
           <br>
           <label for="system.bonus.PdFa" class="resource-label flexlarge align-left">{{localize  "k2m.PdFa" }}</label>
           <input class="normal-input" type="text" size="1em" name="system.bonus.PdFa" value="{{system.bonus.PdFa}}" data-dtype="Number"/>
+          <h3>{{localize  "int.aspects" }}</h3>
+          {{#each system.aspects as |aspect key|}}
+            <label for="system.aspects.{{key}}" class="resource-label flexlarge align-left" >{{localize  "int.asp.Nom" }}</label>
+            <input class="normal-input" type="text" size="15em" name="system.aspects.{{key}}" value="{{aspect.nomAsp}}" data-dtype="String"/>
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+            &nbsp;
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            <br>
+          {{/each}}
         </div>
       </div>
       <h3>Spécial :</h3>

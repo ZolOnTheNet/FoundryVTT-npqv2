@@ -8,10 +8,29 @@ import { updateInitiative } from "./updateInitiative.js";
 
 //  a metre au bon endroit
 function EnventDuChat(event, html, data){
-  const btn = $(event.currentTarget);
-  const btnType = btn.data("apply");
+ // const btn = $(event.currentTarget);
+ // const btnType = btn.data("apply");
   // cette partie peut être toujours utile ou non, mais nécessaire pour full, et DomApply
-  console.log("EventDuChat:",btn);
+  //console.log("EventDuChat:",btn);
+  let dataSet = event.currentTarget.dataset;
+  let obj = JSON.parse(dataSet.roll);
+  let cmdArgs = dataSet.cmd.split(".");
+  let objAction = null;
+  // aiguillage des options (voir utils.js) : msg.arme.attaque, 
+  if(obj?._id) objAction = game.actors.get(obj._id); else return; // peut être un message ui ?.
+  switch(cmdArgs[0]){
+    case "msg":
+        if(cmdArgs[1]=== "arme") {
+          if(cmdArgs[2]=== "attaque") {
+            // transformer le jet en jet d'attaque courant !
+            objAction.passerJetAttaque(obj);
+          }
+          else if (cmdArgs[2]==="defense") {
+            // transformer le jet en jet de défense !
+          }
+        }
+      break;
+  }
   return;
   let c = html.find(".flavor-text").text();
   let st = c.indexOf("donne ") + "donne ".length;

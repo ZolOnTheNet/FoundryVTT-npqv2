@@ -119,7 +119,7 @@
       // } 
   
       // attention modification du degrée de data.. !
-      context.CodifAspect = { "NORM":"Standard", "SEQ":"séquelles", "PLUS":"plus", "SPE":"spécialité","EXTRA":"extra"};
+      context.CodifAspect = { "NORM":"Standard", "SEQ":"séquelles", "PLUS":"plus", "SPE":"spécialité","EXTRA":"extra", "OBJ":"Objet"};
       context.CodifObjet = { "OBJET":"objet", "ARME" : "Arme", "ARMURE" : "Armure"}
   //    data.TypeValue = persodata.type; 
       context.system = itemSystem;
@@ -140,5 +140,18 @@
       //html.find('.item-edit').click(
       //  html.find('.rollable').click(this._onRoll.bind(this));
     }
+
+  _onDrop(event){
+    event.preventDefault();
+    console.log("Drop:",event);
+  }
+  _onDragStart(event){
+    event.preventDefault();
+    console.log("Start:",event);
+  }
+  _onDragOver(event){
+    event.preventDefault();
+    console.log("Over:",event);
+  }
   }
   

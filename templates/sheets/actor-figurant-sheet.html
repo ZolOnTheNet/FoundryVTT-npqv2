@@ -64,7 +64,11 @@
     <div class="tab items" data-group="primary" data-tab="caracteristiques">
       <section class="grid grid-2col">
         <section class="main flexcol">
-          <h2>{{localize  "int.specialites" }} <input class="normal-input" type="text" size="1em" name="system.special" value="{{system.special}}" data-dtype="Number"/> (Paris <input class="normal-input" type="text" size="1em" name="system.parisDefaut" value="{{system.parisDefaut}}" data-dtype="Number"/>)</h2>
+          <div>
+          Paris pour tous les aspects: <input class="normal-input" type="text" size="1em" name="system.parisDefaut" value="{{system.parisDefaut}}" data-dtype="Number"/>
+        </div>
+          <h2>{{localize  "int.specialites" }} <input class="normal-input" type="text" size="1em" name="system.special" value="{{system.special}}" data-dtype="Number"/> 
+          </h2>
           {{#each specialites as |aspect key|}}
           <div>
             <span> 

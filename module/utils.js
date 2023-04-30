@@ -34,20 +34,31 @@ function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5 , obj = {} ){
   if (nbsucces <= 0) nbsucces = 0;
   
 // --------------------------------------------
+//  --- calcul des cibles déjà selectionnée
+let cibles = lstCiblesTxt();
+if(cibles !=="") cibles = "Vos cibles sont :<br>" + cibles + '<br>';
+// --------------------------------------------
 let monTexte = "";
-let strObj = JSON.stringify(obj).replaceAll('"','|');
-if(isSucces >0 ) monTexte= "Bravo : Votre jet ("+ lancer + "D6) ainsi que "+ parseInt(res)+ 
-" succès en réserve contre un seuil de "+ diff + ', vous donne <font size="+5"><b>'+nbsucces+ ' qualité</b></font>.<br>'+
-'vous avez le choix de :<br>'+
-'<i class="apply-cmd fad fa-sword rollable" data-roll="" data-cmd="arme.dommage"></i>'+
+obj.qualite = nbsucces; obj.lancer = lancer; obj.paris = parseInt(res); 
+obj.resultat = resultat; obj.roll = r;
+//let strObj = JSON.stringify(obj).replaceAll('"','|');
+if(isSucces >0 ) monTexte= "Bravo : Votre jet ("+ lancer + "D6) avec "+ obj.paris+ 
+" succè(s) en réserve, contre un seuil de "+ diff + ', vous donne <font size="+5"><b>'+nbsucces+ ' qualité(s)</b></font>.<br>'+
+'vous avez le choix de :<br>'+ 
+//((cibles==="")?`<a class="apply-cmd" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `'><i class="far fa-bullseye-pointer" ></i>&nbsp;Selectionner les cibles</a><br>`:cibles)+
+((cibles==="")?`<i class="far fa-bullseye-pointer" ></i>&nbsp;Selectionner les cibles (click droit sur vos adversaires puis utilisez <i class="fal fa-bullseye"></i>)<br>`:cibles)+
+`<a class="apply-cmd" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-sword"></i>&nbsp;Passez en mode Attaque(pas de nouveau lancer)</a><br>`+
+`<a class="apply-cmd" data-cmd="msg.arme.defense" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-shield"></i>&nbsp;Passez en mode Defense(pas de nouveau lancer)</a><br>`+
 //'Voici vos choix possible :<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
 //'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
 ".";
 else monTexte = "Désolé ! mais vous n'avez pas réussi votre jet (="+ resultat+") contre une difficulte de : "+diff+".<br>"; 
-  // sortie du texte
-  let speak = obj._uid?game.actors.get(obj._uid).name: ChatMessage.getSpeaker();
+  // sortie du texte  
+  let speak = obj._id?game.actors.get(obj._id).name: ChatMessage.getSpeaker();
+  monTexte = "<h2>"+speak+"</h2>"+monTexte;
    let chatData = {
         user: game.user._id,
+        actor: game.actors.get(obj._id),
         speaker: speak,
         flavor: monTexte,
         rollMode: game.settings.get("core", "rollMode"),
@@ -55,6 +66,7 @@ else monTexte = "Désolé ! mais vous n'avez pas réussi votre jet (="+ resultat
     };
     //ChatMessage.create(chatData);
    let cm = r.toMessage(chatData);
+   //console.log("r.tomessage =", cm);
 }
 
 function handleSubmit(html) {
@@ -230,9 +242,13 @@ function DialogueElementaire (titre = "lancer de dé", form="<h2>coucou</h2", fn
     title: titre,
     content: form,
     buttons: {
-        cancel: { label: "Cancel" },
-        submit: { label: "Submit", callback: fnctCallBack },
+        cancel: { label: "Annuler" },
+        submit: { label: "Valider", callback: fnctCallBack }
     },
+    default : 'submit',
+    close: () => {
+      console.log('lancer le dé ?.');
+    }
     }).render(true);
 
 }
@@ -276,6 +292,29 @@ function AppliqueEtatValeur(parent) {
     } else parent.rangs[rang].value = 0; // mettre à zero le "reste"
   }
 }
+
+/**
+ * lstCibles : retourne un tableau des cibles marquée comme tel
+ *
+ * @return {*} 
+ */
+function lstCibles() {
+  return ([...game.user.targets].length > 0) ? [...game.user.targets] : canvas.tokens.objects.children.filter(t => t._controlled);
+}
+
+function lstCiblesTxt() {
+let targets = lstCibles();
+let cibles="";
+for(let t of targets) {
+  //cibles = cibles+" @Actor["+t.name+"]" // ça marche pas alors on fait à la main
+  cibles = cibles + '<a class="content-link" draggable="true" data-type="Actor" data-uuid="Actor.'+t.document.actorId+'"><i class="fas fa-user"></i>'+t.name+'</a>&nbsp;'
+}
+return cibles; 
+}
+
+// function DefenseHtml() {
+//   return `<i class="fad fa-shield rollable" title="Jet Auto pour la défense" data-cmd="jet.defense" data-roll=" { 'nde' : {{system.jet.nblancer}}, 'paris' : {{system.jet.paris}}, 'seuil' : {{system.jet.seuil}}, 'nbEffort': {{jetCoutEffort}},  'Auto' : {{system.jet.autoEffort}}  }"></i>`
+// }
 
 //----------------------------------------------------------------
 //----------------------------------------------------------------

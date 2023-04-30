@@ -408,7 +408,6 @@ visuEffort(Effort, nbEffortWait = 0) {
   return ret ; 
 }
 
-
 /**
  * visuRang : visualise un Rang founis en paramètre
  *
@@ -662,8 +661,8 @@ onRoll7(dataset,cmdArgs, txtCode){
       // { 'nde' : {{system.jet.nblancer}}, 'paris' : {{system.jet.paris}}, 'seuil' : {{system.jet.seuil}}, 'nbEffort': {{jetCoutEffort}},  'Auto' : {{system.jet.autoEffort}}  }
       let objRel =(cmdArgs[2]==="paris")? { "nde" : this.document.system.cmp.value, "paris":0, "seuil": this.document.system.value, 'nbEffort': 0,  'Auto' : 1 } : 
                                           //objRel = JSON.parse(txtCode.replaceAll("'",'"')); // aime pas avoir des ' au lieu des "
-                                          { "nde" : this.document.system.jet.nblancer, "paris": this.document.system.jet.paris, "seuil": this.document.system.value, 'nbEffort': this.document.system.jet.coutEffort,  'Auto' : this.document.system.jet.autoEffort }
-      simpleDialogue(objRel.nde , objRel.paris, objRel.seuil, { _id: this.document._id, "nbEffort": objRel.nbEfort, "Auto": objRel.auto });
+                                          { "nde" : this.document.system.jet.nblancer, "paris": this.document.system.jet.paris, "seuil": this.document.system.etats.value, 'nbEffort': this.document.system.jet.coutEffort,  'Auto' : this.document.system.jet.autoEffort }
+      simpleDialogue(objRel.nde , objRel.paris, objRel.seuil, { _id: this.document._id, "nbEffort": objRel.nbEffort, "Auto": objRel.Auto });
       break;
     case 'remove':
       let ind =(cmdArgs[2] === 'cmp')? cmd: parseInt(cmdArgs[2])+1;

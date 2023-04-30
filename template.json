@@ -14,17 +14,33 @@
           "coutEffort":0,
           "autoEffort":1,
           "coutMagique":0,
-          "resultat": {
-            "code": "NORM",
-            "score": 0,
-            "nbQualites" : 0,
-            "cibles" : "",
-            "info": "",
-            "MeFormule":"",
-            "MeTot" : 0
-          },
           "nomRaccourci":""
         }
+      },
+      "JetAttDef": {
+        "attResultat": {
+          "code": "NORM",
+          "score": 0,
+          "nbQualites" : 0,
+          "cibles" : "",
+          "info": "",
+          "MeFormule":"",
+          "MeTot" : 0,
+          "infoJet": "",
+          "dataJet": ""
+        },
+        "defResultat": {
+          "code": "NORM",
+          "score": 0,
+          "nbQualites" : 0,
+          "cibles" : "",
+          "info": "",
+          "MeFormule":"",
+          "MeTot" : 0,
+          "nbDef" : 0,
+          "dataJet" : ""
+        }
+
       },
       "etatsTot": {
         "etats": {
@@ -357,7 +373,7 @@
       }
     },
     "pj6": {
-      "templates": ["base","etatsTot","cmps","jets"],
+      "templates": ["base","etatsTot","cmps","jets","JetAttDef"],
       "cmpCirconstance":"",
       "initEtat": {
         "value": 0,
@@ -373,7 +389,7 @@
       "estSRVar" : false
     },
     "pj": {
-      "templates": ["base","miniEtats","cmps7","jets"],
+      "templates": ["base","miniEtats","cmps7","jets","JetAttDef"],
       "cmpCirconstance":"",
       "initEtat": {
         "cmp":1,
@@ -414,7 +430,7 @@
     "figurant": {
       "codeSpe" :"FIG",
       "nd":1,
-      "templates": ["minibase","compteur","carac"],
+      "templates": ["minibase","compteur","carac","JetAttDef"],
       "estNbActionHaute": false,
       "estInitHaute": false,
       "initEtat": {
@@ -428,7 +444,6 @@
       "totalXP": 0
     },
     "terrain":{
-
     }
   },
   "Item": {
@@ -464,6 +479,11 @@
         "unite3" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" },
         "unite4" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" },
         "unite5" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" }
+      },
+      "aspects" : {
+        "asp1": { "nomAsp" : "", "codeAsp" : ""},
+        "asp2": { "nomAsp" : "", "codeAsp" : ""},
+        "asp3": { "nomAsp" : "", "codeAsp" : ""}
       }
     },
     "aspect":{
