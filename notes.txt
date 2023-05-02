@@ -125,3 +125,9 @@ ui.notifications.notify("coucou c'est moi aussi") : message bleu..
  dc.dealDialog()
  dc.deal( [ game.cards.get("0WVKDZAaFnenQ2U0") ],1, {chatNotification: true }) // 0WVK... Main Joueur 1
  
+ // Actors et tokens
+ les tokens sont dasn les scènes game.scene, la scène courante est dans game.user.viewedScene
+ les tokens contiennent un lié vers à Acteur par le champ : _actor, mais possède les modifications par actorData
+ il faut prendre les tokens plutot que les Actors
+ 
+ Pour une fiche : l'ouverture getData : this.token si le token est utiliser son id sinon null (par la bar de selection à droite)

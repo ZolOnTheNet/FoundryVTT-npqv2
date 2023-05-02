@@ -39,7 +39,7 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.system = actorData.system;  // peut être changer data en système après relecture
       context.flags = actorData.flags;
 
-      context.system.chatCom = { "_id": actorData._id, "armurePortee" : [] }; // objet pour aider à la communication avec le chat.
+      context.system.chatCom = { "idActor": actorData.id, "idToken" : this.token.id,  "armurePortee" : [] }; // objet pour aider à la communication avec le chat.
   
       // Prepare character data and items.
 
@@ -129,6 +129,9 @@ export default class npqv2ActorSheet extends ActorSheet {
               context.system.chatCom["domF"] = i.system.menace;
               context.system.chatCom["bonusDom"] = i.system.bonus.CodeDommage;
               context.system.chatCom["NbDes"] = i.system.bonus.NbDes;
+              // --- jet d'attaque pré remplissage
+              context.system.attResultat.MeFormule = i.system.menace;
+              context.system.defResultat.MeFormule = i.system.couverture;
             }
           }else if(i.system.codeSpe === 'ARMURE') {
             armures.push(i);
@@ -522,7 +525,7 @@ _prepareCharacterCmb7(actorData, context){
     }else {
       let ite = actorData.items.get(context.system.initEtat["idAspect"+i]);
       if(ite !== null) { // a tester !XXXX
-        context.system.initEtat.lstIteAff.push( { "id" : context.system.initEtat["idAspect"+i], "label": ite.name, "NbDes": ite.system.NbDes });  
+        context.system.initEtat.lstIteAff.push( { "id" : context.system.initEtat["idAspect"+i], "label": "A"+i+": "+ite.name, "NbDes": ite.system.NbDes });  
         if(i>1) context.system.initEtat.ptEffort +=3; // l'effort est plus important
         context.system.initEtat.value += ite.system.NbDes;  // les inits prenne 1 Dé
       }
@@ -555,6 +558,17 @@ _prepareCharacterCmb7(actorData, context){
     }
 
   }
+  //--- traitement défense et attaque 
+  context.quickDeAtt = [];
+  if(context.system.attResultat.info !=="") { // attention à plusieurs type de jet !! terms peut être plus nombreu
+    let objR = JSON.parse(context.system.attResultat.info);
+    for(let r of objR.terms[0].results)  context.quickDeAtt.push(r.result);
+  };
+  context.quickDeDef
+  if(context.system.defResultat.info !=="") {
+    let objR = JSON.parse(context.system.defResultat.info);
+    for(let r of objR.terms[0].results)  context.quickDeDef.push(r.result);
+  };
   context.jetCoutEffort = nbEffort;
   context.system.jet.nblancer = nbdes;
   //context.effortTxt = '<i data-cmd="set.etat.effort" data-roll="1" title="1" class="rollable fillable fas fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable far fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable fad fa-square"></i>'
@@ -662,7 +676,7 @@ onRoll7(dataset,cmdArgs, txtCode){
       let objRel =(cmdArgs[2]==="paris")? { "nde" : this.document.system.cmp.value, "paris":0, "seuil": this.document.system.value, 'nbEffort': 0,  'Auto' : 1 } : 
                                           //objRel = JSON.parse(txtCode.replaceAll("'",'"')); // aime pas avoir des ' au lieu des "
                                           { "nde" : this.document.system.jet.nblancer, "paris": this.document.system.jet.paris, "seuil": this.document.system.etats.value, 'nbEffort': this.document.system.jet.coutEffort,  'Auto' : this.document.system.jet.autoEffort }
-      simpleDialogue(objRel.nde , objRel.paris, objRel.seuil, { _id: this.document._id, "nbEffort": objRel.nbEffort, "Auto": objRel.Auto });
+      simpleDialogue(objRel.nde , objRel.paris, objRel.seuil, { idActor: this.document.system.chatCom.idActor, idToken : this.document.system.chatCom.idToken, "nbEffort": objRel.nbEffort, "Auto": objRel.Auto });
       break;
     case 'remove':
       let ind =(cmdArgs[2] === 'cmp')? cmd: parseInt(cmdArgs[2])+1;

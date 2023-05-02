@@ -254,13 +254,4 @@ _prepareCharacterData6(actorData) {
 */
 }
 
-passerJetAttaque(params={}) {
-  // "attResultat": { "code": "NORM", "score": 0, "nbQualites" : 0, "cibles" : "", "info": "", "MeFormule":"", "MeTot" : 0, "infoJet":"", "dataJet": ""}
-  // infoJet récupère le max de donnée du jet et dataJet récupère le max d'info du roll du jet
-  // params devra complété...
-  let actorData = this;
-  let objUpd = {};
-  objUpd["system."]
-}
-
 }

@@ -4,84 +4,24 @@ import npqv2ItemSheet from "./sheets/Npqv2ItemSheet.js";
 import npqv2ActorSheet from "./sheets/Npqv2ActorSheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { simpleDialogue, lanceLesDes, DialogueDommage } from "./utils.js";
-import { updateInitiative } from "./updateInitiative.js";
+import { aiguillageGeMsg } from "./messages.js";
+//import { updateInitiative } from "./updateInitiative.js";
 
 //  a metre au bon endroit
 function EnventDuChat(event, html, data){
  // const btn = $(event.currentTarget);
  // const btnType = btn.data("apply");
-  // cette partie peut être toujours utile ou non, mais nécessaire pour full, et DomApply
   //console.log("EventDuChat:",btn);
   let dataSet = event.currentTarget.dataset;
   let obj = JSON.parse(dataSet.roll);
   let cmdArgs = dataSet.cmd.split(".");
-  let objAction = null;
-  // aiguillage des options (voir utils.js) : msg.arme.attaque, 
-  if(obj?._id) objAction = game.actors.get(obj._id); else return; // peut être un message ui ?.
   switch(cmdArgs[0]){
     case "msg":
-        if(cmdArgs[1]=== "arme") {
-          if(cmdArgs[2]=== "attaque") {
-            // transformer le jet en jet d'attaque courant !
-            objAction.passerJetAttaque(obj);
-          }
-          else if (cmdArgs[2]==="defense") {
-            // transformer le jet en jet de défense !
-          }
-        }
+      aiguillageGeMsg(cmdArgs, obj)
       break;
   }
   return;
-  let c = html.find(".flavor-text").text();
-  let st = c.indexOf("donne ") + "donne ".length;
-  let ed = c.indexOf(" ", st);
-  switch(btnType){
-    case "full"   : 
-      console.log("lancer dommage !"); 
-      let nbMises = parseInt(c.substring(st,ed));
-      DialogueDommage(nbMises);
-      break;
-    case "DomApply"   : 
-      console.log("appliquer les dommages !"); 
-      let DomTot = parseInt(c.substring(st,ed));
-      break;
-    case "double" : console.log("lancer dommage !"); 
-      break;
-    case "attackTo"   : 
-      console.log("faire lancer la défense du personnage opposé !");
-      //on obtient ces cibles
-      let targets = ([...game.user.targets].length > 0) ? [...game.user.targets] : canvas.tokens.objects.children.filter(t => t._controlled);
-      //on obtient le personnage en cours de selections
-      let actor = ChatMessage.getSpeaker().actor;
-      if(actor==null) {
-        console.log("Selectionner un personnage");
-      } else {
-        // faire une demande de défense, puis appliquer les calcul (@Nom)
-        // let template = "systems/hitos/templates/chat/chat-drama.html";
-        // dialogData = {
-        //     title: game.i18n.localize("Drama"),
-        //     total: result,
-        //     damage: damage,
-        //     dicesOld: dicesOld,
-        //     dices: dicesNew.sort((a, b) => a - b),
-        //     actor: actor.id,
-        //     mods: mods,
-        //     weaponDamage: weaponDamage,
-        //     weaponKindBonus: weaponKindBonus,
-        //     data: actor.system,
-        //     config: CONFIG.hitos,
-        // };
-        // html = await renderTemplate(template, dialogData);
-        // ChatMessage.create({
-        //     content: html,
-        //     speaker: {alias: actor.name},
-        //     type: CONST.CHAT_MESSAGE_TYPES.ROLL, 
-        //     rollMode: game.settings.get("core", "rollMode"),
-        //     roll: newRoll
-        // });
-      }
-      break;
-  }
+
 }
 
 // trouver dans cof dans un fichier, ici pour test

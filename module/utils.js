@@ -24,41 +24,55 @@ function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5 , obj = {} ){
   let resultat = r.total; // r.total entier, r.result chaine de caractère
   let nbsucces = 0;
   let isSucces = 0; //parseInt((resultat - diff + 5) / 5)  ;
+  for (const value of r.terms[0].results) {
+    if(value.result%2 == 0) nbsucces++;
+  }
   if(resultat >= diff) { // le jet est un succès
     isSucces = 1; // c'est une réussite
-    for (const value of r.terms[0].results) {
-      if(value.result%2 == 0) nbsucces++;
-    }
     if (nbsucces > 0) nbsucces += parseInt(res);
+  } else { // ratrapage aux branche +Quàl *2
+    let manque = diff - resultat;
+    if(manque <= nbsucces*2)  {
+      nbsucces = nbsucces + Math.floor(-manque/2);
+      isSucces = 2;
+    }
   }
   if (nbsucces <= 0) nbsucces = 0;
   
 // --------------------------------------------
 //  --- calcul des cibles déjà selectionnée
 let cibles = lstCiblesTxt();
+obj.cibles = lstCibles();
 if(cibles !=="") cibles = "Vos cibles sont :<br>" + cibles + '<br>';
 // --------------------------------------------
 let monTexte = "";
 obj.qualite = nbsucces; obj.lancer = lancer; obj.paris = parseInt(res); 
 obj.resultat = resultat; obj.roll = r;
 //let strObj = JSON.stringify(obj).replaceAll('"','|');
-if(isSucces >0 ) monTexte= "Bravo : Votre jet ("+ lancer + "D6) avec "+ obj.paris+ 
+if(isSucces == 1 ) monTexte= "Bravo ! Votre jet ("+ lancer + "D6) avec "+ obj.paris+ 
 " succè(s) en réserve, contre un seuil de "+ diff + ', vous donne <font size="+5"><b>'+nbsucces+ ' qualité(s)</b></font>.<br>'+
-'vous avez le choix de :<br>'+ 
+'vous avez le choix de :<br>';
+else if(isSucces == 2) monTexte = "Vous avez réussi de justesse ! votre jet ("+lancer+ "D6) contre un seuil de "+ diff+' a échoué mais les <font size="+5"><b>'+nbsucces+ ' qualité(s)</b></font>.<br>'+
+      `vous permettent d'obtenir `+ nbsucces + `au final`;
+// pour cette partie ci dessous : vérifier qu'il y a au moins un aspect utilisable supplémentaire (idAspectX =="")
+else monTexte = "Désolé ! vous êtes trop fatigué, vous n'avez pas réussi votre jet (="+ resultat+") contre une difficulte de : "+diff+".<br>"+
+                `<a class="apply-cmd" data-cmd="msg.jet.relance" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-sword"></i>&nbsp;Relancer les dés à l'aide d'un aspect</a><br>`;
+
 //((cibles==="")?`<a class="apply-cmd" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `'><i class="far fa-bullseye-pointer" ></i>&nbsp;Selectionner les cibles</a><br>`:cibles)+
-((cibles==="")?`<i class="far fa-bullseye-pointer" ></i>&nbsp;Selectionner les cibles (click droit sur vos adversaires puis utilisez <i class="fal fa-bullseye"></i>)<br>`:cibles)+
-`<a class="apply-cmd" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-sword"></i>&nbsp;Passez en mode Attaque(pas de nouveau lancer)</a><br>`+
+if(isSucces) monTexte += ((cibles==="")?`<i class="far fa-bullseye-pointer" ></i>&nbsp;Selectionner les cibles (click droit sur vos adversaires puis utilisez <i class="fal fa-bullseye"></i>)<br>`:cibles)+
+`<a class="apply-cmd" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fad fa-dice"></i>&nbsp;Relancer les dés</a><br>`+
 `<a class="apply-cmd" data-cmd="msg.arme.defense" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-shield"></i>&nbsp;Passez en mode Defense(pas de nouveau lancer)</a><br>`+
 //'Voici vos choix possible :<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
 //'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
 ".";
-else monTexte = "Désolé ! mais vous n'avez pas réussi votre jet (="+ resultat+") contre une difficulte de : "+diff+".<br>"; 
-  // sortie du texte  
-  let speak = obj._id?game.actors.get(obj._id).name: ChatMessage.getSpeaker();
-  monTexte = "<h2>"+speak+"</h2>"+monTexte;
+                ""; 
+  // sortie du texte  : tester
+  let speak = obj.idActor?game.actors.get(obj.idActor).name: ChatMessage.getSpeaker();
+  monTexte = "<h2>"+((obj?.idToken)?game.scenes.get(game.user.viewedScene).tokens.get(obj.idToken).name:speak.alias)+"</h2>"+monTexte;
    let chatData = {
-        user: game.user._id,
-        actor: game.actors.get(obj._id),
+        user: game.user.id,
+        actor: game.actors.get(obj.idActor),
+        //token: (obj?.idToken)?game.scenes.get(game.user.viewedScene).tokens.get(obj.idToken).name:"",
         speaker: speak,
         flavor: monTexte,
         rollMode: game.settings.get("core", "rollMode"),
@@ -119,7 +133,7 @@ function handleSubmit(html) {
                 <td><input name="seuil" type="integer" value=`+seuil+` /></td></tr>
         </tbody>
         </table>
-        <input name="obj" type="text" value='`+JSON.stringify(obj).replaceAll('"','|')+`' />
+        <input name="obj" type="hidden" value='`+JSON.stringify(obj).replaceAll('"','|')+`' />
     </form>`;
     DialogueElementaire("lancer de dé pour "+sp.alias, form, handleSubmit);
 }
@@ -321,4 +335,4 @@ return cibles;
 /***
  * EXPORT ---------------
  */
-export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut, quelRang, AppliqueEtatValeur }
+export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut, quelRang, AppliqueEtatValeur, lstCibles, lstCiblesTxt  }

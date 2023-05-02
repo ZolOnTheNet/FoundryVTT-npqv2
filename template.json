@@ -168,18 +168,18 @@
       },
       "base": {
         "type":"PJ",
-        "Origine":"",
-        "Ethnie":"gents",
-        "Besogne":"artisan",
+        "origine":"",
+        "ethnie":"gents",
+        "besogne":"",
         "biography": "",
         "reputation": { "value":0, "max":0},
         "XP":{ "value":0, "max":0}
       },
       "minibase":  {
         "type":"PNJ",
-        "Origine":"",
-        "Ethnie":"gents",
-        "Besogne":"artisan",
+        "origine":"",
+        "ethnie":"gents",
+        "besogne":"",
         "biography": ""
       },
       "cmps": {

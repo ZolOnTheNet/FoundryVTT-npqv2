@@ -104,7 +104,7 @@
       </section>
 
       <section class="main">
-        <h2>{{localize  "int.aspects" }}</h2>
+        <h2><i class="far fa-user-tag"></i> &nbsp;{{localize  "int.aspects" }}</h2>
         {{#each aspects as |aspect key|}}
         <div>
           <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
@@ -160,7 +160,7 @@
         </div>
         {{/each}}
         <br>
-        <h2>{{localize  "int.sequelle" }}</h2>
+        <h2><i class="fas fa-user-tag"></i>&nbsp;{{localize  "int.sequelle" }}</h2>
         {{#each sequelles as |aspect key|}}
         <div>
           <span> 
@@ -226,6 +226,25 @@
           <br><span>seuil : <strong>{{system.jet.seuil}}</strong> </span>
           <span>Effort : <strong>{{jetCoutEffort}}</strong></span><span class="lilipute"> Auto : {{system.jet.autoEffort}}</span>
           <br>Raccouci : <input class="normal-input" type="text" size="12em" name="system.jet.nomRaccourci" value="{{system.jet.nomRaccourci}}" data-dtype="String"/> <span><a class="rollable" title="{{localize  'nfo.favoris' }}" data-roll="" data-cmd="favoris.add" ><i class="far fa-star"></i> </a></span>
+          <h3>Attaque et défense</h3>
+          {{#if system.attResultat.score}}
+            Quàl : {{system.attResultat.nbQualites}}, Jet {{system.attResultat.lancer}}D6:  {{system.attResultat.score}} =>
+            {{#each quickDeAtt as |d key|}} {{d}}&nbsp; 
+            {{/each}} 
+          {{/if}}
+          Votre Menace : {{system.attResultat.MeFormule}} (attaque)
+          {{#if system.attResultat.Me}} => {{system.attResultat.Me}}
+          {{/if}} <br>
+          {{#if system.defResultat.score}}
+            <br>
+            Quàl : {{system.defResultat.nbQualites}}, Jet {{system.defResultat.lancer}}D6:  {{system.defResultat.score}} =>
+            {{#each quickDedef as |d key|}} {{d}}&nbsp; 
+            {{/each}} 
+          {{/if}}
+          votre Couverture: {{system.defResultat.MeFormule}} (défense)
+          {{#if system.defResultat.Me}} => {{system.defResultat.Me}}
+          {{/if}} <br>
+          <br><h3>Raccourcis</h3><br>
         </div>
       </section>
     </section>
