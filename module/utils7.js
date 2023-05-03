@@ -142,7 +142,8 @@ function DialogueElementaire (titre = "lancer de dé", form="<h2>coucou</h2", fn
       console.log("test dialogue",confirmation);
   }
 
-function lancerInit7(formule) {
+function lancerInit7(formule, bonus = 0) {
+  // rajouter les aspect selectionnée !
   if(formule==="") return 0;
   
   let r = new Roll(formule);
@@ -171,7 +172,9 @@ function lancerInit7(formule) {
     }
   }
   let initEffort = max1+max2;
-  let monTexte = "Initialisation est à "+r.total+". le gain d'effort est "+initEffort;
+  // le lancer de dé est calculé et garder à part, donc le bonus
+  // venant des Aspect (1 à 3) est rajouté pour garder un cohérence avec la feuille et l'affichage 
+  let monTexte = "Initialisation est à "+(r.total+bonus)+". le gain d'effort est "+initEffort;
   let chatData = {
     user: game.user._id,
     speaker: ChatMessage.getSpeaker(),

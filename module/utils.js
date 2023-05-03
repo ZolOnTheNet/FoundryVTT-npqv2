@@ -17,8 +17,9 @@ const tabD6 =  {
 /*----------------------------------------------------------------
 * lanceLesDes : lancer le nombre de dé (lancer), avec le nombre de dé en réserve (res)
 *               la difficulté(diff)
+* obj doit contenir un max d'info dont publicName
 */
-function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5 , obj = {} ){
+function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=6 , obj = {}, mode="" ){
   let r = new Roll(""+(lancer)+formDe);
   r.evaluate({async :false });
   let resultat = r.total; // r.total entier, r.result chaine de caractère
@@ -29,7 +30,7 @@ function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5 , obj = {} ){
   }
   if(resultat >= diff) { // le jet est un succès
     isSucces = 1; // c'est une réussite
-    if (nbsucces > 0) nbsucces += parseInt(res);
+    nbsucces += parseInt(res);
   } else { // ratrapage aux branche +Quàl *2
     let manque = diff - resultat;
     if(manque <= nbsucces*2)  {
@@ -41,8 +42,8 @@ function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=5 , obj = {} ){
   
 // --------------------------------------------
 //  --- calcul des cibles déjà selectionnée
-let cibles = lstCiblesTxt();
-obj.cibles = lstCibles();
+let cibles = lstCiblesTxt(obj.idActor); // oui c'est compliquer !
+//obj.cibles = lstCibles(obj.idToken); // problème de données circulaires !
 if(cibles !=="") cibles = "Vos cibles sont :<br>" + cibles + '<br>';
 // --------------------------------------------
 let monTexte = "";
@@ -56,19 +57,25 @@ else if(isSucces == 2) monTexte = "Vous avez réussi de justesse ! votre jet ("+
       `vous permettent d'obtenir `+ nbsucces + `au final`;
 // pour cette partie ci dessous : vérifier qu'il y a au moins un aspect utilisable supplémentaire (idAspectX =="")
 else monTexte = "Désolé ! vous êtes trop fatigué, vous n'avez pas réussi votre jet (="+ resultat+") contre une difficulte de : "+diff+".<br>"+
-                `<a class="apply-cmd" data-cmd="msg.jet.relance" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-sword"></i>&nbsp;Relancer les dés à l'aide d'un aspect</a><br>`;
+                `<a class="apply-cmd" data-cmd="msg.jet.relance" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-dice"></i>&nbsp;Relancer les dés à l'aide d'un aspect</a><br>`;
 
 //((cibles==="")?`<a class="apply-cmd" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `'><i class="far fa-bullseye-pointer" ></i>&nbsp;Selectionner les cibles</a><br>`:cibles)+
-if(isSucces) monTexte += ((cibles==="")?`<i class="far fa-bullseye-pointer" ></i>&nbsp;Selectionner les cibles (click droit sur vos adversaires puis utilisez <i class="fal fa-bullseye"></i>)<br>`:cibles)+
-`<a class="apply-cmd" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fad fa-dice"></i>&nbsp;Relancer les dés</a><br>`+
+if(isSucces>0) monTexte += ((cibles==="")?`<i class="far fa-bullseye-pointer" ></i>&nbsp;Selectionner les cibles (click droit sur vos adversaires puis utilisez <i class="fal fa-bullseye"></i>)<br>`:cibles)+
+`<a class="apply-cmd" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fad fa-sword"></i>&nbsp;passer le resultat en mode attaque (sans modification de jets)</a><br>`+
+`<a class="apply-cmd" data-cmd="msg.arme.attaque+" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fad fa-sword"></i>&nbsp;passer le resultat en mode attaque (avec calcul des dommages)</a><br>`+
 `<a class="apply-cmd" data-cmd="msg.arme.defense" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-shield"></i>&nbsp;Passez en mode Defense(pas de nouveau lancer)</a><br>`+
+`<a class="apply-cmd" data-cmd="msg.arme.defense+" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-shield"></i>&nbsp;Passez en mode Defense(avec calcul Couverture)</a><br>`+
 //'Voici vos choix possible :<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
 //'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
 ".";
                 ""; 
   // sortie du texte  : tester
   let speak = obj.idActor?game.actors.get(obj.idActor).name: ChatMessage.getSpeaker();
-  monTexte = "<h2>"+((obj?.idToken)?game.scenes.get(game.user.viewedScene).tokens.get(obj.idToken).name:speak.alias)+"</h2>"+monTexte;
+  let tok = (obj?.idToken)?game.scenes.get(game.user.viewedScene).tokens.get(obj.idToken):null; 
+  let nameReel = (tok?.actorData?.name)?tok.actorData.name:tok?.name;
+  nameReel = (obj?.publicName)?obj.publicName:nameReel;
+  nameReel = (nameReel ==="" )?speak.alias:nameReel;
+  monTexte = "<h2>"+nameReel+"</h2>"+monTexte;
    let chatData = {
         user: game.user.id,
         actor: game.actors.get(obj.idActor),
@@ -273,15 +280,9 @@ function DialogueElementaire (titre = "lancer de dé", form="<h2>coucou</h2", fn
  * et un maximum (max), la ligne est dite complète si value = max
  * 
  * @param {*} objAvecRang objet de la forme suivante :
- * obj = {
- *        "rangs": {
- *          "rang1": { "value":0, "max":3},
- *          "rang2": { "value":0, "max":3},
- *          "rang3": { "value":0, "max":3},
- *          "rang4": { "value":0, "max":3} 
- *         }
- *       }
- */
+ * obj = { "rangs": { "rang1": { "value":0, "max":3}, "rang2": { "value":0, "max":3}, "rang3": { "value":0, "max":3}, "rang4": { "value":0, "max":3}  } } 
+ * 
+ * */
 function quelRang(objAvecRang) {
   let reponse = 0;
   for(let i=1; i < 5; i++){
@@ -312,18 +313,28 @@ function AppliqueEtatValeur(parent) {
  *
  * @return {*} 
  */
-function lstCibles() {
-  return ([...game.user.targets].length > 0) ? [...game.user.targets] : canvas.tokens.objects.children.filter(t => t._controlled);
+function lstCibles(idActeur = "") {
+  let aCibles = [...game.user.targets].filter(e => e.id !== idActeur); // cibles autre que lui 
+  return (aCibles.length > 0) ? aCibles : canvas.tokens.objects.children.filter(t => t._controlled);
 }
 
-function lstCiblesTxt() {
+// sans test du non de l'id
+function cibleTxt(actorId="", actorName="") {
+  return '<a class="content-link" draggable="true" data-type="Actor" data-uuid="Actor.'+actorId+'"><i class="fas fa-user"></i>'+actorName+'</a>&nbsp;'
+}
+
+function lstCiblesTxt(meId = "") {
 let targets = lstCibles();
 let cibles="";
 for(let t of targets) {
   //cibles = cibles+" @Actor["+t.name+"]" // ça marche pas alors on fait à la main
-  cibles = cibles + '<a class="content-link" draggable="true" data-type="Actor" data-uuid="Actor.'+t.document.actorId+'"><i class="fas fa-user"></i>'+t.name+'</a>&nbsp;'
+  if(t.document.actorId !== meId)cibles = cibles + cibleTxt(t.document.actorId, t.name)
 }
 return cibles; 
+}
+
+function isFormule(formuleTxt="3"){
+  return formuleTxt.indexOf("D")>0 || formuleTxt.indexOf("d")>0;
 }
 
 // function DefenseHtml() {
@@ -335,4 +346,4 @@ return cibles;
 /***
  * EXPORT ---------------
  */
-export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut, quelRang, AppliqueEtatValeur, lstCibles, lstCiblesTxt  }
+export { simpleDialogue, lanceLesDes, DialogueDommage, lancerDeBrut, quelRang, AppliqueEtatValeur, lstCibles, lstCiblesTxt, cibleTxt, isFormule }

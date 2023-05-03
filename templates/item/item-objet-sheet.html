@@ -105,10 +105,10 @@
           <h3>{{localize  "int.aspects" }}</h3>
           {{#each system.aspects as |aspect key|}}
             <label for="system.aspects.{{key}}" class="resource-label flexlarge align-left" >{{localize  "int.asp.Nom" }}</label>
-            <input class="normal-input" type="text" size="15em" name="system.aspects.{{key}}" value="{{aspect.nomAsp}}" data-dtype="String"/>
-            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+            <input class="normal-input" type="text" size="14em" name="system.aspects.{{key}}.nomAsp" value="{{aspect.nomAsp}}" data-dtype="String"/>
+            <input class="normal-input" title="Nombre de dés" type="text" size="1em" name="system.aspects.{{key}}.value" value="{{aspect.value}}" data-dtype="Number"/>
             &nbsp;
-            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            <a class="attrib-mod rollable" data-roll="asp{{key}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
             <br>
           {{/each}}
         </div>

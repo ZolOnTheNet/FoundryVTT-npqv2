@@ -9,8 +9,8 @@ export default class npqv2ActorSheet extends ActorSheet {
       return mergeObject(super.defaultOptions, {
         classes: ["npqv2", "sheet", "actor"],
         template: "systems/npqv2/templates/personnage-sheet.html", // attention c'est template() qui retourne le véritable nom
-        width: 655,
-        height: 519,
+        width: 763,
+        height: 750,
         tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "caracteristiques" }]
       });
     }
@@ -39,8 +39,15 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.system = actorData.system;  // peut être changer data en système après relecture
       context.flags = actorData.flags;
 
-      context.system.chatCom = { "idActor": actorData.id, "idToken" : this.token.id,  "armurePortee" : [] }; // objet pour aider à la communication avec le chat.
-  
+      context.system.chatCom = { "idActor": actorData.id,  "armurePortee" : [] }; // objet pour aider à la communication avec le chat.
+      if(this.token !== null) context.system.chatCom.idToken = this.token.id;
+        else context.system.chatCom.idToken = null;
+      let lstTokens = this.actor.getActiveTokens();
+      if(lstTokens.length > 1) { // en fait la liste des tous les tokens référençant l'acteur
+        context.system.chatCom.publicName = this.actor.name;
+      }else if(lstTokens.length == 1) { // appel est fait par un ddbl clique sur un token
+        context.system.chatCom.publicName = lstTokens[0].name;
+      }
       // Prepare character data and items.
 
       if(actorData.type == 'pj') {
@@ -290,6 +297,7 @@ export default class npqv2ActorSheet extends ActorSheet {
         if(Number.isNumeric(context.bonus.seuilRupture)) context.bonus.seuilRupture = parseInt(context.bonus.seuilRupture);
         context.seuilRupture =  context.system.valeur+1+context.system.bonusDrama + context.bonus.seuilRupture;
       }
+      
       context.system.chatCom.formulaSR = context.system.formulaSR;
       context.system.chatCom.SeuilRupture = context.system.SeuilRupture;
       context.lstCodeSpe = { "MON": "Monstre", "FIG" : "Figurant"};
@@ -385,8 +393,8 @@ export default class npqv2ActorSheet extends ActorSheet {
       return ;
      } else if (this.document.type === "pj6") {
       this.onRoll6(dataset,cmdArgs, txtCode);
-     }else { // faire une adaptation pour FIG ?
-      this.onRoll6(dataset,cmdArgs, txtCode);
+     }else { // adaptation pour FIG 
+      this.onRollFig(dataset,cmdArgs, txtCode);
      }
      // prétraitement suivant le rolltype et le champs
   }
@@ -518,6 +526,7 @@ _prepareCharacterCmb7(actorData, context){
   // faudra rajouter l'armure voir les bonus des armes (Co ?)
   context.system.initEtat.ptEffort = 0; context.system.initEtat.lstIteAff = []; // la liste des label et des des
   context.system.initEtat.value = context.system.initEtat.sommeDes
+  context.system.initEtat.nDi = 0; // nombre de bonus lié au aspects
   for(let i = 1; i < 4; i++) {
     c = "asp"+i;
     if(context.system.initEtat["idAspect"+i] === ""){
@@ -528,6 +537,7 @@ _prepareCharacterCmb7(actorData, context){
         context.system.initEtat.lstIteAff.push( { "id" : context.system.initEtat["idAspect"+i], "label": "A"+i+": "+ite.name, "NbDes": ite.system.NbDes });  
         if(i>1) context.system.initEtat.ptEffort +=3; // l'effort est plus important
         context.system.initEtat.value += ite.system.NbDes;  // les inits prenne 1 Dé
+        context.system.initEtat.nDi += ite.system.NbDes;
       }
     }
   }
@@ -647,7 +657,7 @@ onRoll7(dataset,cmdArgs, txtCode){
     //   break;
     case 'lancerInit': // modification de l'init, si dans le + dépense de l'éffort, l'info est dans this.document.system.initEtat.
       //this.document.system.initEtat.value 
-      let rep = lancerInit7(this.document.system.initEtat.formule);
+      let rep = lancerInit7(this.document.system.initEtat.formule,this.document.system.initEtat.nDi );
       if(rep.initEffort !== undefined) {
         let ObjU = { };
         ObjU["system.initEtat.sommeDes"] = rep.total;
@@ -657,12 +667,40 @@ onRoll7(dataset,cmdArgs, txtCode){
       updateInitiative(this.document._id, this.document.system.initEtat.value);
       break;
     case 'jet':
-      switch(cmdArgs[2]){
-        case 'attaque':
+      switch(cmdArgs[1]){
+        case 'attaque': // enchainement du lancer de dé + mise en attaque direct si réussie
           break;
-        case 'defence':
+        case 'defense': //enchainement du lancer de dé + mise en défense direct si réussie
+          break;
+        case 'clean' : 
+          let objUdp = {};
+          switch(cmdArgs[2]){
+            case 'defense': // les champs son compréssé pour être plus visible 
+              objUdp = {
+                "system.defResultat.code": "NORM", "system.defResultat.score": 0, "system.defResultat.nbQualites" : 0, 
+                "system.defResultat.cibles" : "", "system.defResultat.info": "", "system.defResultat.MeFormule":"", "system.defResultat.MeTot" : 0,
+                "system.defResultat.infoJet": "", "system.defResultat.dataJet": ""
+              };
+              break;
+            case 'attaque' : 
+              objUdp = {
+                "system.attResultat.code": "NORM", "system.attResultat.score": 0, "system.attResultat.nbQualites" : 0, 
+                "system.attResultat.cibles" : "", "system.attResultat.info": "",  "system.attResultat.MeFormule":"", "system.attResultat.MeTot" : 0,
+                 "system.attResultat.infoJet": "", "system.attResultat.dataJet": ""
+              };
+              break;
+            default: 
+              objUdp = {
+                "system.jet.codecmp":"", "system.jet.idAspect1":"", "system.jet.idAspect2":"", "system.jet.idAspect3":"", "system.jet.nblancer":3, 
+                "system.jet.paris":0, "system.jet.seuil": this.document.system.etats.value, "system.jet.coutEffort":0, "system.jet.autoEffort":1,
+                "system.jet.coutMagique":0, "system.jet.nomRaccourci":""
+              }
+              break
+          }
+          this.document.update(objUdp,{renderSheet:true}); // sheet obligatoire
           break;
       }
+      break;
     case 'lancerJet':
       // const sys = this.document.system;
       // let jetP = jQuery.extend(true, {}, sys.jet); // clone profond
@@ -754,6 +792,60 @@ onRoll7(dataset,cmdArgs, txtCode){
       console.log("ActorSheet > _onRoll : cmd inconnu =>",cmd,dataset);
   }
 
+}
+
+//---- roll pour les figurants
+onRollFig(dataset,cmdArgs, txtCode){
+  let cmd = cmdArgs[0];
+  switch(cmd) {
+    case 'activation':
+      let itemA = this.document.items.get(txtCode);
+      let testA =  cmdArgs[1] === "oui";
+      itemA.update({ 'system.estActif' : testA });
+      // en fonction si armure => changement dans la seuil de ruptures
+      break;
+    case 'calc': // rafrechissement des valeurs ou forçage de calculs
+      if( cmdArgs[1] === "rupture") {
+        if(this.document.system.formulaSR == "") {
+            // pas besoin de le faire deux fois : voir getData
+          } else { // besoin de relancer la formule par contre... c'est this.
+          let r = new Roll(this.document.system.formulaSR);
+          r.evaluate({async :false }); // pas de jet dans le chat pour l'instant
+          this.document.update( { "system.seuilRupture" : r.total }); 
+          //console.log(this.document, "Tirage Rupture : ", r.total, r);
+        }
+      }
+      break;
+    case 'edit': // ouvrir pour modificaiton d'un aspect
+      const item = this.document.items.get(txtCode);
+      item.sheet.render(true);
+      break;
+    case 'fig': // ouvrir pour modificaiton d'un
+      if(cmdArgs[1] === 'init') {
+        let objI = {};
+        if(cmdArgs[2] === 'valeur') {
+          objI["system.estInitHaute"] = false;
+          objI["system.initEtat.value"] = this.document.system.valeur;
+        } else if(cmdArgs[2] === 'plus'){
+          objI["system.estInitHaute"] = true;
+          objI["system.initEtat.value"] = this.document.system.plus;
+        }
+        this.document.update(objI);          
+      } 
+      break;
+    case 'jet': // jet direct d'un compétence, idem paris
+        if(cmdArgs[2] === 'fig') {
+          simpleDialogue(parseInt(cmdArgs[3]) , this.actor.system.parisDefaut,  this.actor.system.compteur.seuil,this.actor.system.chatCom);
+        } else  simpleDialogue(this.actor.system.cmp[txtCode].value , 0, this.actor.system.etats.value);
+        break;
+    case 'lancerInit': // modification de l'init, si dans le + dépense de l'éffort, l'info est dans this.document.system.initEtat.
+      updateInitiative(this.document._id, this.document.system.initEtat.value);
+      if(cmdArgs[1] !== 'fig'){ // pour les personnages ;-)
+        //consommation de l'effort et réinit de la selection l'intiative XXXX
+      }
+      break;
+
+  }
 }
 
 /****** Ancien fonctionnement *************************************************************************
@@ -932,7 +1024,7 @@ onRoll7(dataset,cmdArgs, txtCode){
         obj["system.initEtat.idAspect"+i] = txtCode;
         this.document.update(obj);
         break;
-        case 'jet': // jet direct d'un compétence, idem paris
+      case 'jet': // jet direct d'un compétence, idem paris
         if(cmdArgs[2] === 'fig') {
           simpleDialogue(parseInt(cmdArgs[3]) , this.actor.system.parisDefaut,  this.actor.system.compteur.seuil,this.actor.system.chatCom);
         } else  simpleDialogue(this.actor.system.cmp[txtCode].value , 0, this.actor.system.etats.value);

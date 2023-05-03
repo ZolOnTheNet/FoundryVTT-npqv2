@@ -125,9 +125,16 @@ ui.notifications.notify("coucou c'est moi aussi") : message bleu..
  dc.dealDialog()
  dc.deal( [ game.cards.get("0WVKDZAaFnenQ2U0") ],1, {chatNotification: true }) // 0WVK... Main Joueur 1
  
- // Actors et tokens
+ trouver le paquet appartenant au PJ (dc4PcYuQbWbJYZrm = game.user.id) : packJ = game.cards.filter(c => c.ownership["dc4PcYuQbWbJYZrm"]===3)[0]
+ packJ.draw(game.cards.get("kZ56B6woCuqqE5B3")); ic "kZ56B6woCuqqE5B3" est le deck principal
+ 
+
+ // Actors et tokens -------------------------------------------
  les tokens sont dasn les scènes game.scene, la scène courante est dans game.user.viewedScene
  les tokens contiennent un lié vers à Acteur par le champ : _actor, mais possède les modifications par actorData
  il faut prendre les tokens plutot que les Actors
  
  Pour une fiche : l'ouverture getData : this.token si le token est utiliser son id sinon null (par la bar de selection à droite)
+
+ //--- faire le lien avec les items dans un répertoires : "les Aspects des objets" 
+ game.items.filter(e => e.folder != null && e.folder.id==game.folders.getName("Les Aspects des objets").id )

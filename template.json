@@ -481,9 +481,9 @@
         "unite5" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" }
       },
       "aspects" : {
-        "asp1": { "nomAsp" : "", "codeAsp" : ""},
-        "asp2": { "nomAsp" : "", "codeAsp" : ""},
-        "asp3": { "nomAsp" : "", "codeAsp" : ""}
+        "asp1": { "nomAsp" : "", "codeAsp" : "", "valeur":1 },
+        "asp2": { "nomAsp" : "", "codeAsp" : "", "valeur":1},
+        "asp3": { "nomAsp" : "", "codeAsp" : "", "valeur":1}
       }
     },
     "aspect":{

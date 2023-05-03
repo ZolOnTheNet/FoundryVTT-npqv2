@@ -10,10 +10,11 @@
                   <select  name="system.codeSpe">
                     {{selectOptions lstCodeSpe selected=system.codeSpe}}
                   </select>
-                  <input class="normal-input" size="1em" name="nd" type="text" value="{{nd}}" title="niveau de dangerosité"/>
+                  <input class="normal-input" size="1em" name="system.nd" type="text" value="{{system.nd}}" title="niveau de dangerosité"/>
               </td>
               <td width="55%">
                   <h1 class="charname" > <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+                  Token : {{system.chatCom.publicName}}
               </td>
               <td>
                 (valeur 
@@ -23,10 +24,10 @@
                 )
                 <br>
                 (&nbsp;<input type="text" size="1em"  class="normal-left-input" name="system.valeur" value="{{system.valeur}}" data-dtype="Number"/>&nbsp;
-                <span class="align-center rollable" data-roll="valeur" data-cmd="jet.paris.val"  title="Lancer avec paris de valeur"><i class="fad fa-dice"></i></span>
+                <span class="align-center rollable" data-roll="valeur" data-cmd="jet.paris.val.{{system.valeur}}"  title="Lancer avec paris de valeur"><i class="fad fa-dice"></i></span>
                  / &nbsp; 
                 <input type="text"  class="normal-left-input" size="1em" name="system.plus" value="{{system.plus}}" data-dtype="Number"/> 
-                <span class="align-center rollable" data-roll="plus" data-cmd="jet.paris.plus"  title="Lancer avec paris de plus"><i class="fad fa-dice"></i></span>
+                <span class="align-center rollable" data-roll="plus" data-cmd="jet.paris.plus.{{system.plus}}"  title="Lancer avec paris de plus"><i class="fad fa-dice"></i></span>
                 )                
               </td>
             </tr>

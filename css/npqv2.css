@@ -155,6 +155,12 @@
   flex: 0;
 }
 
+.flexcolzol {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content:  flex-start;
+}
+
 .sheet-header-zol {
     display: flex;
     flex-direction: row;

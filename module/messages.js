@@ -1,4 +1,4 @@
-import { lstCibles, lstCiblesTxt } from "./utils.js";
+import { lstCibles, cibleTxt, isFormule } from "./utils.js";
 // traitements des messages du chats par click
 
 /**
@@ -57,7 +57,7 @@ function messageObj(objTxt = {}){
 
 // Fonctions utilitaires -------------- A metre dans utils ?
 //function lstDesCibles() {}
-function passerJetAttaque(objActTmp={}, objToken, obj = {}) {
+function passerJetAttaque(objActTmp={}, objToken, obj = {}, avecDom = false) {
     // obj contien les infos sur l'objet original, objToken est l'objet, objActTmp est un compie fusionné car il peut venir de deux source : token et acteur
     // "attResultat": { "code": "NORM", "score": 0, "nbQualites" : 0, "cibles" : "", "info": "", "MeFormule":"", "MeTot" : 0, "infoJet":"", "dataJet": ""}
     // infoJet récupère le max de donnée du jet et dataJet récupère le max d'info du roll du jet
@@ -86,23 +86,36 @@ function passerJetAttaque(objActTmp={}, objToken, obj = {}) {
     else objToken.update(objUpd);
     //---- message pour les dommages
     actorData = (fromActor)?objToken.actor.system: objToken.actorData.system;
-    let valAtt = actorData.attResultat.MeFormule;
+    let valAtt = (actorData.attResultat.MeTot>0)?actorData.attResultat.MeTot:actorData.attResultat.MeFormule;
+    if(! isFormule(valAtt)) {
+      valAtt = parseInt(valAtt);
+      avecDom = true;
+    }
+    //actorData.attResultat.MeTot // faudra peut être la lancer
+    let monText ="";
+    if(avecDom) {
+      monText = "Votre valeur d'attaque est de "+(valAtt+obj.qualite)+"<br>";
+    } else {
+      monText = "Votre valeur d'attaque est de "+valAtt+"+" + obj.qualite+ "<br>"+
+      `<a class="apply-cmd" data-cmd="msg.arme.dom" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fal fa-swords"></i>&nbsp; lancer les dommages </a>`;
+    }
     let objDef = {};
-    if(obj.cibles.length > 0) {
-        //objDef = obj.cibles[0]
-    }
-    //actorData.attResultat.Me // faudra peut être la lancer
-    let monText = "Votre valeur d'attaque est de "+valAtt+"<br>"+
-     `<a class="apply-cmd" data-cmd="msg.arme.dom" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fal fa-swords"></i>&nbsp; lancer les dommages </a>`;
     let lstcibles = lstCibles();
+    if(lstcibles.length ===0) lstcibles =obj.cibles; // si pas de cible courante : prendre les cibles classiques
     if(lstcibles.length > 0) {
-      objDef = lstcibles[0].document; objUpd = {}; // le toke selectionnée (obligatiorement)
-      jQuery.extend(true, objUpd, objDef.actor, objDef.actorData)
-      monText += `<br>votre cible est ` +  objUpd.name + "("+ objDef.name +") ";
-      if(objUpd.system.defResultat.code === "DEF") { // elle possède une défense 
-        monText += `possède une valeur de défense de` +  parseInt(objUpd.system.defResultat.nbQualites) + parseInt(objUpd.system.defResultat.Me);
+      objUpd = {};
+      // traiter toutes les cibles et pas que seulement la premère
+      objDef = lstcibles[0].document; // le token selectionnée (obligatiorement)      
+      jQuery.extend(true, objUpd, objDef.actor, objDef.actorData);
+      monText += `<br>votre cible est ` +  objUpd.name + "("+ objDef.name +") : " + cibleTxt(objDef.actorId, objDef.name);
+      if(objUpd.system.defResultat.code === "DEF" || objUpd.system.defResultat.code === "DEFX") { // elle possède une défense 
+        monText += `possède une valeur de défense de` +  parseInt(objUpd.system.defResultat.nbQualites) + parseInt(objUpd.system.defResultat.MeTot);
       }
+    } else {
+      monText += `aucune cible n'est selectionnée, choisissez un personnage et utiliser le bouton ci-dessous `+
+            ` <br> <a class="apply-cmd" data-cmd="msg.perso.dom" data-roll='`+ JSON.stringify(obj)+ `'><i class="fas fa-user-minus"></i>Enlever les Dommages</a>`
     }
+    // faire le jet ou utiliser la base/
     messageTxt(monText);
   }
 
@@ -127,7 +140,7 @@ function passerJetAttaque(objActTmp={}, objToken, obj = {}) {
     objUpd[codePrefix +"system.defResultat.code"]= "ATT";
     objUpd[codePrefix +"system.defResultat.lancer"]= obj.lancer;
     objUpd[codePrefix +"system.defResultat.paris"]= obj.paris;
-//    objUpd[codePrefix +"system.attResultat.Me"]= obj.paris;
+//    objUpd[codePrefix +"system.attResultat.MeTot"]= obj.paris;
 //    objUpd[codePrefix +"system.attResultat.MeFormule"]= obj.paris;
     objUpd[codePrefix +"system.defResultat.info"]= JSON.stringify(obj.roll);
     objUpd[codePrefix +"system.defResultat.dataJet"]= JSON.stringify(actorData.jet);
