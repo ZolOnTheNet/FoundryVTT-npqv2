@@ -18,16 +18,16 @@
               </td>
               <td>
                 (valeur 
-                <span class="align-center rollable" data-roll="valeur" data-cmd="jet.direct.fig" title="Lancer direct tous les dés de valeur"><i class="fas fa-dice"></i></span>
+                <span class="align-center rollable" data-roll="valeur" data-cmd="jet.direct.val.{{system.valeur}}" title="Lancer direct tous les dés de valeur"><i class="fas fa-dice"></i></span>
                 / plus
-                <span class="align-center rollable" data-roll="plus" data-cmd="jet.direct.fig" title="Lancer direct tous les dés de plus"><i class="fas fa-dice"></i></span>
+                <span class="align-center rollable" data-roll="plus" data-cmd="jet.direct.val.{{system.plus}}" title="Lancer direct tous les dés de plus"><i class="fas fa-dice"></i></span>
                 )
                 <br>
                 (&nbsp;<input type="text" size="1em"  class="normal-left-input" name="system.valeur" value="{{system.valeur}}" data-dtype="Number"/>&nbsp;
                 <span class="align-center rollable" data-roll="valeur" data-cmd="jet.paris.val.{{system.valeur}}"  title="Lancer avec paris de valeur"><i class="fad fa-dice"></i></span>
                  / &nbsp; 
                 <input type="text"  class="normal-left-input" size="1em" name="system.plus" value="{{system.plus}}" data-dtype="Number"/> 
-                <span class="align-center rollable" data-roll="plus" data-cmd="jet.paris.plus.{{system.plus}}"  title="Lancer avec paris de plus"><i class="fad fa-dice"></i></span>
+                <span class="align-center rollable" data-roll="plus" data-cmd="jet.paris.val.{{system.plus}}"  title="Lancer avec paris de plus"><i class="fad fa-dice"></i></span>
                 )                
               </td>
             </tr>
@@ -67,17 +67,18 @@
         <section class="main flexcol">
           <div>
           Paris pour tous les aspects: <input class="normal-input" type="text" size="1em" name="system.parisDefaut" value="{{system.parisDefaut}}" data-dtype="Number"/>
+          &nbsp; Seuil Actuel : <span class="plusPolice">{{system.compteur.seuil}}</span>
         </div>
           <h2>{{localize  "int.specialites" }} <input class="normal-input" type="text" size="1em" name="system.special" value="{{system.special}}" data-dtype="Number"/> 
           </h2>
           {{#each specialites as |aspect key|}}
           <div>
             <span> 
-              <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{aspect._id}}" data-cmd="jet.paris.fig.{{../system.special}}">{{aspect.name}} </a>
+              <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{_id}}" data-cmd="jet.paris.spe.{{../system.special}}">{{aspect.name}} </a>
             </span>
             <span>
-              <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.direct.fig.{{../system.special}}" title="Lancer direct tous les dés"><i class="fas fa-dice"></i></span>
-              <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.paris.fig.{{../system.special}}"  title="Lancer avec paris"><i class="fad fa-dice"></i></span>
+              <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.direct.spe.{{../system.special}}" title="Lancer direct tous les dés"><i class="fas fa-dice"></i></span>
+              <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.paris.spe.{{../system.special}}"  title="Lancer avec paris"><i class="fad fa-dice"></i></span>
               <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
               &nbsp;
               <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
@@ -89,11 +90,11 @@
           {{#each extras as |aspect key|}}
           <div>
             <span> 
-              <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{../system.special}}" data-cmd="jet.paris.fig.{{../system.special}}">{{aspect.name}} </a>
+              <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{_id}}" data-cmd="jet.paris.extra.{{../system.extra}}">{{aspect.name}} </a>
             </span>
             <span>
-              <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.direct.fig.{{../system.special}}" title="Lancer direct tous les dés"><i class="fas fa-dice"></i></span>
-              <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.paris.fig.{{../system.special}}"  title="Lancer avec paris"><i class="fad fa-dice"></i></span>
+              <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.direct.extra.{{../system.extra}}" title="Lancer direct tous les dés"><i class="fas fa-dice"></i></span>
+              <span class="align-center rollable" data-roll="{{_id}}" data-cmd="jet.paris.extra.{{../system.extra}}"  title="Lancer avec paris"><i class="fad fa-dice"></i></span>
               <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
               &nbsp;
               <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
@@ -160,16 +161,37 @@
         <section class="main">
           Seuil de Rupture : <span class="plusPolice">{{seuilRupture}} </span> (compris Bonus : <input class="normal-input lilipute" type="text" size="1em" name="system.bonusDrama" value="{{system.bonusDrama}}" data-dtype="Number"/>)
           <br><span >formule : {{system.formulaSR}} </span><i class="fad fa-sync rollable" data-cmd="calc.rupture"></i><br>
-          initiative <i class="fas fa-info-square rollable" data-roll="{{_id}}" data-cmd="lancerInit"></i>
-          {{#if system.estInitHaute}}
-            <i class="fas fa-plus-square rollable" data-roll="" data-cmd="fig.init.valeur"></i>
-          {{else}}
-            <i class="fad fa-minus-square rollable" data-roll="" data-cmd="fig.init.plus"></i>
-          {{/if}}
-          :  <input class="normal-input" type="text" size="1em" name="system.initEtat.value" value="{{system.initEtat.value}}" data-dtype="Number"/>
-          <br>
+          <div class="plusPolice"><a class="rollable" data-roll="{{_id}}" data-cmd="lancerInit">initiative <i class="fas fa-info-square" ></i></a>
+            {{#if system.estInitHaute}}
+              <i class="fas fa-plus-square rollable" data-roll="" data-cmd="fig.init.valeur"></i>
+            {{else}}
+              <i class="fad fa-minus-square rollable" data-roll="" data-cmd="fig.init.plus"></i>
+            {{/if}}
+            :  <input class="normal-input" type="text" size="1em" name="system.initEtat.value" value="{{system.initEtat.value}}" data-dtype="Number"/> 
+            &nbsp;=> {{system.initEtat.formule}} : {{system.initEtat.finale}}
+          </div>
           Action : <span class="grdPolice">{{nbActions}} </span>
           <br>
+          <h3>Attaque et défense</h3>
+          {{#if system.attResultat.score}}
+            Quàl : {{system.attResultat.nbQualites}}, Jet {{system.attResultat.lancer}}D6:  {{system.attResultat.score}} =>
+            {{#each quickDeAtt as |d key|}} {{d}}&nbsp; 
+            {{/each}} 
+            <br>
+          {{/if}}
+          Votre Menace : {{system.attResultat.MeFormule}} (attaque) 
+          {{#if system.attResultat.MeTot}} => {{system.attResultat.MeTot}} <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="jet.clean.attaque"><i class="fas fa-sync-alt"></i> </a></span>
+          {{/if}} <br>
+          {{#if system.defResultat.score}}
+            <br>
+            Quàl : {{system.defResultat.nbQualites}}, Jet {{system.defResultat.lancer}}D6:  {{system.defResultat.score}} =>
+            {{#each quickDeDef as |d key|}} {{d}}&nbsp; 
+            {{/each}} 
+            <br>
+          {{/if}}
+          votre Couverture: {{system.defResultat.MeFormule}} (défense) 
+          {{#if system.defResultat.MeTot}} => {{system.defResultat.MeTot}} <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="jet.clean.defense"><i class="fas fa-sync-alt"></i> </a></span>
+          {{/if}} <br>
           <h3>Compteur <input class="normal-input" type="text" size="1em" name="system.compteur.max" value="{{system.compteur.max}}" data-dtype="Number"/>
             Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.compteur.value" value="{{system.compteur.value}}" data-dtype="Number"/> </h3>
           <table>

@@ -174,7 +174,7 @@ function lancerInit7(formule, bonus = 0) {
   let initEffort = max1+max2;
   // le lancer de dé est calculé et garder à part, donc le bonus
   // venant des Aspect (1 à 3) est rajouté pour garder un cohérence avec la feuille et l'affichage 
-  let monTexte = "Initialisation est à "+(r.total+bonus)+". le gain d'effort est "+initEffort;
+  let monTexte = "Initiative fixée à "+(r.total+bonus)+". le gain d'effort est "+initEffort;
   let chatData = {
     user: game.user._id,
     speaker: ChatMessage.getSpeaker(),

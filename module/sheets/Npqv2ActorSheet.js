@@ -39,9 +39,15 @@ export default class npqv2ActorSheet extends ActorSheet {
       context.system = actorData.system;  // peut être changer data en système après relecture
       context.flags = actorData.flags;
 
+      context.DeInit = { "1":"d4","2":"d6","3":"d8","4":"d10","5":"d12","6":"d15", "7":"d20"};
+      context.DeCharges = { "d4":"d4","d6":"d6","d8":"d8","d10":"d10","d12":"d12","d15":"d15", "d20":"d20"};
+      context.FormuleInitDi = [2,2,3,3,4];
+      context.FormuleInitBonus = ["","+1d4","+1d4","+1d8", "+1d10", "+1d12", "+1d15", "+1d20"]
+
       context.system.chatCom = { "idActor": actorData.id,  "armurePortee" : [] }; // objet pour aider à la communication avec le chat.
+      
       if(this.token !== null) context.system.chatCom.idToken = this.token.id;
-        else context.system.chatCom.idToken = null;
+        else context.system.chatCom.idToken = "";
       let lstTokens = this.actor.getActiveTokens();
       if(lstTokens.length > 1) { // en fait la liste des tous les tokens référençant l'acteur
         context.system.chatCom.publicName = this.actor.name;
@@ -49,6 +55,7 @@ export default class npqv2ActorSheet extends ActorSheet {
         context.system.chatCom.publicName = lstTokens[0].name;
       }
       // Prepare character data and items.
+      context.system.chatCom["perteFatigue"]= false;
 
       if(actorData.type == 'pj') {
         this._prepareItems(context);
@@ -141,11 +148,12 @@ export default class npqv2ActorSheet extends ActorSheet {
               context.system.defResultat.MeFormule = i.system.couverture;
             }
           }else if(i.system.codeSpe === 'ARMURE') {
+            // bouclier peuvent aussi avoir des Couvertures) TODO : integrer
             armures.push(i);
             if( i.system.estActif) {
               context.system.chatCom["armurePortee"].push(i._id);
               if( Number.isNumeric(i.system.protection)) {  
-              bonus.seuilRupture += i.system.protection;
+              bonus.seuilRupture += parseInt(i.system.protection);
               } else {
                 if(i.system.protection.indexOf("d") + i.system.protection.indexOf("D")+2 ) {
                   bonus.formulaSR += " + "+i.system.protection;
@@ -230,6 +238,9 @@ export default class npqv2ActorSheet extends ActorSheet {
               context.system.chatCom["domF"] = i.system.menace;
               context.system.chatCom["bonusDom"] = i.system.bonus.CodeDommage;
               context.system.chatCom["NbDes"] = i.system.bonus.NbDes;
+              // --- jet d'attaque pré remplissage
+              context.system.attResultat.MeFormule = i.system.menace;
+              context.system.defResultat.MeFormule = i.system.couverture;              
             }
           }else if(i.system.codeSpe === 'ARMURE') {
             armures.push(i);
@@ -297,10 +308,25 @@ export default class npqv2ActorSheet extends ActorSheet {
         if(Number.isNumeric(context.bonus.seuilRupture)) context.bonus.seuilRupture = parseInt(context.bonus.seuilRupture);
         context.seuilRupture =  context.system.valeur+1+context.system.bonusDrama + context.bonus.seuilRupture;
       }
-      
+      // initiative : la valeur donne le dé 
+      context.system.initEtat.nbDi = context.FormuleInitDi[context.system.valeur];
+      //let BonusNb = (context.system.initEtat.idAspect1 === ""?0:1) + (context.system.initEtat.idAspect2 === ""?0:1) + (context.system.initEtat.idAspect3 === ""?0:1);
+      context.system.initEtat.formule = context.system.initEtat.nbDi+context.DeInit[context.system.initEtat.value-context.system.valeur] + context.FormuleInitBonus[context.system.initEtat.value-context.system.valeur] ;
+  
       context.system.chatCom.formulaSR = context.system.formulaSR;
       context.system.chatCom.SeuilRupture = context.system.SeuilRupture;
       context.lstCodeSpe = { "MON": "Monstre", "FIG" : "Figurant"};
+      //--- défense et menaces
+      context.quickDeAtt = [];
+      if(context.system.attResultat.info !=="") { // attention à plusieurs type de jet !! terms peut être plus nombreu
+        let objR = JSON.parse(context.system.attResultat.info);
+        for(let r of objR.terms[0].results)  context.quickDeAtt.push(r.result);
+      };
+      context.quickDeDef= [];
+      if(context.system.defResultat.info !=="") {
+        let objR = JSON.parse(context.system.defResultat.info);
+        for(let r of objR.terms[0].results)  context.quickDeDef.push(r.result);
+      };
     }
 
 
@@ -490,10 +516,6 @@ _prepareCharacterData7(context) {
   }
 
   // --------- Gestion des états (generer les affichages)
-  context.DeInit = { "1":"d4","2":"d6","3":"d8","4":"d10","5":"d12","6":"d15", "7":"d20"};
-  context.DeCharges = { "d4":"d4","d6":"d6","d8":"d8","d10":"d10","d12":"d12","d15":"d15", "d20":"d20"};
-  context.FormuleInitDi = [2,2,3,3,4];
-  context.FormuleInitBonus = ["","+1d4","+1d4","+1d8", "+1d10"]
 }
 
 _prepareCharacterCmb7(actorData, context){
@@ -544,42 +566,54 @@ _prepareCharacterCmb7(actorData, context){
   // calcul lié au jet générique **************************
   // on addition les nombre de dés/ le nombre d'effort
   let nbdes = 0; let nbEffort = 0;
+  let choixAsp = { };
   if(context.system.jet.codecmp === ""){
     context.codeLabel = "aucune"
     context.codeCmpDe = "-"
+    choixAsp["codecmp"]="";
+    choixAsp["codeLabel"]="";
+    choixAsp["codeCmpDe"]=0;
   }else {
     context.codeLabel = context.system.jet.codecmp; // il faudra la traduire
     context.codeCmpDe = context.system.cmp[context.codeLabel].value;
     nbdes = context.codeCmpDe;
+    choixAsp["codecmp"]=context.system.jet.codecmp;
+    choixAsp["codeLabel"]=context.codeLabel;
+    choixAsp["codeCmpDe"]=context.codeCmpDe;
   }
-  
   for(let i = 1; i < 4; i++) {
     c = "asp"+i;
+    choixAsp[c+"Id"] = context.system.jet["idAspect"+i]
     if(context.system.jet["idAspect"+i] === ""){
       context[c+"Label"] = "aucun";
       context[c+"CodeDe"] = 0;
+      choixAsp[c+"Label"] = "";
+      choixAsp[c+"CodeDe"]= 0;
     }else {
       let ite = actorData.items.get(context.system.jet["idAspect"+i])
       context[c+"Label"] = ite.name;
       context[c+"CodeDe"] = ite.system.NbDes;
       if(ite.system.codeSpe == 'SEQ') context[c+"CodeDe"] *= -1; // inverse
+      choixAsp[c+"Label"] = context[c+"Label"];
+      choixAsp[c+"CodeDe"]= context[c+"CodeDe"];
       if(i>1) nbEffort+=3; // l'effort est plus important
       nbdes += context[c+"CodeDe"]; // peut être corigé par la notion de SEQuelle
     }
-
   }
+  context.system.chatCom["choixAsp"]= choixAsp;
   //--- traitement défense et attaque 
   context.quickDeAtt = [];
   if(context.system.attResultat.info !=="") { // attention à plusieurs type de jet !! terms peut être plus nombreu
     let objR = JSON.parse(context.system.attResultat.info);
     for(let r of objR.terms[0].results)  context.quickDeAtt.push(r.result);
   };
-  context.quickDeDef
+  context.quickDeDef= [];
   if(context.system.defResultat.info !=="") {
     let objR = JSON.parse(context.system.defResultat.info);
     for(let r of objR.terms[0].results)  context.quickDeDef.push(r.result);
   };
   context.jetCoutEffort = nbEffort;
+  context.system.jet.coutEffort = nbEffort;
   context.system.jet.nblancer = nbdes;
   //context.effortTxt = '<i data-cmd="set.etat.effort" data-roll="1" title="1" class="rollable fillable fas fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable far fa-square"></i> <i data-cmd="set.etat.effort" data-roll="{{@index}}" title="{{@index}}" class="rollable fillable fad fa-square"></i>'
   context.effortTxt = this.visuEffort(context.system.etats.effort, nbEffort+ context.system.initEtat.ptEffort);
@@ -702,19 +736,12 @@ onRoll7(dataset,cmdArgs, txtCode){
       }
       break;
     case 'lancerJet':
-      // const sys = this.document.system;
-      // let jetP = jQuery.extend(true, {}, sys.jet); // clone profond
-      // if(sys.cmp[sys.jet.codecmp].value !="") 
-      //     jetP.valAttr = sys.cmp[sys.jet.codecmp].value;
-      // for(let i =1 ; i < 4 ; i++){
-      //     jetP["idAspectL"+i] = (jetP["idAspect"+i]==="")? "" : this.document.items.get(jetP["idAspect"+i]).name;
-      // }
       // simpleDialogue7(jetP, this.document.system.chatCom );
       // { 'nde' : {{system.jet.nblancer}}, 'paris' : {{system.jet.paris}}, 'seuil' : {{system.jet.seuil}}, 'nbEffort': {{jetCoutEffort}},  'Auto' : {{system.jet.autoEffort}}  }
       let objRel =(cmdArgs[2]==="paris")? { "nde" : this.document.system.cmp.value, "paris":0, "seuil": this.document.system.value, 'nbEffort': 0,  'Auto' : 1 } : 
                                           //objRel = JSON.parse(txtCode.replaceAll("'",'"')); // aime pas avoir des ' au lieu des "
                                           { "nde" : this.document.system.jet.nblancer, "paris": this.document.system.jet.paris, "seuil": this.document.system.etats.value, 'nbEffort': this.document.system.jet.coutEffort,  'Auto' : this.document.system.jet.autoEffort }
-      simpleDialogue(objRel.nde , objRel.paris, objRel.seuil, { idActor: this.document.system.chatCom.idActor, idToken : this.document.system.chatCom.idToken, "nbEffort": objRel.nbEffort, "Auto": objRel.Auto });
+      simpleDialogue(objRel.nde , objRel.paris, objRel.seuil, { idActor: this.document.system.chatCom.idActor, idToken : this.document.system.chatCom.idToken, "nbEffort": objRel.nbEffort, "Auto": objRel.Auto, "choixAsp": this.document.system.chatCom.choixAsp });
       break;
     case 'remove':
       let ind =(cmdArgs[2] === 'cmp')? cmd: parseInt(cmdArgs[2])+1;
@@ -758,14 +785,14 @@ onRoll7(dataset,cmdArgs, txtCode){
       if(itemD != undefined) itemD.delete();
       break;
     case 'set': // fixer par clique direct sur les petites case ou les valeurs
-    let champ = {};
+      let champ = {};
       if(cmdArgs[1] === 'etat') {
         //if(cmdArgs[2] === 'effort'
         champ["system.etats."+cmdArgs[2]+".value"] = parseInt(txtCode);
       } else if(cmdArgs[1] === 'compteur') {
         champ["system."+cmdArgs[2]+".value"] = parseInt(txtCode);
       }
-      this.document.update( champ);
+      this.document.update(champ);
       break;
     case 'trans': 
       if(cmdArgs[1] === 'fatigue' && cmdArgs[2] === 'effort') {
@@ -825,7 +852,7 @@ onRollFig(dataset,cmdArgs, txtCode){
         let objI = {};
         if(cmdArgs[2] === 'valeur') {
           objI["system.estInitHaute"] = false;
-          objI["system.initEtat.value"] = this.document.system.valeur;
+          objI["system.initEtat.value"] = this.document.system.valeur+1;
         } else if(cmdArgs[2] === 'plus'){
           objI["system.estInitHaute"] = true;
           objI["system.initEtat.value"] = this.document.system.plus;
@@ -834,17 +861,60 @@ onRollFig(dataset,cmdArgs, txtCode){
       } 
       break;
     case 'jet': // jet direct d'un compétence, idem paris
-        if(cmdArgs[2] === 'fig') {
-          simpleDialogue(parseInt(cmdArgs[3]) , this.actor.system.parisDefaut,  this.actor.system.compteur.seuil,this.actor.system.chatCom);
-        } else  simpleDialogue(this.actor.system.cmp[txtCode].value , 0, this.actor.system.etats.value);
-        break;
-    case 'lancerInit': // modification de l'init, si dans le + dépense de l'éffort, l'info est dans this.document.system.initEtat.
-      updateInitiative(this.document._id, this.document.system.initEtat.value);
-      if(cmdArgs[1] !== 'fig'){ // pour les personnages ;-)
-        //consommation de l'effort et réinit de la selection l'intiative XXXX
+      let choixAsp = null;
+      this.document.system.chatCom["perteFatigue"]= false;
+      if(cmdArgs[2]==='val') {
+        if(txtCode == "plus") {
+          txtCode = " sa valeur Haute"
+        } else {
+          txtCode = " ses compétences de base"
+        }
+        choixAsp = { 
+          "codeCmd": "val",
+          "codeLabel" : txtCode,
+          "codeCmpDe" : parseInt(cmdArgs[3]),
+          "asp1Id":"", "asp2Id":"", "asp3Id": ""
+        };
+      } else {
+        let it = this.document.items.get(txtCode);
+        choixAsp = { 
+            "codeCmd": txtCode,
+            "codeLabel" : it.name,
+            "codeCmpDe" : parseInt(cmdArgs[3]),
+            "asp1Id":"", "asp2Id":"", "asp3Id": ""
+          };
+          if(cmdArgs[2]==="extra") this.document.system.chatCom["perteFatigue"]= true;
+      }
+      this.document.system.chatCom["choixAsp"]= choixAsp;
+      if(cmdArgs[1] === 'direct') {
+        // c'est normalement lancerLesDes : a tester
+        simpleDialogue(parseInt(cmdArgs[3]) , this.document.system.parisDefaut,  this.document.system.compteur.seuil,this.actor.system.chatCom);
+      } else { // avec paris
+        simpleDialogue(parseInt(cmdArgs[3]) , this.document.system.parisDefaut,  this.document.system.compteur.seuil,this.actor.system.chatCom);
       }
       break;
-
+    case 'lancerInit': // modification de l'init, si dans le + dépense de l'éffort, l'info est dans this.document.system.initEtat.
+      let r = new Roll(this.document.system.initEtat.formule);
+      r.evaluate({async: false});
+      //this.document.system.initEtat.final = r.total
+      this.document.update({ "system.initEtat.finale": r.total}, {async: false});
+      updateInitiative(this.document._id, this.document.system.initEtat.finale);
+      let monTexte = "<h2>"+this.document.system.chatCom.publicName+"</h2>Initiative fixée  à "+(r.total);
+      let chatData = {
+        user: game.user._id,
+        speaker: ChatMessage.getSpeaker(),
+        flavor: monTexte,
+        rollMode: game.settings.get("core", "rollMode"),
+        roll: r
+    };
+    //ChatMessage.create(chatData);
+    let cm = r.toMessage(chatData);
+      break;
+    case 'set': // fixer par clique direct sur les petites case ou les valeurs
+      let champ = {};
+        champ["system.compteur.value"] = parseInt(txtCode);
+      this.document.update( champ);
+      break;
   }
 }
 

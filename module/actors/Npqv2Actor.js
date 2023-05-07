@@ -120,9 +120,10 @@ import { quelRang, AppliqueEtatValeur } from "../utils.js";
       _prepareNpcData(actorData) {
         if (actorData.type.substring(0,2) == 'pj') return; // càd pour l'instant Monstre, figurants
         const data = actorData.system;
+        AppliqueEtatValeur(data.compteur);
         let curRang = quelRang(data.compteur);
         data.compteur.seuil = data.compteur.diff["rang"+curRang];
-        let valcour = 0
+        let valcour = 0;
         for(let j = 1; j < 5 ; j++) { // nombre de rang
           valcour += data.compteur.rangs["rang"+j].max;
           data.compteur.rangs["rang"+j].seuil = data.compteur.diff["rang"+j];
