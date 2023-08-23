@@ -22,11 +22,15 @@ const tabNivPouvoirSorts = [4, 7, 10, 15, 20];
 * obj doit contenir un max d'info dont publicName
 */
 function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=6 , obj = {}, mode="" ){
+  //--- calcul du mode métal et mise dans l'objet obj !
+  let modeMetal = game.settings.get("npqv2", "modeMetal");
+  obj.modeMetal = modeMetal;
+  //------------------
   let r = new Roll(""+(lancer)+formDe);
   r.evaluate({async :false });
   let resultat = r.total; // r.total entier, r.result chaine de caractère
   // Essaie magie sans pt : pouvoir doit être plus grand que 4 7 10 15 20
-  let nbsucces = 0; let pouvoir = 0; 
+  let nbsucces = 0; let pouvoir = 0; let realNbSucces= 0;
   let isSucces = 0; //parseInt((resultat - diff + 5) / 5)  ;
   for (const value of r.terms[0].results) {
     if(value.result%2 == 0) nbsucces++;      
@@ -35,9 +39,11 @@ function lanceLesDes(lancer = 2, res = 0, formDe="D6", diff=6 , obj = {}, mode="
   if(resultat >= diff) { // le jet est un succès
     isSucces = 1; // c'est une réussite
     nbsucces += parseInt(res);
+    realNbSucces = nbsucces;
   } else { // ratrapage aux branche +Quàl *2
     let manque = diff - resultat;
     if(manque <= nbsucces*2)  {
+      realNbSucces = nbsucces;
       nbsucces = nbsucces + Math.floor(-manque/2);
       isSucces = 2;
     }
@@ -94,24 +100,33 @@ obj.resultat = resultat; obj.roll = r; obj.pouvoir = pouvoir;
 if(isSucces == 1 ) monTexte+= "Bravo ! Votre jet ("+ lancer + "D6) avec "+ obj.paris+ 
 " succè(s) en réserve, contre un seuil de "+ diff + ', vous donne <font size="+5"><b>'+nbsucces+ ' qualité(s)</b></font>.<br>'+
 'Druant un combat, vous avez le choix de :<br>';
-else if(isSucces == 2) monTexte += "Vous avez réussi de justesse ! votre jet ("+lancer+ "D6) contre un seuil de "+ diff+' a échoué mais les <font size="+5"><b>'+nbsucces+ ' qualité(s)</b></font>.<br>'+
-      `vous permettent d'obtenir `+ nbsucces + `au final`;
+else if(isSucces == 2) monTexte += "Vous avez réussi de justesse ! votre jet ("+lancer+ "D6) contre un seuil de "+ diff+' a échoué mais les <font size="+5"><b>'+realNbSucces+ ' qualité(s)</b></font>.<br>'+
+      `vous permettent d'obtenir <font size="+5"><b>`+ nbsucces + `</b></font> au final.<br>`;
 // pour cette partie ci dessous : vérifier qu'il y a au moins un aspect utilisable supplémentaire (idAspectX =="")
-else monTexte += "Désolé ! vous êtes trop fatigué, vous n'avez pas réussi votre jet (="+ resultat+") contre une difficulte de : "+diff+".<br>"+
+else {
+  monTexte += "Désolé ! vous êtes trop fatigué, vous n'avez pas réussi votre jet (="+ resultat+") contre une difficulte de : "+diff+".<br>"+
                 `<a class="apply-cmd" data-cmd="msg.jet.relance" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-dice"></i>&nbsp;Relancer les dés à l'aide d'un aspect</a><br>`;
-if(isSucces>0) monTexte += ((cibles==="")?`<i class="far fa-bullseye-pointer" ></i>&nbsp;Selectionner les cibles (click droit sur vos adversaires puis utilisez <i class="fal fa-bullseye"></i>) ou<br>`:cibles)+
-// `<a class="apply-cmd" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fad fa-sword"></i>&nbsp;passer le resultat en mode attaque (sans modification de jets)</a><br>`+
-// `<a class="apply-cmd" data-cmd="msg.arme.attaque.+" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fad fa-sword"></i>&nbsp;passer le resultat en mode attaque (avec calcul des dommages)</a><br>`+
-// `<a class="apply-cmd" data-cmd="msg.arme.defense" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-shield"></i>&nbsp;Passez en mode Defense(pas de nouveau lancer)</a><br>`+
-// `<a class="apply-cmd" data-cmd="msg.arme.defense.+" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-shield"></i>&nbsp;Passez en mode Defense(avec calcul Couverture)</a><br>`+
-//'Voici vos choix possible :<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
-//'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
-`<a class="apply-cmd grdPolice" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `' title="passer le resultat en mode attaque (sans modification de jets)"> <i class="fad fa-sword"></i>&nbsp;</a>&nbsp;`+
-`<a class="apply-cmd grdPolice" data-cmd="msg.arme.attaque.+" data-roll='`+ JSON.stringify(obj)+ `' title="passer le resultat en mode attaque (avec calcul des dommages)"> <i class="fad fa-sword"></i><i class="fad fa-comment-alt-plus"></i>&nbsp;</a>&nbsp;&nbsp;`+
-`<a class="apply-cmd grdPolice" data-cmd="msg.arme.defense" data-roll='`+ JSON.stringify(obj)+ `' title="Passez en mode Defense(pas de nouveau lancer)"><i class="fad fa-shield"></i>&nbsp;</a>&nbsp;`+
-`<a class="apply-cmd grdPolice" data-cmd="msg.arme.defense.+" data-roll='`+ JSON.stringify(obj)+ `' title="Passez en mode Defense(avec calcul Couverture)"><i class="fad fa-shield"></i><i class="fad fa-comment-alt-plus"></i>&nbsp;</a>&nbsp;`;
-//'Voici vos choix possible :<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
-//'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
+}
+if(isSucces>0){ 
+  monTexte += ((cibles==="")?`<i class="far fa-bullseye-pointer" ></i>&nbsp;Selectionner les cibles (click droit sur vos adversaires puis utilisez <i class="fal fa-bullseye"></i>) et/ou<br>`:cibles);
+  if(modeMetal) {
+    monTexte += `<a class="apply-cmd grdPolice" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `' title="passer le resultat en mode attaque (sans modification de jets)"> <i class="fad fa-sword"></i>&nbsp;</a>&nbsp;`+
+    `<a class="apply-cmd grdPolice" data-cmd="msg.arme.attaque.+" data-roll='`+ JSON.stringify(obj)+ `' title="passer le resultat en mode attaque (avec calcul des dommages)"> <i class="fad fa-sword"></i><i class="fad fa-comment-alt-plus"></i>&nbsp;</a>&nbsp;&nbsp;`+
+    `<a class="apply-cmd grdPolice" data-cmd="msg.arme.defense" data-roll='`+ JSON.stringify(obj)+ `' title="Passez en mode Defense(pas de nouveau lancer)"><i class="fad fa-shield"></i>&nbsp;</a>&nbsp;`+
+    `<a class="apply-cmd grdPolice" data-cmd="msg.arme.defense.+" data-roll='`+ JSON.stringify(obj)+ `' title="Passez en mode Defense(avec calcul Couverture)"><i class="fad fa-shield"></i><i class="fad fa-comment-alt-plus"></i>&nbsp;</a>&nbsp;`;
+  } else { // mode fusion 
+    monTexte += `<a class="apply-cmd grdPolice" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `' title="Passez ce jet en réserve pour un conflit (sans modification de jets)"> <i class="fad fa-swords"></i>&nbsp;</a>&nbsp;`+
+    `<a class="apply-cmd grdPolice" data-cmd="msg.arme.attaque.+" data-roll='`+ JSON.stringify(obj)+ `' title="Passez ce jet en réserve pour un conflit (avec calcul des dommages)"> <i class="fad fa-swords"></i><i class="fad fa-comment-alt-plus"></i>&nbsp;</a>&nbsp;&nbsp;`;
+  }
+  // `<a class="apply-cmd" data-cmd="msg.arme.attaque" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fad fa-sword"></i>&nbsp;passer le resultat en mode attaque (sans modification de jets)</a><br>`+
+  // `<a class="apply-cmd" data-cmd="msg.arme.attaque.+" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fad fa-sword"></i>&nbsp;passer le resultat en mode attaque (avec calcul des dommages)</a><br>`+
+  // `<a class="apply-cmd" data-cmd="msg.arme.defense" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-shield"></i>&nbsp;Passez en mode Defense(pas de nouveau lancer)</a><br>`+
+  // `<a class="apply-cmd" data-cmd="msg.arme.defense.+" data-roll='`+ JSON.stringify(obj)+ `'><i class="fad fa-shield"></i>&nbsp;Passez en mode Defense(avec calcul Couverture)</a><br>`+
+  //'Voici vos choix possible :<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
+  //'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
+  //'Voici vos choix possible :<br><a class="btn apply-dmg" data-apply="attackTo"><i class="fas fas fa-swords" title="Faire une attaque"></i></a>'+ 
+  //'<a class="btn apply-dmg" data-apply="full" data-obj="'+strObj+'"><i class="fas fa-user-minus" title="lancer les dommage" data-obj="'+strObj+'"></i></a>';
+};
 monTexte += (pouvoir>0)?"<br>Si la magie est de la partie, vous avez obtenu <strong>"+pouvoir+`</strong> points de magie.<a class="apply-cmd plusPolice" data-cmd="msg.magie.add" data-roll='`+ JSON.stringify(obj)+ `' title="Ajouter ces points de magie au lanceur"><i class="fal fa-wand-magic"></i></a>`:"";
 // sortie du texte  : tester
 let speak = obj.idActor?game.actors.get(obj.idActor): ChatMessage.getSpeaker();

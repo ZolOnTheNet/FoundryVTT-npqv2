@@ -83,5 +83,11 @@
     "k2m.PdFa" : "Points de Faiblesse",
 
 
-    "k2m.system" : "Système Metal"
+    "k2m.system" : "Système Metal",
+    "npqv2.EnableMetalConflit": "Gestion des conflits à la métal",
+    "npqv2.EnableMentalConflitHint": "Gestion des attaques et des défenses à l'aide de jets de dés",
+    "npqv2.EnableJeuxDeCartes": "Utilisation des cartes pour les critiques",
+    "npqv2.EnableJeuxDeCartesHint": "Getions d'un deck de 32 cartes pour les critiques"
+
+
 }

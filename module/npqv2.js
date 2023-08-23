@@ -4,8 +4,10 @@ import npqv2ItemSheet from "./sheets/Npqv2ItemSheet.js";
 import npqv2ActorSheet from "./sheets/Npqv2ActorSheet.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { simpleDialogue, lanceLesDes, DialogueDommage } from "./utils.js";
-import { aiguillageGeMsg } from "./messages.js";
-//import { updateInitiative } from "./updateInitiative.js";
+import { aiguillageGeMsg, aiguillageYaze } from "./messages.js";
+import { yazeJet,simpleDialogueYaze } from "./utilsyaze.js";
+import { registerSettings } from "./npqv2setting.js";
+
 
 //  a metre au bon endroit
 function EnventDuChat(event, html, data){
@@ -17,7 +19,10 @@ function EnventDuChat(event, html, data){
   let cmdArgs = dataSet.cmd.split(".");
   switch(cmdArgs[0]){
     case "msg":
-      aiguillageGeMsg(cmdArgs, obj)
+      aiguillageGeMsg(cmdArgs, obj);
+      break;
+    case "yaze":
+      aiguillageYaze(cmdArgs, obj);
       break;
   }
   return;
@@ -29,8 +34,8 @@ function registerHooks() {
   Hooks.on("renderChatMessage", (message, html, data) => {
     // Affiche ou non les boutons d'application des dommages
 //     if (game.settings.get("cof", "displayChatDamageButtonsToAll")) {
-  html.find(".apply-dmg").click((ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, data));
-        html.find(".apply-cmd").click((ev) =>EnventDuChat(ev, html, data));
+    html.find(".apply-dmg").click((ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, data));
+    html.find(".apply-cmd").click((ev) =>EnventDuChat(ev, html, data));
 //     }
     // else {
     //     if (game.user.isGM){
@@ -63,7 +68,9 @@ Hooks.once("init", async function () {
     game.McDialogues = {
       "SimpleCmp": simpleDialogue,
       "Simplelancer" : lanceLesDes,
-      "SimpleDom" : DialogueDommage
+      "SimpleDom" : DialogueDommage,
+      "yazeJet" : yazeJet,
+      "yazeDiag" : simpleDialogueYaze
     };
 
     /** constantes du jeu ajouter 
@@ -81,6 +88,8 @@ Hooks.once("init", async function () {
         //,
         //decimals: 2
       };
+
+    registerSettings(); // création de l'interface dans les options 
 
     game.macroDialogue = simpleDialogue; // atransfere dans McDialogues
     game.macroSimpleJet = lanceLesDes;

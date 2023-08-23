@@ -51,6 +51,7 @@
   <a class="item" data-tab="description"><h2>Description</h2></a>
   <a class="item" data-tab="caracteristiques"><h2>{{localize  "int.cmpAspects" }}</h2></a>
   <a class="item" data-tab="equip"><h2>{{localize  "int.equipements" }}</h2></a>
+  <a class="item" data-tab="sorts"><h2>Sorts</h2></a>
   <a class="item" data-tab="secrets"><h2>Secrets</h2></a>
 
 </nav>
@@ -228,8 +229,18 @@
           <br>Raccouci : <input class="normal-input" type="text" size="12em" name="system.jet.nomRaccourci" value="{{system.jet.nomRaccourci}}" data-dtype="String"/> <span><a class="rollable" title="{{localize  'nfo.favoris' }}" data-roll="" data-cmd="favoris.add" ><i class="far fa-star"></i> </a></span>
           <h3><i class="fal fa-wand-magic"></i> Magie</h3>
           <span>Points de magie cumulé : {{system.jet.pouvoir}} </span><span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="magie.clean.pdm"><i class="fas fa-sync-alt"></i> </a></span>
-          <br><div>lancer le sort de niv : <span class="plusPolice"><i title="Lancer Sort de niveau 1" class="far fa-dice-one"></i>&nbsp;<i class="far fa-dice-two" title="Lancer Sort de niveau 2"></i>&nbsp;<i class="far fa-dice-three" title="Lancer Sort de niveau 3"></i>&nbsp;<i class="far fa-dice-four" title="Lancer Sort de niveau 4"></i>&nbsp;<i class="far fa-dice-five" title="Lancer Sort de niveau 5"></i></span></div>
+          <br><div>lancer le sort de niv : <span class="plusPolice">
+            <i class="far fa-dice-one rollable" data-cmd="magie.lancer.1" data-roll="" title="Lancer Sort de niveau 1"></i>&nbsp;
+            <i class="far fa-dice-two rollable" data-cmd="magie.lancer.2" data-roll="" title="Lancer Sort de niveau 2"></i>&nbsp;
+            <i class="far fa-dice-three rollable" data-cmd="magie.lancer.3" data-roll="" title="Lancer Sort de niveau 3"></i>&nbsp;
+            <i class="far fa-dice-four rollable" data-cmd="magie.lancer.4" data-roll="" title="Lancer Sort de niveau 4"></i>&nbsp;
+            <i class="far fa-dice-five rollable" data-cmd="magie.lancer.5" data-roll="" title="Lancer Sort de niveau 5"></i></span>
+          </div>
+          {{#if modeMetal}}
           <h3>Attaque et défense</h3>
+          {{else}}
+          <h3>Jet en Réserve</h3>
+          {{/if}}
           {{#if system.attResultat.score}}
             Quàl : {{system.attResultat.nbQualites}}, Jet {{system.attResultat.lancer}}D6:  {{system.attResultat.score}} =>
             {{#each quickDeAtt as |d key|}} {{d}}&nbsp; 
@@ -315,7 +326,12 @@
     {{/each}}
 
   </div>
+  <div class="tab items" data-group="primary" data-tab="sorts">
+    <h2>Sortilèges</h2>
+    {{> "systems/npqv2/templates/sheets/parts/actor-sorts.html"}}
+  </div>
   <div class="tab items" data-group="primary" data-tab="secrets">
+    
     <h2>{{localize  "int.secrets" }}</h2>
     <table>
       <tr>

@@ -116,7 +116,7 @@ let targets = ([...game.user.targets].length > 0) ? [...game.user.targets] : can
 
 INTERFACE
 pour envoyez une erreur :
-ui.notification.error("text") : message rouge
+ui.notifications.error("text") : message rouge
 ui.notifications.warn("coucou c'est moi") : message jaune
 ui.notifications.notify("coucou c'est moi aussi") : message bleu..
 

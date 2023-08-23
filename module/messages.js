@@ -1,4 +1,6 @@
 import { lstCibles, cibleTxt, isFormule, DonnerNomReelActeur } from "./utils.js";
+import {simpleDialogueYaze} from "./utilsyaze.js";
+//import { aiguillageGeMsgFusion } from "./messages7.js"; // le pendant Fusion de l'éguillage, car ceci est plus proche du fonctionnement de Métal
 // traitements des messages du chats par click
 
 /**
@@ -7,10 +9,15 @@ import { lstCibles, cibleTxt, isFormule, DonnerNomReelActeur } from "./utils.js"
  *
  * @param {string} [cmdArgs=["msg","rien"]]
  * @param {*} [obj={idActeur, idToken}]
- * @return {*} 
+ * @return 
  */
-function aiguillageGeMsg(cmdArgs=["msg","rien"], obj={}){
-    let objAct = {}; let objToken = null;
+function aiguillageGeMsg(cmdArgs=["msg","rien"], obj={}){ // astuce pour l'instant
+//   if( game.settings.get("npqv2", "modeMetal")) aiguillageGeMsgMetal(cmdArgs,obj)
+//   else aiguillageGeMsgFusion(cmdArgs,obj);
+// }
+
+// function aiguillageGeMsgMetal(cmdArgs=["msg","rien"], obj={}){
+  let objAct = {}; let objToken = null;
   // aiguillage des options (voir utils.js) : msg.arme.attaque,
   if(obj?.idToken !== null && obj.idToken !=="") {
     objToken = game.scenes.get(game.user.viewedScene).tokens.get(obj.idToken);
@@ -34,32 +41,8 @@ function aiguillageGeMsg(cmdArgs=["msg","rien"], obj={}){
     case "cible":
       if(cmdArgs[2]==="dom") { // faire les dommages sur cette cible
         if(obj.cible !==undefined) {
-          let oc = game.scenes.get(game.user.viewedScene).tokens.get(obj.cible);
-          if(oc !== undefined){ // a ton une cible (objet cible)
-            let valDef = (oc.actor.system.defResultat.code==="DEF")?oc.actor.system.defResultat.MeTot:0;
-            let valAtt = objAct.system.attResultat.MeTot;
-            let monTexte = "";
-            if(valAtt > valDef) {
-              let diff = valAtt - valDef;
-              if(diff <= oc.actor.system.seuilRupture) {
-                monTexte += "Attaque réussite : vous lui occasionnez "+ (diff)+" points de effort";
-                let champ = (oc.actor.type === "figurant")? "system.compteur.value":"system.etats.effort";
-                let nouvelleFatigue = ((oc.actor.type === "figurant")? oc.actor.system.compteur.value+diff: oc.actor.system.etats.effor.value-diff) ;
-                let obj={}; obj[champ] = nouvelleFatigue;
-                oc.actor.update(obj);
-              } else { // dépassement de seuil de rupture !
-                let tranche = oc.actor.system.compteur.decoupe * Math.floor(diff/oc.actor.system.compteur.decoupe);
-                monTexte += "Attaque dangereuse réussite : vous lui occasionnez "+ tranche + " points de fatigue";
-                let nouvelleFatigue = ((oc.actor.type === "figurant")? oc.actor.system.compteur.value+tranche: oc.actor.system.etats.fatigue.value+tranche) ;
-                let champ = (oc.actor.type === "figurant")? "system.compteur.value":"system.etats.fatigue";
-                let obj={}; obj[champ] = nouvelleFatigue;
-                oc.actor.update(obj);
-              }
-            } else {
-              monTexte += "Désolé vous n'avez pas réussi votre attaque : sa défense(" + valDef +") est plus grande que votre attaque("+valAtt+")."
-            }
-            messageTxt(monTexte)
-          }
+          if(obj.ModeMetal) attaqueCibleMetal(objAct,obj);
+          else attaquecibleFusion(objAct, objToken, obj);
         }
       }
     case "jet":
@@ -70,6 +53,10 @@ function aiguillageGeMsg(cmdArgs=["msg","rien"], obj={}){
     case "magie":
       if(cmdArgs[2]==="add"){
         //ajouter les points de magie à la personne
+        let magie = (objAct.type == "pj")?objAct.system.jet.pouvoir: objAct.system.compteur.PdM;
+        if(magie === undefined) magie = 0;
+        magie += obj.pouvoir
+        objAct.update((objAct.type == "pj")?{ "system.jet.pouvoir": magie}:{ "system.compteur.PdM": magie} );
       }
       break;
   }
@@ -139,24 +126,25 @@ function passerJetAttaque(objAct={}, objToken, obj = {}, avecDom = false) {
     objUpd[codePrefix +"system.attResultat.paris"]= obj.paris;
     if(avecDom) objUpd[codePrefix +"system.attResultat.MeRJet"]= valAttAff;
     if(avecDom) objUpd[codePrefix +"system.attResultat.MeTot"]= valAttAff+obj.qualite;
-    objUpd[codePrefix +"system.attResultat.MeFormule"]= valAtt;
+    //objUpd[codePrefix +"system.attResultat.MeFormule"]= valAtt;
     objUpd[codePrefix +"system.attResultat.info"]= JSON.stringify(obj.roll);
     objUpd[codePrefix +"system.attResultat.dataJet"]= JSON.stringify(actorData.jet);
     if(fromActor) objAct.update(objUpd);
       else objToken.actor.update(objUpd);
     //---- message pour les dommages
-    //actorData.attResultat.MeRJet // faudra peut être la lancer
+    //actorData.attResultat.MeRJet // c'est la menance lancé "Me" "R"ésultat "Jet"
     let monText ="";
     if(avecDom) {
-      monText = "Votre valeur d'attaque est de ("+obj.qualite + "+" + valAttAff+")="+(valAttAff+obj.qualite)+"<br>";
+      monText = (obj.modeMetal)?"Votre valeur d'attaque est de ("+obj.qualite + "+" + valAttAff+")="+(valAttAff+obj.qualite)+"<br>":
+                                "Votre valeur d'attaque est de ("+obj.qualite +")="+(obj.qualite)+"<br>";
       let cibles = lstCibles(obj.idActeur); 
       for(let e of cibles){ // ou le token
         obj.cible = e.id;
-        monText += `<a class="apply-cmd" title="Faire les Dommage à `+ DonnerNomReelActeur(e.actor, e) + `" data-cmd="msg.cible.dom" data-roll='`+ JSON.stringify(obj)+ `'><i class="fas fa-user-minus"></i></a>&nbsp;`;
+        monText += `<a class="apply-cmd" title="MJ : Faire les Dommage à `+ DonnerNomReelActeur(e.actor, e) + `" data-cmd="msg.cible.dom" data-roll='`+ JSON.stringify(obj)+ `'><i class="fas fa-user-minus"></i></a>&nbsp;`;
       }
     } else {
-      monText = "Votre valeur d'attaque est de " + obj.qualite+ "+" +valAtt + "<br>"+
-      `<a class="apply-cmd" data-cmd="msg.arme.dom" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fal fa-swords"></i>&nbsp; lancer les dommages </a>`;
+      monText = "Votre valeur d'attaque est de " + obj.qualite + ((obj.ModeMetal)? "+" +valAtt:"")+ "<br>"+
+      `<a class="apply-cmd" data-cmd="msg.arme.dom" data-roll='`+ JSON.stringify(obj)+ `'> <i class="fal fa-swords"></i>&nbsp; Lancer l'attaque (et enlever les Dommages) </a>`;
     }
     let objDef = {};
     let lstcibles = lstCibles();
@@ -169,12 +157,18 @@ function passerJetAttaque(objAct={}, objToken, obj = {}, avecDom = false) {
       objUpd = objDef.actor;
       monText += `<br>votre cible est ` +  objDef.name + " (Acteur :"+ objUpd.name +") ";
       if(objDef.isLinked) monText += ": "+cibleTxt(objDef.actorId, objDef.name);
-      if(objUpd.system.defResultat.code === "DEF" || objUpd.system.defResultat.code === "DEFX") { // elle possède une défense 
-        monText += `possède une valeur de défense de` +  (parseInt(objUpd.system.defResultat.nbQualites) + parseInt(objUpd.system.defResultat.MeRJet));
+      if(obj.modeMetal){
+        if(objUpd.system.defResultat.code === "DEF" || objUpd.system.defResultat.code === "DEFX") { // elle possède une défense 
+          monText += `possède une valeur de défense de ` +  (parseInt(objUpd.system.defResultat.nbQualites) + parseInt(objUpd.system.defResultat.MeRJet));
+        } else monText += `ne possède pas de jet en réserve (à lancer)`;
+      } else {
+        if(objUpd.system.attResultat.code === "ATT" || objUpd.system.attResultat.code === "ATTX") { // elle possède une défense 
+        monText += `possède une valeur de défense de ` +  (parseInt(objUpd.system.attResultat.nbQualites));
+        } else monText += `ne possède pas de jet en réserve (à lancer)`;
       }
     } else {
-      monText += `aucune cible n'est selectionnée, choisissez un personnage et utiliser le bouton ci-dessous `+
-            ` <br> <a class="apply-cmd" data-cmd="msg.perso.dom" data-roll='`+ JSON.stringify(obj)+ `'><i class="fas fa-user-minus"></i>Enlever les Dommages</a>`
+      monText += `aucune cible n'est selectionnée, choisissez un personnage et double-cliquer droit dessus.`+
+            ` <br> <a class="apply-cmd" data-cmd="msg.perso.dom" data-roll='`+ JSON.stringify(obj)+ `'><i class="fas fa-user-minus"></i> [MJ] Lancer l'attaque (et enlever les Dommages)</a>`
     }
     // faire le jet ou utiliser la base/
     messageTxt(monText);
@@ -244,10 +238,109 @@ function passerJetAttaque(objAct={}, objToken, obj = {}, avecDom = false) {
     messageTxt(monText);
   }
 
+
+function attaqueCibleMetal(objAct,obj) {
+  let oc = game.scenes.get(game.user.viewedScene).tokens.get(obj.cible);
+  let monTexte = "";
+  if(oc !== undefined){ // a ton une cible (objet cible) 
+    let valDef = (oc.actor.system.defResultat.code==="DEF")?oc.actor.system.defResultat.MeTot:0;
+    let valAtt = objAct.system.attResultat.MeTot;
+    if(valAtt > valDef) {
+      let diff = valAtt - valDef;
+      if(diff <= oc.actor.system.seuilRupture) {
+        monTexte += "Attaque réussite : vous lui occasionnez "+ (diff)+" points de effort";
+        let champ = (oc.actor.type === "figurant")? "system.compteur.value":"system.etats.effort";
+        let nouvelleFatigue = ((oc.actor.type === "figurant")? oc.actor.system.compteur.value+diff: oc.actor.system.etats.effor.value-diff) ;
+        let obj={}; obj[champ] = nouvelleFatigue;
+        oc.actor.update(obj);
+      } else { // dépassement de seuil de rupture !
+        let tranche = oc.actor.system.compteur.decoupe * Math.floor(diff/oc.actor.system.compteur.decoupe);
+        monTexte += "Attaque dangereuse réussite : vous lui occasionnez "+ tranche + " points de fatigue";
+        let nouvelleFatigue = ((oc.actor.type === "figurant")? oc.actor.system.compteur.value+tranche: oc.actor.system.etats.fatigue.value+tranche) ;
+        let champ = (oc.actor.type === "figurant")? "system.compteur.value":"system.etats.fatigue";
+        let obj={}; obj[champ] = nouvelleFatigue;
+        oc.actor.update(obj);
+      }
+    } else {
+      monTexte += "Désolé vous n'avez pas réussi votre attaque : sa défense(" + valDef +") est plus grande que votre attaque("+valAtt+")."
+    }
+  } else monTexte += "Désolé vous n'avez pas de cible'"
+  messageTxt(monTexte);
+}
+
+function attaquecibleFusion(objAct, objToken, obj){
+  let oc = game.scenes.get(game.user.viewedScene).tokens.get(obj.cible);
+  let monTexte = "";
+  if(oc !== undefined){ // a ton une cible (objet cible) 
+    let valDef = (oc.actor.system.attResultat.code==="ATT")?oc.actor.system.attResultat.nbQualites:0;
+    let valAtt = objAct.system.attResultat.nbQualites;
+    if(valAtt == valDef){ // cout égalité : rien ne se passe
+        monTexte += "Vous vous affrontez sans résultat notables<br>";
+    } else if(valAtt > valDef) { // "l'attaquant" est en supériorité
+      let diff = valAtt - valDef;
+      if(diff <= oc.actor.system.seuilRupture) {
+        monTexte += "Supériotité à <b>"+ objToken.name +"</b> : il occasionne "+ (diff)+" points de effort à <b>"+ oc.name+"</b>.<br>";
+        let champ = (oc.actor.type === "figurant")? "system.compteur.value":"system.etats.effort";
+        let nouvelleFatigue = ((oc.actor.type === "figurant")? oc.actor.system.compteur.value+diff: oc.actor.system.etats.effor.value-diff) ;
+        let obj={}; obj[champ] = nouvelleFatigue;
+        oc.actor.update(obj);
+      } else { // dépassement de seuil de rupture ! attention uniquement
+        diff -= oc.actor.system.seuilRupture;
+        let tranche = (oc.actor.type === "figurant")?oc.actor.system.compteur.decoupe * Math.floor(diff/oc.actor.system.compteur.decoupe):diff;
+        monTexte += "Attaque dangereuse réussite de <b>"+ objToken.name +"</b> : il occasionne "+ tranche + " points de fatigue à <b>"+ oc.name+"</b>.<br>";
+        let nouvelleFatigue = ((oc.actor.type === "figurant")? oc.actor.system.compteur.value+tranche: oc.actor.system.etats.fatigue.value+tranche) ;
+        let champ = (oc.actor.type === "figurant")? "system.compteur.value":"system.etats.fatigue";
+        let obj={}; obj[champ] = nouvelleFatigue;
+        oc.actor.update(obj);
+      }
+    } else { // le "défenseur est en suppériotité"
+      let diff = valDef - valAtt;
+      if(diff <= objAct.system.seuilRupture) {
+        monTexte += "Attaque réussite : "+ oc.name +"occasionne "+ (diff)+" points de effort à "+ objToken.name+".<br>";
+        let champ = (objAct.type === "figurant")? "system.compteur.value":"system.etats.effort";
+        let nouvelleFatigue = ((objAct.type === "figurant")? objAct.system.compteur.value+diff: objAct.system.etats.effor.value-diff) ;
+        let obj={}; obj[champ] = nouvelleFatigue;
+        objAct.update(obj);
+      } else { // dépassement de seuil de rupture !
+        diff -= oc.actor.system.seuilRupture;
+        let tranche = (objAct.type === "figurant")?objAct.system.compteur.decoupe * Math.floor(diff/objAct.system.compteur.decoupe):diff;
+        monTexte += "Attaque dangereuse réussite de <b>"+ oc.name +"</b> : il occasionne "+ tranche + " points de fatigue à <b>"+ objToken.name+"</b>.<br>";
+        let nouvelleFatigue = ((oc.actor.type === "figurant")? objAct.system.compteur.value+tranche: objAct.system.etats.fatigue.value+tranche) ;
+        let champ = (objAct.type === "figurant")? "system.compteur.value":"system.etats.fatigue";
+        let obj={}; obj[champ] = nouvelleFatigue;
+        objAct.update(obj);
+      }
+      //monTexte += "Désolé vous n'avez pas réussi votre attaque : sa défense(" + valDef +") est plus grande que votre attaque("+valAtt+")."
+      // gestion de l'inverse
+    }
+  } else monTexte += "Désolé vous n'avez pas de cible. Votre force d'attaque est <b>"+objAct.system.attResultat.nbQualites+"</b>.<br>";
+  messageTxt(monTexte);
+}
+
+function aiguillageYaze(cmdArgs=["msg","rien","ssrien"], obj={}){
+  switch(cmdArgs[1]) {
+    case "push":
+      let avecDom = (cmdArgs[3] !== undefined);
+      if(cmdArgs[2]=== "lancer") {
+        // transformer le jet en jet d'attaque courant !
+        //passerJetAttaque(objAct, objToken, obj, avecDom);
+        console.log("l'objet",obj);
+        obj.stress = obj.stress+1
+        simpleDialogueYaze(obj);
+      }
+      else if (cmdArgs[2]==="free") {// pas encore fait
+        // transformer le jet en jet de défense !
+        console.log("l'objet",obj);
+        simpleDialogueYaze(obj);
+      }
+      break;
+    }
+}
+
 /***
  * EXPORT ---------------
  */
-export { aiguillageGeMsg, messageTxt, messageObj}
+export { aiguillageGeMsg, messageTxt, messageObj, aiguillageYaze}
 
 // ----------------------------  Garder pour certains traitements
 // ancienne fonction d'aguillage nommée : XXXX puis EnventDuChat

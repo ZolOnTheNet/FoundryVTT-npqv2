@@ -169,7 +169,8 @@
             "rang2": { "value":0, "max":0},
             "rang3": { "value":0, "max":0},
             "rang4": { "value":0, "max":0}
-          }       
+          },
+          "PdM":0       
         }
       },
       "base": {

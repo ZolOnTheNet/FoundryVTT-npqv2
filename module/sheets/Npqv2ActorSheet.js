@@ -1,5 +1,6 @@
 import {lanceLesDes, simpleDialogue, lancerDeBrut, DialogueDommage, AppliqueEtatValeur } from "../utils.js";
 import {lanceLesDes7, simpleDialogue7, lancerInit7 } from "../utils7.js";
+import { messageTxt } from "../messages.js";
 import { updateInitiative } from "../updateInitiative.js";
 
 export default class npqv2ActorSheet extends ActorSheet {
@@ -55,6 +56,10 @@ export default class npqv2ActorSheet extends ActorSheet {
         context.system.chatCom.publicName = lstTokens[0].name;
       }
       // Prepare character data and items.
+      // quel type de jeu ?
+      let modeMetal = game.settings.get("npqv2", "modeMetal");
+      context.modeMetal = modeMetal;
+      context.system.chatCom["modeMetal"]= modeMetal;
       context.system.chatCom["perteFatigue"]= false;
 
       if(actorData.type == 'pj') {
@@ -743,6 +748,17 @@ onRoll7(dataset,cmdArgs, txtCode){
                                           { "nde" : this.document.system.jet.nblancer, "paris": this.document.system.jet.paris, "seuil": this.document.system.etats.value, 'nbEffort': this.document.system.jet.coutEffort,  'Auto' : this.document.system.jet.autoEffort }
       simpleDialogue(objRel.nde , objRel.paris, objRel.seuil, { idActor: this.document.system.chatCom.idActor, idToken : this.document.system.chatCom.idToken, "nbEffort": objRel.nbEffort, "Auto": objRel.Auto, "choixAsp": this.document.system.chatCom.choixAsp });
       break;
+    case 'magie':
+      if(cmdArgs[1]==="clean") {
+        if(cmdArgs[2]=='pdm')this.document.update({"system.jet.pouvoir":0}); 
+      }else if(cmdArgs[1]=='lancer') { // lancement d'un sort niveau cmdArgs[2]
+        let coutPouvoir = parseInt(cmdArgs[2])*10; let coutEffort = this.document.system.jet.pouvoir;
+        coutEffort = (coutEffort)?coutPouvoir-coutEffort: coutPouvoir;
+        let monTexte = "<h3>"+this.document.system.chatCom.publicName+"</h3> Vous tentez de lancer un sort de niveau "+ cmdArgs[2]+". cela vous coutera "+
+          coutEffort+` points d'effort.`;
+        messageTxt(monTexte);
+      }
+      break;  
     case 'remove':
       let ind =(cmdArgs[2] === 'cmp')? cmd: parseInt(cmdArgs[2])+1;
       switch(cmdArgs[1]){ // actuellement : init, select
@@ -893,6 +909,11 @@ onRollFig(dataset,cmdArgs, txtCode){
         simpleDialogue(parseInt(cmdArgs[3]) , this.document.system.parisDefaut,  this.document.system.compteur.seuil,this.actor.system.chatCom);
       }
       break;
+    case 'magie':
+      if(cmdArgs[1]==="clean") {
+        if(cmdArgs[2]=='pdm')this.document.update({"system.compteur.PdM":0}); 
+      }     
+      break;
     case 'lancerInit': // modification de l'init, si dans le + dépense de l'éffort, l'info est dans this.document.system.initEtat.
       let r = new Roll(this.document.system.initEtat.formule);
       r.evaluate({async: false});
@@ -910,10 +931,50 @@ onRollFig(dataset,cmdArgs, txtCode){
     //ChatMessage.create(chatData);
     let cm = r.toMessage(chatData);
       break;
+    case 'resultat':
+      switch(cmdArgs[1]){
+        case 'attaque': // enchainement du lancer de dé + mise en attaque direct si réussie
+          break;
+        case 'defense': //enchainement du lancer de dé + mise en défense direct si réussie
+          break;
+        case 'clean' : 
+          let objUdp = {};
+          switch(cmdArgs[2]){
+            case 'defense': // les champs son compréssé pour être plus visible 
+              objUdp = {
+                "system.defResultat.code": "NORM", "system.defResultat.score": 0, "system.defResultat.nbQualites" : 0, 
+                "system.defResultat.cibles" : "", "system.defResultat.info": "", "system.defResultat.MeFormule":"", "system.defResultat.MeTot" : 0,
+                "system.defResultat.infoJet": "", "system.defResultat.dataJet": ""
+              };
+              break;
+            case 'attaque' : 
+              objUdp = {
+                "system.attResultat.code": "NORM", "system.attResultat.score": 0, "system.attResultat.nbQualites" : 0, 
+                "system.attResultat.cibles" : "", "system.attResultat.info": "",  "system.attResultat.MeFormule":"", "system.attResultat.MeTot" : 0,
+                 "system.attResultat.infoJet": "", "system.attResultat.dataJet": ""
+              };
+              break;
+            default: 
+              objUdp = {
+                "system.jet.codecmp":"", "system.jet.idAspect1":"", "system.jet.idAspect2":"", "system.jet.idAspect3":"", "system.jet.nblancer":3, 
+                "system.jet.paris":0, "system.jet.seuil": this.document.system.etats.value, "system.jet.coutEffort":0, "system.jet.autoEffort":1,
+                "system.jet.coutMagique":0, "system.jet.nomRaccourci":""
+              }
+              break
+          }
+          this.document.update(objUdp,{renderSheet:true}); // sheet obligatoire
+          break;
+      }
+      break;
+
     case 'set': // fixer par clique direct sur les petites case ou les valeurs
       let champ = {};
         champ["system.compteur.value"] = parseInt(txtCode);
       this.document.update( champ);
+      break;
+    case 'suppr': // supprime l'aspect de la feuille de perso: dialog, pas encore
+      let itemD = this.document.items.get(txtCode);
+      if(itemD != undefined) itemD.delete();
       break;
   }
 }

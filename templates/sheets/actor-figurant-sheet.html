@@ -170,17 +170,20 @@
             :  <input class="normal-input" type="text" size="1em" name="system.initEtat.value" value="{{system.initEtat.value}}" data-dtype="Number"/> 
             &nbsp;=> {{system.initEtat.formule}} : {{system.initEtat.finale}}
           </div>
-          Action : <span class="grdPolice">{{nbActions}} </span>
+          Action : <span class="grdPolice">{{nbActions}} </span> Magie en réserve : <span class="grdPolice">{{system.compteur.PdM}} </span><i class="fad fa-sync rollable" data-cmd="magie.clean.pdm"></i>
           <br>
+          {{#if modeMetal}}
           <h3>Attaque et défense</h3>
-          {{#if system.attResultat.score}}
+          {{else}}
+          <h3>Jet en Réserve</h3>
+          {{/if}}          {{#if system.attResultat.score}}
             Quàl : {{system.attResultat.nbQualites}}, Jet {{system.attResultat.lancer}}D6:  {{system.attResultat.score}} =>
             {{#each quickDeAtt as |d key|}} {{d}}&nbsp; 
             {{/each}} 
             <br>
           {{/if}}
           Votre Menace : {{system.attResultat.MeFormule}} (attaque) 
-          {{#if system.attResultat.MeTot}} => {{system.attResultat.MeTot}} <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="jet.clean.attaque"><i class="fas fa-sync-alt"></i> </a></span>
+          {{#if system.attResultat.MeTot}} => {{system.attResultat.MeTot}} <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="resultat.clean.attaque"><i class="fas fa-sync-alt"></i> </a></span>
           {{/if}} <br>
           {{#if system.defResultat.score}}
             <br>
@@ -190,10 +193,12 @@
             <br>
           {{/if}}
           votre Couverture: {{system.defResultat.MeFormule}} (défense) 
-          {{#if system.defResultat.MeTot}} => {{system.defResultat.MeTot}} <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="jet.clean.defense"><i class="fas fa-sync-alt"></i> </a></span>
-          {{/if}} <br>
-          <h3>Compteur <input class="normal-input" type="text" size="1em" name="system.compteur.max" value="{{system.compteur.max}}" data-dtype="Number"/>
-            Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.compteur.value" value="{{system.compteur.value}}" data-dtype="Number"/> </h3>
+          {{#if system.defResultat.MeTot}} => {{system.defResultat.MeTot}} <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="resultat.clean.defense"><i class="fas fa-sync-alt"></i> </a></span>
+          {{/if}} <br><br>
+          <h3>Compteur <input class="normal-input" type="text" size="1em" name="system.compteur.max" value="{{system.compteur.max}}" data-dtype="Number"/></h3>
+            Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.compteur.value" value="{{system.compteur.value}}" data-dtype="Number"/> 
+            &nbsp; Seuil : <span class="plusPolice">{{system.compteur.seuil}}</span>
+            Pseudo-rang  : <input class="normal-input" type="text" size="1em" name="system.compteur.decoupe" value="{{system.compteur.decoupe}}" data-dtype="Number"/> 
           <table>
             <tr>
               <td width="32px">Max</td><td>Actuel</td><td class="txtcenter" width="31px">Seuil</td>
