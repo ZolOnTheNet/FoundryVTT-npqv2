@@ -1,0 +1,49 @@
+{{!-- This template is a fallback for when items don't have more specific templates. --}}
+{{!-- Generally, you'll want to make more specific templates when possible. --}}
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">Description</a>
+    <a class="item" data-tab="attributes">Attributes</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{editor system.description target="system.description" rollData=rollData button=true owner=owner editable=editable}}
+    </div>
+
+    {{!-- Attributes Tab --}}
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      {{!-- As you add new fields, add them in here! --}}
+      
+     <div class="grid-2col">
+        <div>
+          <h3>{{localize  "int.carac" }}</h3>
+          <label for="system.codeSpe" class="resource-label flexlarge align-left" data-roll="" data-label="{{system.codeSpe}}">{{localize  "k2m.codeSpe" }}</label>
+          <select  name="system.codeSpe">
+            {{selectOptions CodifAspect selected=system.codeSpe}}
+          </select><br>
+          <label for="system.NbDes" class="resource-label align-left">{{localize  "k2m.NbDes" }}</label>
+          <input size="4em" class="normal-input" type="text" name="system.NbDes" value="{{system.NbDes}}" data-dtype="Number"/>
+        </div>
+        <div>
+          <h3>{{localize  "int.xp" }}</h3>
+          <label for="system.XpDep" class="resource-label flexlarge align-left" >{{localize  "k2m.XpDep" }}</label>
+          <input class="normal-input" type="text" size="4em" name="system.XpDep" value="{{system.XpDep}}" data-dtype="Number"/><br>
+          <label for="system.XPa" class="resource-label flexlarge align-left">{{localize  "k2m.XPa" }}</label>
+          <input class="normal-input" type="text" size="4em" name="system.XPa" value="{{system.XPa}}" data-dtype="Number"/>
+        </div>
+      </div>
+    </div>
+  </section>
+</form>

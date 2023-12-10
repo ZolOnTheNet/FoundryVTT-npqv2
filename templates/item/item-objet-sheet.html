@@ -1,102 +1,120 @@
+{{!-- This template is a fallback for when items don't have more specific templates. --}}
+{{!-- Generally, you'll want to make more specific templates when possible. --}}
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
     <div class="header-fields">
       <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
-      <div class="grid grid-4col">
-        <div class="resource">
-          <label class="resource-label">Volume</label>
-          <input type="text" name="data.volume" value="{{data.volume}}" data-dtype="Number"/>
-        </div>
-        <div class="resource">
-          <label class="resource-label">Poids</label>
-          <input type="text" name="data.poids" value="{{data.poids}}" data-dtype="Number"/>
-        </div>
-        <div class="resource">
-          <label class="resource-label">Actif</label><br>
-          {{#if data.actif}}
-            <input name="data.actif" type="checkbox" checked/>
-          {{else}}
-            <input name="data.actif" type="checkbox"/>
-          {{/if}}
-        </div>
-        <div class="resource">
-          <label class="resource-label">Type d'objet</label>
-          <select name="data.typeObjet">
-            {{selectOptions TypeObjets selected=data.typeObjet}}
-          </select> 
-        </div>
-
-      </div>
     </div>
+    En cours de construction : 
   </header>
 
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">
-    <a class="item" data-tab="attributes">Caractéristiques</a>
-    <a class="item" data-tab="description">Description</a>
+    <a class="item" data-tab="description"><h3>Description</h3></a>
+    <a class="item" data-tab="attributes"><h3>Attributs</h3></a>
   </nav>
 
   {{!-- Sheet Body --}}
   <section class="sheet-body">
 
     {{!-- Description Tab --}}
-    <div class="tab" data-group="primary" data-tab="description"> 
-      <div class="resource grid grid-2col">
-        <div class="biography grid-span-2">
-          <h2>Description :</h2>    
-            <textarea name="data.description" rows="4">{{data.description}}</textarea>
-      </div>
-        <div class="biography grid-span-2">
-            <h2>Utilisation :</h2>    
-              <textarea name="data.utilisation" rows="4">{{data.utilisation}}</textarea>
-          </div>
-      </div>
+    <div class="tab" data-group="primary" data-tab="description">
+      {{editor system.description target="system.description" rollData=rollData button=true owner=owner editable=editable}}
+      <h3>Utilisation :</h3>
+      {{editor system.utilisation target="system.utilisation" rollData=rollData button=true owner=owner editable=editable}}
     </div>
 
     {{!-- Attributes Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
-      <h2>Bonus accordés à l'objet</h2>
-      <div class="resource grid grid-5col">
-        <div class="resource">
-          <label class="resource-label">Score</label>
-          <input type="text" name="data.bonus.score" value="{{data.bonus.score}}" data-dtype="Number"/>
+      {{!-- As you add new fields, add them in here! --}}
+      
+     <div class="grid-2col">
+        <div>
+          <h3>{{localize  "int.carac" }}</h3>
+          <label for="system.codeSpe" class="resource-label flexlarge align-left" data-roll="" data-label="{{system.codeSpe}}">{{localize  "k2m.codeSpe" }}</label>
+          <select  name="system.codeSpe">
+            {{selectOptions CodifObjet selected=system.codeSpe}}
+          </select><br>
+          <label for="system.quantite" class="resource-label align-left">{{localize  "k2m.quantite" }}</label>
+          <input size="4em" class="normal-input" type="text" name="system.quantite" value="{{system.quantite}}" data-dtype="Number"/>
+          <br>
+          <label for="system.estActif" class="resource-label align-left">{{localize  "k2m.estActif" }}</label>
+          {{#if system.estActif}}
+          <input name="system.estActif" type="checkbox" checked/>
+          {{else}}
+          <input name="system.estActif" type="checkbox" />
+          {{/if}}
+          <br>
+          <label for="system.estADistance" class="resource-label align-left">{{localize  "k2m.estADistance" }}</label>
+          {{#if system.estADistance}}
+          <input name="system.estADistance" type="checkbox" checked/>
+          {{else}}
+          <input name="system.estADistance" type="checkbox" />
+          {{/if}}
+          <br>
+          <label for="system.aMunitions" class="resource-label align-left">{{localize  "k2m.aMunitions" }}</label>
+          {{#if system.aMunitions}}
+          <input name="system.aMunitions" type="checkbox" checked/>
+          {{else}}
+          <input name="system.aMunitions" type="checkbox" />
+          {{/if}}
+          <br>
+          <label for="system.poids" class="resource-label align-left">{{localize  "k2m.poids" }}</label>
+          <input size="4em" class="normal-input" type="text" name="system.poids" value="{{system.poids}}" data-dtype="Number"/>
+          <br>
+          <label for="system.volume" class="resource-label align-left">{{localize  "k2m.volume" }}</label>
+          <input size="4em" class="normal-input" type="text" name="system.volume" value="{{system.volume}}" data-dtype="Number"/>
+          <br>
+          <label for="system.menace" class="resource-label align-left">{{localize  "k2m.menace" }}</label>
+          <input size="4em" class="normal-input" type="text" name="system.menace" value="{{system.menace}}" data-dtype="String"/>
+          <br>
+          <label for="system.couverture" class="resource-label align-left">{{localize  "k2m.couverture" }}</label>
+          <input size="4em" class="normal-input" type="text" name="system.couverture" value="{{system.couverture}}" data-dtype="String"/>
+          <br>
+          <label for="system.protection" class="resource-label align-left">{{localize  "k2m.protection" }}</label>
+          <input size="4em" class="normal-input" type="text" name="system.protection" value="{{system.protection}}" data-dtype="String"/>
+          <br>
+          <label for="system.solidite" class="resource-label align-left">{{localize  "k2m.solidite" }}</label>
+          <input size="1em" class="normal-input" type="text" name="system.solidite" value="{{system.solidite}}" data-dtype="Number"/>
+          <br>
+          {{#if system.estADistance}}
+            <label for="system.FP" class="resource-label align-left">{{localize  "k2m.FP" }}</label>
+            <input size="4em" class="normal-input" type="text" name="system.FP" value="{{system.FP}}" data-dtype="Number"/>
+          {{/if}}
         </div>
-        <div class="resource">
-          <label class="resource-label">Dé Sup Bonus</label>
-          <input type="text" name="data.bonus.deSup" value="{{data.bonus.deSup}}" data-dtype="Number"/>
-        </div>
-        <div class="resource">
-          <label class="resource-label">Dommages</label>
-          <input type="text" name="data.bonus.dommage" value="{{data.bonus.dommage}}" data-dtype="String"/>
-        </div>
-        <div class="resource">
-          <label class="resource-label">Pt. de Vie</label>
-          <input type="text" name="data.bonus.PdV" value="{{data.bonus.PdV}}" data-dtype="Number"/>
-        </div>
-        <div class="resource">
-          <label class="resource-label">Pt. de Magie</label>
-          <input type="text" name="data.bonus.PdM" value="{{data.bonus.PdM}}" data-dtype="Number"/>
+        <div>
+          <h3>{{localize  "int.bonus" }}</h3>
+          <label for="system.bonus.NbDes" class="resource-label flexlarge align-left" >{{localize  "k2m.NbDes" }}</label>
+          <input class="normal-input" type="text" size="4em" name="system.bonus.NbDes" value="{{system.bonus.NbDes}}" data-dtype="Number"/><br>
+          <br>
+          <label for="system.bonus.CodeDommage" class="resource-label flexlarge align-left">{{localize  "k2m.CodeDommage" }}</label>
+          <input class="normal-input" type="text" size="5em" name="system.bonus.CodeDommage" value="{{system.bonus.CodeDommage}}" data-dtype="String"/>
+          <br>
+          <label for="system.bonus.PdM" class="resource-label flexlarge align-left">{{localize  "k2m.PdM" }}</label>
+          <input class="normal-input" type="text" size="1em" name="system.bonus.PdM" value="{{system.bonus.PdM}}" data-dtype="Number"/>
+          <br>
+          <label for="system.bonus.PdF" class="resource-label flexlarge align-left">{{localize  "k2m.PdF" }}</label>
+          <input class="normal-input" type="text" size="1em" name="system.bonus.PdF" value="{{system.bonus.PdF}}" data-dtype="Number"/>
+          <br>
+          <label for="system.bonus.PdT" class="resource-label flexlarge align-left">{{localize  "k2m.PdT" }}</label>
+          <input class="normal-input" type="text" size="1em" name="system.bonus.PdT" value="{{system.bonus.PdT}}" data-dtype="Number"/>
+          <br>
+          <label for="system.bonus.PdFa" class="resource-label flexlarge align-left">{{localize  "k2m.PdFa" }}</label>
+          <input class="normal-input" type="text" size="1em" name="system.bonus.PdFa" value="{{system.bonus.PdFa}}" data-dtype="Number"/>
+          <h3>{{localize  "int.aspects" }}</h3>
+          {{#each system.aspects as |aspect key|}}
+            <label for="system.aspects.{{key}}" class="resource-label flexlarge align-left" >{{localize  "int.asp.Nom" }}</label>
+            <input class="normal-input" type="text" size="14em" name="system.aspects.{{key}}.nomAsp" value="{{aspect.nomAsp}}" data-dtype="String"/>
+            <input class="normal-input" title="Nombre de dés" type="text" size="1em" name="system.aspects.{{key}}.value" value="{{aspect.value}}" data-dtype="Number"/>
+            &nbsp;
+            <a class="attrib-mod rollable" data-roll="asp{{key}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            <br>
+          {{/each}}
         </div>
       </div>
-      {{#if data.EstArme}}
-        <h2>Carractéristique de l'Arme :</h2>
-        <div class="resource grid grid-3col">
-          <div class="resource">
-            <label class="resource-label">Formule de Dommages</label>
-            <input type="text" name="data.dommage" value="{{data.dommage}}" data-dtype="String"/>
-            la partie "bonus" se rajoute aussi.
-          </div>
-          <div class="resource">
-            <label class="resource-label">Bris</label>
-            <input type="text" name="data.bris" value="{{data.bris}}" data-dtype="Number"/>
-          </div>
-          <div class="resource">
-            <label class="resource-label">Resitance</label>
-            <input type="text" name="data.resistance" value="{{data.resistance}}" data-dtype="Number"/>
-          </div>
-        </div>
-      {{/if}}
+      <h3>Spécial :</h3>
+      {{editor system.special target="system.special" rollData=rollData button=true owner=owner editable=editable}}
     </div>
   </section>
 </form>

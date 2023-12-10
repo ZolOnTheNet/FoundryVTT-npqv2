@@ -1,251 +1,586 @@
 {
-    "Actor": {
-      "types": ["pj", "figurant", "mi-boss", "Boss"],
-      "templates": {
-        "base": {
-          "PdV": {
-            "value": 15,
-            "min": 0,
-            "max": 15
-          },
-          "PdM": {
-            "value": 5,
-            "min": 0,
-            "max": 5
-          },
-          "biography": "",
-          "XP":0
+  "Actor": {
+    "types": ["pj", "pj6", "pion", "figurant", "monstre", "terrain"],
+    "templates": {
+      "jets":{
+        "jet": {
+          "codecmp":"artisan",
+          "idAspect1":"",
+          "idAspect2":"",
+          "idAspect3":"",
+          "nblancer":3,
+          "paris":0,
+          "seuil":6,
+          "coutEffort":0,
+          "autoEffort":1,
+          "coutMagique":0,
+          "pouvoir": 0,
+          "nomRaccourci":""
+        }
+      },
+      "JetAttDef": {
+        "attResultat": {
+          "code": "NORM",
+          "score": 0,
+          "nbQualites" : 0,
+          "cibles" : "",
+          "info": "",
+          "MeFormule":"",
+          "MeRJet": 0,
+          "MeTot" : 0,
+          "pouvoir": 0,
+          "infoJet": "",
+          "dataJet": ""
         },
-        "minibase": {
-            "blessure":3,
-            "BlessureMax": 3,
-            "PdM": {
-                "value": 5,
-                "min": 0,
-                "max": 5
-              },
-            "difficulte":1,
-            "DeDom": "1D4",
-            "biography":""
-        },
-        "attr": {
-          "attributs" : {
-            "for": {
-              "value": 2,
-              "label":"force",
-              "abrv":"For"
-            },
-            "ag": {
-              "value": 2,
-              "label":"Agilité",
-              "abrv":"Ag"
-           },
-            "con": {
-              "value": 2,
-              "label":"Constitution",
-              "abrv":"Con"
-            },
-            "it": {
-              "value": 2,
-              "label":"Intuition",
-              "abrv":"It"
-            },
-            "ig": {
-              "value": 2,
-              "label":"Intelligence",
-              "abrv":"Ig"
-            },
-            "v": {
-              "value": 2,
-              "label":"Volonté",
-              "abrv":"Vo"
-            },
-            "p": {
-              "value": 2,
-              "label":"Présence",
-              "abrv":"Pre"
+        "defResultat": {
+          "code": "NORM",
+          "score": 0,
+          "nbQualites" : 0,
+          "cibles" : "",
+          "info": "",
+          "MeFormule":"",
+          "MeRJet": 0,
+          "MeTot" : 0,
+          "pouvoir": 0,
+          "nbDef" : 0,
+          "dataJet" : ""
+        }
+
+      },
+      "etatsTot": {
+        "etats": {
+          "value":6,
+          "incMagie":0,
+          "diff": {
+            "rang1":6,
+            "rang2":9,
+            "rang3":12,
+            "rang4":15
+          },
+          "fatigue": {
+            "label":"k2m.fatigue",
+            "cmp":0,
+            "xp":0,
+            "value": 0,
+            "max": 12,
+            "rangs": {
+              "rang1": { "value":0, "max":3, "offset": 3},
+              "rang2": { "value":0, "max":3, "offset": 3},
+              "rang3": { "value":0, "max":3, "offset": 3},
+              "rang4": { "value":0, "max":3, "offset": 3}
             }
-          }
-        },
-        "attrb":{
-          "attrder": {
-            "BDomC": {
-              "value": "1d6",
-              "label":"D.Dom. Contact",
-              "abrv":"BDomC"
-            },
-            "BDomD": {
-              "value": "1d6",
-              "label":"D.Dom. Distant",
-              "abrv":"BDomD"
-            },
-            "ScProg": {
-              "value": 2,
-              "label":"Point de Progession",
-              "abrv":"ScProg"
-            },
-            "MvtBase":{
-              "value": 2,
-              "label":"Mouvement",
-              "abrv":"MvtBase"
-            },
-            "MvtAct":{
-              "value": 2,
-              "label":"Mouvement Actuel",
-              "abrv":"MvtAct"
-            },
-            "RecupMagie":{
-              "value": "D3",
-              "label":"Dé de recup Magie",
-              "abrv":"Recup Magie"
-            },
-            "RecupSante":{
-              "value": "D3",
-              "label":"Dé de récup Santé",
-              "abrv":"Recup Santé"
-            },
-            "reput":{
-              "value": 0,
-              "total":0,
-              "label":"Réputation",
-              "abrv":"Reput"
-            }  
+          },
+          "faiblesse": {
+            "label":"k2m.faiblesse",
+            "cmp":0,
+            "xp":0,
+            "value" : 0,
+            "max": 12,
+            "rangs": {
+              "rang1": { "value":0, "max":3, "offset": 3},
+              "rang2": { "value":0, "max":3, "offset": 3},
+              "rang3": { "value":0, "max":3, "offset": 3},
+              "rang4": { "value":0, "max":3, "offset": 3}
+            }
+          },
+          "tension": {
+            "label":"k2m.tension",
+            "cmp":0,
+            "xp":0,
+            "value" : 0,
+            "max": 12,
+            "rangs": {
+              "rang1": { "value":0, "max":3, "offset": 3},
+              "rang2": { "value":0, "max":3, "offset": 3},
+              "rang3": { "value":0, "max":3, "offset": 3},
+              "rang4": { "value":0, "max":3, "offset": 3}
+            }
+          },
+          "DPdM": {
+            "label":"k2m.dSpdm",
+            "cmp":0,
+            "xp":0,
+            "value" : 0,
+            "max": 0,
+            "rangs": {
+              "rang1": { "value":0, "max":0, "offset": 0},
+              "rang2": { "value":0, "max":0, "offset": 0},
+              "rang3": { "value":0, "max":0, "offset": 0},
+              "rang4": { "value":0, "max":0, "offset": 0}
+            }
+          },
+          "effort": {
+            "label":"k2m.effort",
+            "value":0,
+            "max":18
           }
         }
       },
-      "pj": {
-        "templates": ["base","attr","attrb"],
-        "ethnie":"",
-        "chance":5,
-        "Heroisme":1
+      "miniEtats":{
+        "etats": {
+          "incMagie":0,
+          "diff": {
+            "rang1":6,
+            "rang2":9,
+            "rang3":12,
+            "rang4":15
+          },
+          "fatigue": {
+            "label":"k2m.fatigue",
+            "cmp":0,
+            "xp":0,
+            "value": 0,
+            "max": 12,
+            "rangs": {
+              "rang1": { "value":0, "max":3, "offset": 3},
+              "rang2": { "value":0, "max":3, "offset": 3},
+              "rang3": { "value":0, "max":3, "offset": 3},
+              "rang4": { "value":0, "max":3, "offset": 3}
+            }       
+            },
+          "effort": {
+            "label":"k2m.effort",
+            "value":0,
+            "max":18
+          },
+          "encaissement": {
+            "cmp":1,
+            "xp" : 1,
+            "value" : 0,
+            "physique" : 0
+          }
+        }
+      }, 
+      "compteur":{
+        "compteur":{
+          "value":0,
+          "max": 12,
+          "decoupe":4,
+          "seuil" :6,
+          "diff": {
+            "rang1":6,
+            "rang2":9,
+            "rang3":12,
+            "rang4":15
+          },
+          "label": "k2m.compteur",
+          "rangs": {
+            "rang1": { "value":0, "max":0},
+            "rang2": { "value":0, "max":0},
+            "rang3": { "value":0, "max":0},
+            "rang4": { "value":0, "max":0}
+          },
+          "PdM":0       
+        }
       },
-      "points2danger":{
-        "points":5
+      "base": {
+        "type":"PJ",
+        "origine":"",
+        "ethnie":"gents",
+        "besogne":"",
+        "biography": "",
+        "reputation": { "value":0, "max":0},
+        "XP":{ "value":0, "max":0}
       },
-      "figurant": {
-        "templates": ["minibase"],
-        "nivTresor": 0
+      "minibase":  {
+        "type":"PNJ",
+        "origine":"",
+        "ethnie":"gents",
+        "besogne":"",
+        "biography": ""
       },
-      "mini-boss-f": {
-        "templates": ["minibase","attr","attrb"],
-        "nivTresor":2
+      "cmps": {
+        "cmp" : {
+          "artisan": {
+            "value": 1,
+            "label":"k2m.artisan",
+            "xp": 1
+          },
+          "artiste": {
+            "value": 1,
+            "label":"k2m.artiste",
+            "xp": 1              
+          },
+          "athlete": {
+            "value": 1,
+            "label":"k2m.athlete",
+            "xp": 1              
+          },
+          "bagarreur": {
+            "value": 1,
+            "label":"k2m.bagarreur",
+            "xp": 1              
+          },
+          "bricoleur": {
+            "value": 1,
+            "label":"k2m.bricoleur",
+            "xp": 1              
+          },
+          "campagnard": {
+            "value": 1,
+            "label":"k2m.campagnard",
+            "xp": 1              
+          },
+          "citadin": {
+            "value": 1,
+            "label":"k2m.citadin",
+            "xp": 1              
+          },
+          "erudit": {
+            "value": 1,
+            "label":"k2m.erudit",
+            "xp": 1              
+          },
+          "gentilhomme": {
+            "value": 1,
+            "label":"k2m.gentilhomme",
+            "xp": 1              
+          },
+          "gestionnaire": {
+            "value": 1,
+            "label":"k2m.gestionnaire",
+            "xp": 1              
+          },
+          "guerrier": {
+            "value": 1,
+            "label":"k2m.guerrier",
+            "xp": 1              
+          },
+          "intrigan": {
+            "value": 1,
+            "label":"k2m.intrigan",
+            "xp": 1              
+          },
+          "larron": {
+            "value": 1,
+            "label":"k2m.larron",
+            "xp": 1              
+          },
+          "magicien": {
+            "value": 1,
+            "label":"k2m.magicien",
+            "xp": 1              
+          },
+          "marchand": {
+            "value": 1,
+            "label":"k2m.marchand",
+            "xp": 1              
+          },
+          "matelot": {
+            "value": 1,
+            "label":"k2m.matelot",
+            "xp": 1              
+          },
+          "medecin": {
+            "value": 1,
+            "label":"k2m.medecin",
+            "xp": 1              
+          },
+          "orateur": {
+            "value": 1,
+            "label":"k2m.orateur",
+            "xp": 1              
+          },
+          "saltimbanque": {
+            "value": 1,
+            "label":"k2m.saltimbanque",
+            "xp": 1              
+          },
+          "soldat": {
+            "value": 1,
+            "label":"k2m.soldat",
+            "xp": 1              
+          },
+          "sorcier": {
+            "value": 1,
+            "label":"k2m.sorcier",
+            "xp": 1              
+          },
+          "rodeur": {
+            "value": 1,
+            "label":"k2m.rodeur",
+            "xp": 1              
+          },
+          "tavernier": {
+            "value": 1,
+            "label":"k2m.tavernier",
+            "xp": 1              
+          },
+          "veneur": {
+            "value": 1,
+            "label":"k2m.veneur",
+            "xp": 1              
+          },
+          "voyageur": {
+            "value": 1,
+            "label":"k2m.voyageur",
+            "xp": 1              
+          }
+        }
       },
-      "mini-boss-b": {
-        "templates": ["base","attr","attrb"],
-        "nivTresor":2
+      "cmps7": {
+        "cmp" : {
+          "artisan": {
+            "value": 1,
+            "label":"k2m.artisan",
+            "xp": 1              
+          },
+          "artiste": {
+            "value": 1,
+            "label":"k2m.artiste",
+            "xp": 1              
+          },
+          "athlete": {
+            "value": 1,
+            "label":"k2m.athlete",
+            "xp": 1              
+          },
+          "erudit": {
+            "value": 1,
+            "label":"k2m.erudit",
+            "xp": 1              
+          },
+          "guerrier": {
+            "value": 1,
+            "label":"k2m.guerrier",
+            "xp": 1              
+          },
+          "magicien": {
+            "value": 1,
+            "label":"k2m.magicien",
+            "xp": 1              
+          },
+          "marchand": {
+            "value": 1,
+            "label":"k2m.marchand",
+            "xp": 1              
+          },
+          "rodeur": {
+            "value": 1,
+            "label":"k2m.rodeur",
+            "xp": 1              
+          },
+          "roublard": {
+            "value": 1,
+            "label":"k2m.roublard",
+            "xp": 1              
+          },
+          "tireur": {
+            "value": 1,
+            "label":"tireur",
+            "xp": 1              
+          }
+        }
       },
-      "Boss" : {
-        "templates": ["base","attr","attrb"],
-        "nivTresor":4
+      "carac": {
+        "valeur":3,
+        "plus":6,
+        "special": 9,
+        "extra" : 12
       }
     },
-    "Item": {
-      "types": ["objet", "domaine", "sort", "competence", "avantage","ethnie", "secret","argent", "arme_resum"],
-      "objet": {
-        "description": "",
-        "utilisation": "",
-        "quantite": 1,
-        "poids": 0,
-        "volume" : 0,
-        "typeObjet":"O",
-        "bonus":{
-          "score":0,
-          "deSup":0,
-          "dommage":"+0",
-          "PdM":0,
-          "PdV":0
-        },
-        "special":""
+    "pj6": {
+      "templates": ["base","etatsTot","cmps","jets","JetAttDef"],
+      "cmpCirconstance":"",
+      "initEtat": {
+        "value": 0,
+        "idAspect1":"",
+        "idAspect2":"",
+        "idAspect3":"",
+        "ptEffort": 0
       },
-      "domaine": {
-        "description": "Petit texte de présentation du domaine. Il est en format simple pour être mis sans difficulté en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "attributd":"for",
-        "score":15,
-        "code":"Dom",
+      "initiative":0,
+      "nbActions":1,
+      "seuilRupture":2,
+      "formulaSR":"",
+      "estSRVar" : false
+    },
+    "pj": {
+      "templates": ["base","miniEtats","cmps7","jets","JetAttDef"],
+      "cmpCirconstance":"",
+      "initEtat": {
+        "cmp":1,
+        "xp":3,
+        "value": 0,
+        "formule":"",
+        "sommeDes":0,
+        "nbDi" : 2,
+        "idAspect1":"",
+        "idAspect2":"",
+        "idAspect3":"",
+        "ptEffort": 0,
+        "deVieConsom":0
+      },
+      "initiative" : -1,
+      "nbActions":1,
+      "seuilRupture":2,
+      "formulaSR":"",
+      "estSRVar" : false,
+      "cmpEncaissement":1,
+      "xpEncaissement" : 3,
+      "cmp2Encaissement" : "artisan"
+    },
+   "pion" : {
+      "codeSpe" :"PIO",
+      "nd":1,
+      "cmp": {
+        "valeur" : 1,
+        "attaque" : 3
+      },
+      "seuilRupture":1,
+      "initEtat": {
+        "value":0
+      },
+      "nivTresor":0,
+      "totalXP":0
+    },
+    "figurant": {
+      "codeSpe" :"FIG",
+      "nd":1,
+      "templates": ["minibase","compteur","carac","JetAttDef"],
+      "estNbActionHaute": false,
+      "estInitHaute": false,
+      "initEtat": {
+        "value": 0,
+        "formule" :"",
+        "finale":0,
+        "ptEffort": 0
+      },
+      "bonusDrama" : 0,
+      "seuilRupture" : 0,
+      "parisDefaut" : 0,
+      "nivTresor": 0,
+      "totalXP": 0
+    },
+    "terrain":{
+    }
+  },
+  "Item": {
+    "types": ["objet", "sort", "aspect", "avantage","ethnie", "secret","argent", "favori"],
+    "objet": {
+      "code":"objet",
+      "codeSpe" : "OBJET",
+      "estActif" : false,
+      "estADistance" : false,
+      "description": "",
+      "utilisation": "",
+      "quantite": 1,
+      "poids": 0.0,
+      "volume" : 0,
+      "menace" : "0",
+      "couverture" : "0",
+      "protection" : "0",
+      "solidite" : 0,
+      "FP" : 0,
+      "bonus":{
         "NbDes":0,
-        "XPa":0
+        "CodeDommage":"+0",
+        "PdM":0,
+        "PdF":0,
+        "PdT":0,
+        "PdFa" : 0
       },
-      "competence":{
-        "codeSpe":"",
-        "idLien":"",
-        "description":"Petit texte de présentation de la compétence, pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "attributd":"for",
-        "score":25,
-        "code":"cmp",
-        "NbDes":0,
-        "XPa":0,
-        "EstPro":false
+      "special":"",
+      "aMunitions" : false,
+      "munitions":{
+        "unite1" : { "nom" : "munition stadard", "quantite":0, "menace" : "+0", "remarque": "" },
+        "unite2" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" },
+        "unite3" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" },
+        "unite4" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" },
+        "unite5" : { "nom" : "", "quantite":0, "menace" : "+0", "remarque": "" }
       },
-      "sort": {
-        "codeSpe":"",
-        "idLien":"",
-        "description": "Petit texte de présentation du sortilège, pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "niveau": 1,
-        "coutMagie":1,
-        "effet":"",
-        "score":10,
-        "attributd":"ig"
-      },
-      "avantage":{
-        "description": "Petit texte de présentation de l'avantage ou désavantage. Pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
-        "bonus":"",
-        "bonusAffect":""
-      },
-      "ethnie":{
-        "description": "",
-        "nom":"Gent",
-        "urlweb":"https://www-lagep.cpe.fr/public/lemonde2k2/doku.php?id=k2:gents",
-        "secrets":"",
-        "abrv":"gent"
-      },
-      "secret":{
-        "nomGene":"Position sociale",
-        "description": "",
-        "niveau":0,
-        "niveauMax":5,
-        "niv1": {
-          "nom":"basse echelle",
-          "description" :"au début de l'échelle sociale",
-          "effet":"1D6 sur la table de l'origine"
-        },
-        "niv2": {
-          "nom":"classe ouvrière",
-          "description" :"famille de travailleur",
-          "effet":"2D6 sur la table de l'origine"
-        },"dommarmeEnMainf":false,
-        "niv5": {
-          "nom":"classe aisée",
-          "description" :"famille d'ingénieur ou de bourgeois",
-          "effet":"5D6 sur la table de l'origine"
-        }
-      },
-      "argent": {
-        "blanc":0,
-        "demiePerle":0,
-        "demieLune":0,
-        "perle":0,
-        "lune":0,
-        "orc":0,
-        "emmeraude":0,
-        "pourpre":0,
-        "autres":""
-      },
-      "arme_resum":{
-        "armeEnMain":false,
-        "idarmeref":"",
-        "idcmpref":"",
-        "desync":0,
-        "attributd":"for",
-        "DeCmp":10,        
-        "degat":"1D10",
-        "BDom":"1d4",
-        "special":"",
-        "resistance":1,
-        "bris":5,
-        "munitions":-1,
-        "reserve":0,
-        "lancer":1
+      "aspects" : {
+        "asp1": { "nomAsp" : "", "codeAsp" : "", "valeur":1 },
+        "asp2": { "nomAsp" : "", "codeAsp" : "", "valeur":1},
+        "asp3": { "nomAsp" : "", "codeAsp" : "", "valeur":1}
       }
+    },
+    "aspect":{
+      "codeSpe":"NORM",
+      "idLien":"",
+      "description":"Petit texte de présentation de l'Aspect",
+      "XpDep":0,
+      "code":"aspect",
+      "NbDes":0,
+      "urlweb":"",
+      "XPa":0
+    },
+    "sort": {
+      "codeSpe":"",
+      "code":"sort",
+      "idLien":"",
+      "description": "Petit texte de présentation du sortilège, pour être mise en dessous de la ligne sur la feuille de joueur (ou de PNJ). La description rapide s'arrête au premier point, veuillez garder a peu près cette largeur pour ne faire qu'une ligne.",
+      "niveau": 1,
+      "coutMagie":1,
+      "effet":"",
+      "Xp": 0,
+      "NbDes": 0,
+      "urlweb":"https://www-lagep.cpe.fr/public/lemonde2k2/doku.php?id=k2:gents",
+      "XPa": 0
+    },
+    "ethnie":{
+      "description": "",
+      "code":"ethnie",
+      "nom":"Gent",
+      "urlweb":"https://www-lagep.cpe.fr/public/lemonde2k2/doku.php?id=k2:gents",
+      "secrets":"",
+      "abrv":"gent"
+    },
+    "secret":{
+      "nomGene":"Position sociale",
+      "code":"secret",
+      "description": "",
+      "niveau":0,
+      "niveauMax":5,
+      "niv1": {
+        "nom":"basse echelle",
+        "description" :"au début de l'échelle sociale",
+        "effet":"1D6 sur la table de l'origine"
+      },
+      "niv2": {
+        "nom":"classe ouvrière",
+        "description" :"famille de travailleur",
+        "effet":"2D6 sur la table de l'origine"
+      },
+      "niv3": {
+        "nom":"classe ouvrière",
+        "description" :"famille de travailleur",
+        "effet":"3D6 sur la table de l'origine"
+      },
+      "niv4": {
+        "nom":"classe ouvrière",
+        "description" :"famille de travailleur",
+        "effet":"4D6 sur la table de l'origine"
+      },
+      "niv5": {
+        "nom":"classe aisée",
+        "description" :"famille d'ingénieur ou de bourgeois",
+        "effet":"5D6 sur la table de l'origine"
+      }
+    },
+    "argent": {
+      "code":"argent",
+      "blanc":0,
+      "demiePerle":0,
+      "demieLune":0,
+      "perle":0,
+      "lune":0,
+      "orc":0,
+      "emmeraude":0,
+      "pourpre":0,
+      "autres":""
+    },
+    "favori":{
+      "code":"favoris",
+      "codeSpe" : "jet",
+      "cmp": "artisan",
+      "idAspect1" : "",
+      "idAspect2" : "",
+      "idAspect3" : "",
+      "bonusDe":0,
+      "paris" : 0,
+      "idArmes" : "",
+      "idLstArmure" : "" 
     }
   }
-  
+}

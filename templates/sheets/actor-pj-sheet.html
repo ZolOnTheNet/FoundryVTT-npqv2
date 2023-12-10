@@ -1,153 +1,368 @@
 <form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
-
   {{!-- Sheet Header --}}
-  <table width="100%" style="height: 150px;" border="0">
-    <tbody>
-      <tr>
-        <td style="width: 163px;">   
-          <aside class="sidebar">
-            <div class="resource flex-group-center">
-              <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="150" width="150"/>
-            </div>  
-          </aside>
-        </td>
-        <td>
-          <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
-          <h2 class="charname"><input name="data.ethnie" type="text" value="{{data.ethnie}}" placeholder="ethnie"/></h2>
-          <div class="resources grid grid-4col">
-            <div class="resource flex-group-center">
-              <label for="data.PdV.value" class="resource-label">Points de Vie</label>
-              <div class="resource-content flexrow flex-center flex-between">
-                <input type="text" name="data.PdV.value" value="{{data.PdV.value}}" data-dtype="Number"/>
-                <span> / </span>
-                <input type="text" name="data.PdVTot" value="{{data.PdVTot}}" disabled=true data-dtype="Number"/>
-                (<input type="text" name="data.PdV.max" value="{{data.PdV.max}}" data-dtype="Number"/>)
-              </div>
-            </div>
-    
-            <div class="resource flex-group-center">
-              <label for="data.PdM.value" class="resource-label">Pts de Magie</label>
-              <div class="resource-content flexrow flex-center flex-between">
-                <input type="text" name="data.PdM.value" value="{{data.PdM.value}}" data-dtype="Number"/>
-                <span> / </span>
-                <input type="text" name="data.PdMTot" value="{{data.PdMTot}}" disabled=true data-dtype="Number"/>
-                (<input type="text" name="data.PdM.max" value="{{data.PdM.max}}" data-dtype="Number"/>)
-              </div>
-            </div>
-    
-            <div class="resource flex-group-center">
-              <label for="data.Heroisme" class="resource-label">Pts de Héro</label>
-              <div class="resource-content flexrow flex-center flex-between">
-                <input type="text" name="data.Heroisme" value="{{data.Heroisme}}" data-dtype="Number"/>
-              </div>
-            </div>
-    
-           <div class="resource flex-group-center">
-              <label for="data.XP" class="resource-label">XP</label>
-              <div class="resource-content flexrow flex-center flex-between">
-                <input type="text" name="data.XP" value="{{data.XP}}" data-dtype="Number"/>
-              </div>
-            </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
- 
-  <nav class="sheet-tabs tabs" data-group="primary">
-    {{!-- Default tab is specified in actor-sheet.mjs --}}
-    <a class="item" data-tab="bibiography">Bibio.</a>
-    <a class="item" data-tab="features">Principale</a>
-    <a class="item" data-tab="synthese">synthese</a>
-    <a class="item" data-tab="competences">Dom. et Cmp.</a>
-    <a class="item" data-tab="sorts">Sortilèges.</a>
-    <a class="item" data-tab="secrets">Secrets</a>
-    <a class="item" data-tab="items">Equipements</a>
-    <a class="item" data-tab="effects">Effects</a>
-  </nav>
+  <header class="sheet-flex-form" >
+    <table >
+        <tbody>
+          <tr>
+            <td rowspan="2">
+                <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="120"/>
+            </td>
+            <td width="60%">
+                <h1 class="charname" ><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+            </td>
+            <td style="text-align: center">
+              XP  dép. /  tot     <br>
+              <input type="text" size="4em"  style="width: auto;" name="system.XP.value" value="{{system.XP.value}}" data-dtype="Number"/> / <input type="text"  style="width: auto;" size="4em" name="system.XP.max" value="{{system.XP.max}}" data-dtype="Number"/>                 
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input type="text" name="system.besogne" value="{{system.besogne}}" placeholder="Archétype"/>
+            </td>
+            <td>
+              <input type="text" name="system.ethnie" value="{{system.ethnie}}" placeholder="Ethnie"/>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table>
+        <tbody>
+          <tr>
+            <td class="plusPolice">
+              Effort : <i class="fas fa-plus-square rollable" title="Ajouter Effort vs Fatigue" data-cmd="trans.fatigue.effort"></i> <input class="normal-input" type="text" size="1em" name="system.etats.effort.value" value="{{system.etats.effort.value}}" data-dtype="Number"/>
+              <span class="grdPolice">{{{effortTxt}}}</span><i class="fad fa-sync rollable" data-cmd="reset.effort"></i>
+            </td>
+          </tr>
+          <tr >
+            <td >
+              <span class="plusPolice">Fatigue</span> : {{system.etats.fatigue.value}} / {{system.etats.fatigue.max}}
+              {{#each system.etats.fatigue.rangs as |rang index|}}
+                {{{rang.ligne}}}
+                ({{rang.seuil}})
+              {{/each}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+</header>
+{{!-- Sheet Tab Navigation --}}
+<nav class="sheet-tabs tabs" data-group="primary">
+  {{!-- Default tab is specified in actor-sheet.mjs --}}
+  <a class="item" data-tab="description"><h2>Description</h2></a>
+  <a class="item" data-tab="caracteristiques"><h2>{{localize  "int.cmpAspects" }}</h2></a>
+  <a class="item" data-tab="equip"><h2>{{localize  "int.equipements" }}</h2></a>
+  <a class="item" data-tab="sorts"><h2>Sorts</h2></a>
+  <a class="item" data-tab="secrets"><h2>Secrets</h2></a>
 
-
+</nav>
 
 {{!-- Sheet Body --}}
-  <section class="sheet-body">
+<section class="sheet-body">
 
-    {{!-- Owned Features Tab --}}
-    <div class="tab features" data-group="primary" data-tab="bibiography">
-      {{> "systems/npqv2/templates/sheets/parts/actor-bibiographie.html"}} 
-    </div>
-   
-    <div class="tab features" data-group="primary" data-tab="features">
-      <section class="grid grid-3col">
-        <aside class="sidebar">
-          <div class="abilities flexcol">
-            {{#each data.attributs as |attrib key|}}
-            <div class="flexrow flex-group-center">
-              <label for="data.attributs.{{attrib.code}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{attrib.value}}" data-label="Jet de {{attrib.label}}" data-roll-type="dedirect" >{{attrib.label}} </label>
-              <input type="text" name="data.attributs.{{attrib.code}}.value" value="{{attrib.value}}" data-dtype="Number"/>
-              <span class="attrib-mod rollable" data-roll="{{attrib.value}}" data-roll-type="debase" data-label="Jet en {{attrib.label}}"> {{attrib.abrv}}</span>
-            </div>
-            {{/each}}
-          </div>
-        </aside>
+  {{!-- Biography Tab --}}
+  <div class="tab biography" data-group="primary" data-tab="description">
+    {{!-- If you want TinyMCE editors to output inline rolls when rendered, you need to pass the actor's roll data to the rollData property. --}}
+    {{editor system.biography target="system.biography" rollData=rollData button=true owner=owner editable=editable}}
+  </div>
 
-        <section class="main flexcol">
-          {{#each data.attrder as |attribd key|}}
-          <div class="attribd flexrow flex-group-center">
-            <label for="data.attrder.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll-type="attribr_direct" data-roll="{{attribd.value}}" data-label="{{key}}">{{attribd.label}}</label>
-            <input type="text" name="data.attrder.{{key}}.value" value="{{attribd.value}}" data-dtype="text"/>
-            <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-roll-type="attribr" data-roll="{{attribd.value}}" data-label="{{key}}">{{attribd.abrv}}</span>
-          </div>
-          {{/each}}        
-        </section>
-        <section class="Bonus flexcol">
-          Somme des bonus
-          <div class="attribd flexrow flex-group-left">
-            score:{{bonus.score}}
-          </div>
-          <div class="attribd flexrow flex-group-left">
-            dommage:{{bonus.dommage}}
-          </div>
-          <div class="attribd flexrow flex-group-left">
-            pinit:{{bonus.pinit}}
-          </div>
-          <div class="attribd flexrow flex-group-left">
-            PdV:{{bonus.PdV}}
-          </div>
-          <div class="attribd flexrow flex-group-left">
-            PdM:{{bonus.PdM}}
-          </div>
-        </section>
+  {{!-- les caracteristiques --}}
+  {{!-- rollable = jet, data-roll = id ou l'info, data-cmd= cmd . --}}
+  <div class="tab items" data-group="primary" data-tab="caracteristiques">
+    <section class="grid grid-3col">
+      <section class="main flexcolzol">
+        <h2>{{localize  "int.cmps7" }}</h2>
+        {{#each system.cmp as |cmp key|}}
+        <div class="normal-left-input">
+          <label for="system.cmp.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{key}}" data-cmd="add.cmp">{{localize  cmp.label }}&nbsp;({{cmp.debonus}})&nbsp;</label>
+          <input class="normal-input" type="text" size="1em" name="system.cmp.{{key}}.value" value="{{cmp.value}}" data-dtype="Number"/>
+          <span class="align-center rollable" title="Jet direct avec paris" data-roll="{{key}}" data-cmd="lancerJet.paris"><i class="fad fa-dice"></i></span>
+          <span class="align-center rollable" title="Attribut de circonstance" data-roll="{{key}}" data-cmd="initCmp"><i class="fas fa-info-square"></i></span>
+          <span class="align-center lilipute"><input class="normal-input" type="text" size="1em" title="Xp" name="system.cmp.{{key}}.xp" value="{{cmp.xp}}" data-dtype="Number"/></span>&nbsp;
+        </div>
+        {{/each}}
+        <br>
+        <h2>{{localize  "int.armes" }}</h2>
+        {{#each armes as |arme key|}}
+        <div>
+          <span>
+            {{#if system.estActif}}
+              <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+            {{else}}
+              <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+            {{/if}} 
+            &nbsp;
+            {{arme.name}}
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+            &nbsp;
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            <br>(Me:{{arme.system.menace}}, Co:{{arme.system.couverture}})
+            <i class="fad fa-sword rollable" data-roll="{{_id}}" data-cmd="arme.dommage"></i>
+            <i class="fad fa-shield rollable" data-roll="{{_id}}" data-cmd="arme.defense"></i>
+          </span>
+        </div>
+        {{/each}}
+        <br>
+        <h2>{{localize  "int.armures" }}</h2>
+        {{#each armures as |armure key|}}
+        <div>
+          <span>
+            {{#if armure.system.estActif}}
+              <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+            {{else}}
+              <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+            {{/if}} 
+            &nbsp;
+            {{armure.name}}
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+            &nbsp;
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+            <br>(Pr:{{armure.system.protection}}, So:{{armure.system.solidite}}) 
+          </span>
+        </div>
+        {{/each}}
+        <br>
+        <h3>{{localize "k2m.fatigue"}}</h3>
+            <span>
+            Score :<input class="normal-input" type="text" size="1em" name="system.etats.fatigue.cmp" value="{{system.etats.fatigue.cmp}}" data-dtype="Number"/>
+            <span class="lilipute">Xp : <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.xp" value="{{system.etats.fatigue.xp}}" data-dtype="Number"/></span>
+            &nbsp;
+            <span  class="align-center">(<input class="normal-input" type="text" size="1em" name="system.etats.fatigue.value" value="{{system.etats.fatigue.value}}" data-dtype="Number"/> =Etat Actuel)</span>
+            </span>
+            <br>
+            <table>
+              <tr>
+                <td width="32px">+/-</td><td>Actuel</td><td class="txtcenter" width="31px">Seuil</td>
+              </tr>
+              {{#each system.etats.fatigue.rangs as |rang index|}}
+              <tr>
+                <td><input class="normal-input" type="text" size="1em" name="system.etats.fatigue.rangs.{{index}}.offset" value="{{rang.offset}}" data-dtype="Number"/></td>
+                <td>{{{rang.ligne}}}</td> 
+                <td class="txtcenter">{{rang.seuil}} </td>
+              </tr>
+              {{/each}}
+            </table>
       </section>
-    </div>
 
-    {{!-- Tab de Synthese --}}
-    <div class="tab items" data-group="primary" data-tab="synthese">
-       {{> "systems/npqv2/templates/sheets/parts/actor-synthese.html"}}
+      <section class="main">
+        <h2><i class="far fa-user-tag"></i> &nbsp;{{localize  "int.aspects" }}</h2>
+        {{#each aspects as |aspect key|}}
+        <div>
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+          &nbsp;
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+          <span class="attrib-mod align-center rollable" title="{{localize  'nfo.addInit' }}" data-roll="{{_id}}" data-cmd="initAsp"><i class="fas fa-info-square"></i></span>
+        <span> 
+            <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{aspect._id}}" data-cmd="add.asp">{{aspect.name}} </a>
+          </span>
+          <span>
+            ({{aspect.system.NbDes}}) &nbsp;
+          </span>
+        </div>
+        {{/each}}
+        <br>
+        <h2><i class="fas fa-user-tag"></i>&nbsp;{{localize  "int.sequelle" }}</h2>
+        {{#each sequelles as |aspect key|}}
+        <div>
+          <span> 
+            <a class="attrib-mod rollable" title="{{localize  'nfo.addJet' }}" data-roll="{{aspect._id}}" data-cmd="add.asp">{{aspect.name}} </a>
+          </span>
+          <span>
+            ({{aspect.system.NbDes}})
+            <span class="attrib-mod align-center rollable" title="{{localize  'nfo.addInit' }}" data-roll="{{_id}}" data-cmd="initAsp"><i class="fas fa-info-square"></i></span>
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+            &nbsp;
+            <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+          </span>
+        </div>
+        {{/each}}
+      </section>
+      <section>
+        <h2>{{localize  "int.gestionCmb" }}</h1>
+        <h3>{{localize  "int.cmpSituation" }}</h3>
+          <select  name="system.cmpCirconstance">
+            {{selectOptions lstCMP selected=system.cmpCirconstance}}
+          </select><br><span class="plusPolice">Encaissement : </span><span class="grdPolice">{{seuilRupture}} <i class="fad fa-sync rollable" data-cmd="calc.rupture"></i></span>
+          <br><span >formule : {{system.formulaSR}} </span><br>
+          <span class="plusPolice">Action(s) : </span><span class="grdPolice">{{nbActions}} </span><span class="plusPolice"> / passe</span><br>
+          <br>
+        <h3><a class="attrib-mod rollable" title="{{localize  'nfo.lancerInit' }}" data-roll="" data-cmd="lancerInit">
+          {{localize  "int.init" }} {{system.initEtat.value}} <i class="fas fa-info-square"></i></a>
+        </h3>
+          <span>
+            <label for="system.initEtat.cmp" class="resource-label flexlarge align-left" >Cmp. Initiative.&nbsp;</label>
+            <input class="normal-input" type="text" size="1em" name="system.initEtat.cmp" value="{{system.initEtat.cmp}}" data-dtype="Number"/>
+            <span class="align-center lilipute">Xp : <input class="normal-input" type="text" size="1em" title="Xp" name="system.initEtat.xp" value="{{system.initEtat.xp}}" data-dtype="Number"/></span>
+          </span>
+          <br><span>Formule : {{system.initEtat.formule}}</span>
+          <br> <span>Perte d'Effort : {{system.initEtat.ptEffort}}</span>
+          <br><span>Cmp : {{system.cmpCirconstance}} </span>
+          {{#each system.initEtat.lstIteAff as |asp key|}}
+          <div>
+            <a class="attrib-mod rollable" data-roll="{{asp.id}}" data-cmd="remove.init.{{key}}">{{asp.label}} ({{asp.NbDes}})&nbsp;<i class="fas fa-minus-square"></i></a>
+          </div>
+          {{/each}}
+        <h3>
+          <br>
+          {{!-- Gestion du Jet en cours ! le jet "jet": { "codecmp":"artisan",  "idAspect1":"",  "idAspect2":"",  "idAspect3":"",  "nblancer":3, "paris":0, "seuil":6, "autoEffort":1, "coutMagique":0 } --}}
+          <a class="attrib-mod rollable" title="Jet normal" data-cmd="lancerJet" data-roll="{{_id}}">{{localize  "int.selection" }} <i class="fas fa-dice"></i></a>
+          <i class="fad fa-sword rollable" title="Jet pour attaque" data-cmd="jet.attaque" data-roll=" { 'nde' : {{system.jet.nblancer}}, 'paris' : {{system.jet.paris}}, 'seuil' : {{system.jet.seuil}}, 'nbEffort': {{jetCoutEffort}},  'Auto' : {{system.jet.autoEffort}}  }"></i>
+          <i class="fad fa-shield rollable" title="Jet pour la défense" data-cmd="jet.defense" data-roll=" { 'nde' : {{system.jet.nblancer}}, 'paris' : {{system.jet.paris}}, 'seuil' : {{system.jet.seuil}}, 'nbEffort': {{jetCoutEffort}},  'Auto' : {{system.jet.autoEffort}}  }"></i>
+          <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="jet.clean.jet"><i class="fas fa-sync-alt"></i> </a></span>
+        </h3>
+        
+        <div>
+          <a class="attrib-mod rollable" data-roll="{{system.jet.codecmp}}" data-cmd="remove.select.cmp">{{codeLabel}} ({{codeCmpDe}})</a>&nbsp;<a class="attrib-mod rollable" data-roll="{{system.jet.codecmp}}" data-cmd="remove.select.cmp"><i class="fas fa-minus-square"></i></a>
+        </div>
+        <div>
+          <a class="attrib-mod rollable" data-roll="{{system.jet.idAspect1}}" data-cmd="remove.select.0">{{asp1Label}} ({{asp1CodeDe}})</a>&nbsp;<a class="attrib-mod rollable" data-roll="{{system.jet.idAspect1}}" data-cmd="remove.select.0"><i class="fas fa-minus-square"></i></a>
+        </div>
+        <div>
+          <a class="attrib-mod rollable" data-roll="{{system.jet.idAspect2}}" data-cmd="remove.select.1">{{asp2Label}} ({{asp2CodeDe}})</a>&nbsp;<a class="attrib-mod rollable" data-roll="{{system.jet.idAspect2}}" data-cmd="remove.select.1"><i class="fas fa-minus-square"></i></a>
+        </div>
+        <div>
+          <a class="attrib-mod rollable" data-roll="{{system.jet.idAspect3}}" data-cmd="remove.select.2">{{asp3Label}} ({{asp3CodeDe}})</a>&nbsp;<a class="attrib-mod rollable" data-roll="{{system.jet.idAspect3}}" data-cmd="remove.select.2"><i class="fas fa-minus-square"></i></a>
+        </div>
+        <div>
+          <span>#Dés : {{system.jet.nblancer}}</span><span> - Paris : <input class="normal-input" type="text" size="4em" name="system.jet.paris" value="{{system.jet.paris}}" data-dtype="Number"/></span>
+          <br><span>seuil : <strong>{{system.jet.seuil}}</strong> </span>
+          <span>Effort : <strong>{{jetCoutEffort}}</strong></span><span class="lilipute"> Auto : {{system.jet.autoEffort}}</span>
+          <br>Raccouci : <input class="normal-input" type="text" size="12em" name="system.jet.nomRaccourci" value="{{system.jet.nomRaccourci}}" data-dtype="String"/> <span><a class="rollable" title="{{localize  'nfo.favoris' }}" data-roll="" data-cmd="favoris.add" ><i class="far fa-star"></i> </a></span>
+          <h3><i class="fal fa-wand-magic"></i> Magie</h3>
+          <span>Points de magie cumulé : {{system.jet.pouvoir}} </span><span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="magie.clean.pdm"><i class="fas fa-sync-alt"></i> </a></span>
+          <br><div>lancer le sort de niv : <span class="plusPolice">
+            <i class="far fa-dice-one rollable" data-cmd="magie.lancer.1" data-roll="" title="Lancer Sort de niveau 1"></i>&nbsp;
+            <i class="far fa-dice-two rollable" data-cmd="magie.lancer.2" data-roll="" title="Lancer Sort de niveau 2"></i>&nbsp;
+            <i class="far fa-dice-three rollable" data-cmd="magie.lancer.3" data-roll="" title="Lancer Sort de niveau 3"></i>&nbsp;
+            <i class="far fa-dice-four rollable" data-cmd="magie.lancer.4" data-roll="" title="Lancer Sort de niveau 4"></i>&nbsp;
+            <i class="far fa-dice-five rollable" data-cmd="magie.lancer.5" data-roll="" title="Lancer Sort de niveau 5"></i></span>
+          </div>
+          {{#if modeMetal}}
+          <h3>Attaque et défense</h3>
+          {{else}}
+          <h3>Jet en Réserve</h3>
+          {{/if}}
+          {{#if system.attResultat.score}}
+            Quàl : {{system.attResultat.nbQualites}}, Jet {{system.attResultat.lancer}}D6:  {{system.attResultat.score}} =>
+            {{#each quickDeAtt as |d key|}} {{d}}&nbsp; 
+            {{/each}} 
+            <br>
+          {{/if}}
+          Votre Menace : {{system.attResultat.MeFormule}} (attaque) 
+          {{#if system.attResultat.MeTot}} => {{system.attResultat.MeTot}} <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="jet.clean.attaque"><i class="fas fa-sync-alt"></i> </a></span>
+          {{/if}} <br>
+          {{#if system.defResultat.score}}
+            <br>
+            Quàl : {{system.defResultat.nbQualites}}, Jet {{system.defResultat.lancer}}D6:  {{system.defResultat.score}} =>
+            {{#each quickDeDef as |d key|}} {{d}}&nbsp; 
+            {{/each}} 
+            <br>
+          {{/if}}
+          votre Couverture: {{system.defResultat.MeFormule}} (défense) 
+          {{#if system.defResultat.MeTot}} => {{system.defResultat.MeTot}} <span><a class="rollable" title="{{localize  'nfo.clean' }}" data-roll="" data-cmd="jet.clean.defense"><i class="fas fa-sync-alt"></i> </a></span>
+          {{/if}} <br>
+          <br><h3>Raccourcis</h3><br>
+        </div>
+      </section>
+    </section>
+  </div>
+  <div class="tab items" data-group="primary" data-tab="equip">
+    <h1>Equipements</h1>
+    <h2>{{localize  "int.general" }}</h2>
+    {{#each gears as |gear key|}}
+    <div>
+      <span>
+        {{#if system.estActif}}
+          <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+        {{else}}
+          <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+        {{/if}} 
+        &nbsp;
+        {{gear.name}} (Me:{{gear.system.menace}}, Co:{{gear.system.couverture}}) 
+        <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+        &nbsp;
+        <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+        
+      </span>
     </div>
+    {{/each}}
+    <br>
+    <h2>{{localize  "int.armes" }}</h2>
+    {{#each armes as |arme key|}}
+    <div>
+      <span>
+        {{#if system.estActif}}
+          <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+        {{else}}
+          <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+        {{/if}} 
+        &nbsp;
+        {{arme.name}} (Me:{{arme.system.menace}}, Co:{{arme.system.couverture}})
+        <i class="fad fa-sword rollable" data-roll="{{_id}}" data-cmd="arme.dommage"></i>
+        <i class="fad fa-shield rollable" data-roll="{{_id}}" data-cmd="arme.defense"></i>
+        <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+        &nbsp;
+        <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+      </span>
+    </div>
+    {{/each}}
+    <br>
+    <h2>{{localize  "int.armures" }}</h2>
+    {{#each armures as |armure key|}}
+    <div>
+      <span>
+        {{#if armure.system.estActif}}
+          <i class="fas fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.non"></i>
+        {{else}}
+          <i class="fad fa-hand-rock rollable" data-roll="{{_id}}" data-cmd="activation.oui"></i>
+        {{/if}} 
+        &nbsp;
+        {{armure.name}}
+        <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+        &nbsp;
+        <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+        <br>(Pr:{{armure.system.protection}}, So:{{armure.system.solidite}}) 
+      </span>
+    </div>
+    {{/each}}
+
+  </div>
+  <div class="tab items" data-group="primary" data-tab="sorts">
+    <h2>Sortilèges</h2>
+    {{> "systems/npqv2/templates/sheets/parts/actor-sorts.html"}}
+  </div>
+  <div class="tab items" data-group="primary" data-tab="secrets">
     
-    {{!-- Owned Competences, Domaines Tab --}}
-    <div class="tab competences" data-group="primary" data-tab="competences">
-      {{> "systems/npqv2/templates/sheets/parts/actor-competences.html"}}
-    </div>
-
-    {{!--  Sortilèges Tab --}}
-    <div class="tab sorts" data-group="primary" data-tab="sorts">
-      {{> "systems/npqv2/templates/sheets/parts/actor-sorts.html"}}
-    </div>
-
-    {{!-- Secret possédée --}}
-    <div class="tab secrets" data-group="primary" data-tab="secrets">
-      {{> "systems/npqv2/templates/sheets/parts/actor-secrets.html"}}
-    </div>
-  
-    {{!-- Owned Items Tab --}}
-    <div class="tab items" data-group="primary" data-tab="items">
-       {{> "systems/npqv2/templates/sheets/parts/actor-items.html"}}
-    </div>
-
-    {{!-- Active Effects Tab --}}
-    <div class="tab effects flexcol" data-group="primary" data-tab="effects">
-      {{> "systems/npqv2/templates/sheets/parts/actor-effects.html"}}
-    </div>
-
-  </section>
+    <h2>{{localize  "int.secrets" }}</h2>
+    <table>
+      <tr>
+        <th width="5%"></th>
+        <th width="60%">Nom et description</th>
+        <th width="5%">Niv.</th>
+        <th width="25%">Nom Niv Max</th>
+        <th width="5%">Act.</th>
+      </tr>
+      {{#each secrets as |secret id|}}
+      <tr>
+        <td class="align-center">
+          <img src="{{secret.img}}" title="{{secret.name}}" width="24" height="24"/>
+        </td>
+        <td class="align-left">
+          {{secret.name}} ({{secret.system.nomGene}})
+        </td>
+        <td class="align-center">
+          {{secret.system.niveau}}
+        </td>
+        <td class="align-center"> 
+          {{secret.system.nomMax}}
+        </td>
+        <td>
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="edit"> <i class="fas fa-edit"></i></a>
+          &nbsp;
+          <a class="attrib-mod rollable" data-roll="{{_id}}" data-cmd="suppr"> <i class="fas fa-trash"></i></a>
+          </td>
+      </tr>
+      {{/each}}
+    </table>
+  </div>
+ </section> 
 </form>

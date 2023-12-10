@@ -22,8 +22,8 @@
   
       // Alternatively, you could use the following return statement to do a
       // unique item sheet by type, like `weapon-sheet.html`.
-      console.log("NPQV2"+path+"/item-"+this.item.data.type+"-sheet.html" );
-      return `${path}/item-${this.item.data.type}-sheet.html`;
+      console.log("NPQV2"+path+"/item-"+this.item.type+"-sheet.html" );
+      return `${path}/item-${this.item.type}-sheet.html`;
     }
   
     /* -------------------------------------------- */
@@ -34,16 +34,11 @@
       const context = super.getData();
   
       // Use a safe clone of the item data for further operations.
-      const itemData = context.item.data;
+      const itemSystem = context.item.system;
   
-      // Retrieve the roll data for TinyMCE editors.
-      context.rollData = {};
-      context.A1Acteur = false;
-      context.NomCmpV =  "";
-      context.NomCode = "";
       let actor = this.object?.parent ?? null;
       if (actor) {
-        context.rollData = actor.getRollData();
+    /*    context.rollData = actor.getRollData();
         let lesDomaines = actor.data.items.filter(item => item.type === "domaine");
         let lesCmp = actor.data.items.filter(item => item.type === "competence");
         let CmpV = new Object();
@@ -51,8 +46,10 @@
         CmpV[""]="aucune";
         for( let dom of lesDomaines){
           CmpV[dom.data._id] = dom.data.data.code;
+          */
         }
-        for( let cmp of lesCmp){
+        // boucle sympa pour récuperer les code dans une liste
+/*        for( let cmp of lesCmp){
           CmpV[cmp.data._id] = cmp.data.data.code;
         }
         context.CmpV = CmpV;
@@ -73,12 +70,12 @@
           }
           if(! context.data.data.desync)  {
             let cmp =actor.data.items.get(context.data.data.idcmpref);
-            if(cmp !== undefined) itemData.data.score = cmp.data.data.score;
+            if(cmp !== undefined) itemSystem.data.score = cmp.data.data.score;
             let arme = actor.data.items.get(context.data.data.idarmeref);
             if(arme !== undefined) {
-              itemData.data.degat = arme.data.data.dommage;
-              itemData.data.bris = arme.data.data.bris;
-              itemData.data.resistance = arme.data.data.resistance;
+              itemSystem.data.degat = arme.data.data.dommage;
+              itemSystem.data.bris = arme.data.data.bris;
+              itemSystem.data.resistance = arme.data.data.resistance;
             }
           } 
         }
@@ -86,8 +83,8 @@
       }
       // le nombre de dés peut être plus gand que le score de la compétence, mais pas l'inverse
       if(context.data.type == "competence") {
-        if((itemData.data.score/10) > itemData.data.NbDes) {
-          itemData.data.NbDes = Math.floor(itemData.data.score/10)
+        if((itemSystem.data.score/10) > itemSystem.data.NbDes) {
+          itemSystem.data.NbDes = Math.floor(itemSystem.data.score/10)
         }
       }
   /*    if(context.data.type == "secret") { // utilise editor
@@ -122,12 +119,11 @@
       // } 
   
       // attention modification du degrée de data.. !
-      context.data = itemData.data;
-      context.flags = itemData.flags;
-      context.TypeObjets = { "O":"Objet","C":"Arme Courte", "M":"Arme Moyenne","L":"Arme Longue" };
-      context.AttribV = { "for":"Force", "ag":"Agilité", "con":"Constitution", "p":"Présence", "ig":"Intelligence", "it":"Intuition", "v":"Volonté" };
-  
+      context.CodifAspect = { "NORM":"Standard", "SEQ":"séquelles", "PLUS":"plus", "SPE":"spécialité","EXTRA":"extra", "OBJ":"Objet"};
+      context.CodifObjet = { "OBJET":"objet", "ARME" : "Arme", "ARMURE" : "Armure"}
   //    data.TypeValue = persodata.type; 
+      context.system = itemSystem;
+      console.log("Context d'item", context )
       return context;
     }
   
@@ -144,5 +140,18 @@
       //html.find('.item-edit').click(
       //  html.find('.rollable').click(this._onRoll.bind(this));
     }
+
+  _onDrop(event){
+    event.preventDefault();
+    console.log("Drop:",event);
+  }
+  _onDragStart(event){
+    event.preventDefault();
+    console.log("Start:",event);
+  }
+  _onDragOver(event){
+    event.preventDefault();
+    console.log("Over:",event);
+  }
   }
   

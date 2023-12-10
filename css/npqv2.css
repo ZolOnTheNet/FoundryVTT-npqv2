@@ -1,3 +1,13 @@
+/*** la base est fourni par Boilerplate system : https://gitlab.com/asacolips-projects/foundry-mods/boilerplate/-/tree/master
+ * obtention de la police de caractère roboto
+ */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+/* Global styles */
+.window-app {
+  font-family: "Roboto", sans-serif;
+}
+
+
 /*******************************
  * mettre en surbrillance en rouge les liens de type rollable 
  */
@@ -131,10 +141,88 @@
 }
 /****************************************************************
  * gestion des alignement du centre
-*/
+ */
 .align-center {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
+  text-align: center;
+}
+/****************************************************************
+ * mes CSS à moi
+ */
+.sheet-flex-form {
+  flex: 0;
+}
+
+.flexcolzol {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content:  flex-start;
+}
+
+.sheet-header-zol {
+    display: flex;
+    flex-direction: row;
+/*    flex-wrap: wrap; */
+    justify-content: flex-start;
+    align-items: normal;
+ } 
+
+ .tableau-hearder {
+    border : 0
+
+ }
+
+ .mini-input {
+   size : "2em"; /* a verifier mais normalement pas pris en compte */
+   width : auto;
+ }
+
+ .normal-input {
+  width : auto ! important;
+ }
+
+ .normal-left-input {
+  text-align: right;
+  width : auto ! important;
+ }
+
+ .taille-M4 {
+  width: 25%;
+ }
+
+ .reduitTaille{
+  font-size: -1;
+ }
+
+ .txtUtiEnCours{
+  color: red;
+  font-weight: bold;
+}
+
+.txtUtiNon {
+  font-weight: lighter;
+  color: gray;
+}
+
+.txtUtiOui {
+  font-weight: bold;
+  color: black;
+}
+
+.grdPolice {
+  font-size: x-large;
+}
+
+.plusPolice {
+  font-size: large;
+}
+
+.lilipute {
+  font-size: x-small;
+}
+
+.txtcenter {
   text-align: center;
 }

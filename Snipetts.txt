@@ -1,0 +1,85 @@
+  <div class="tab items" data-group="primary" data-tab="etats">
+    <h3>Fatigue <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.cmp" value="{{system.etats.fatigue.cmp}}" data-dtype="Number"/></h3>
+    <span>
+    Xp : <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.xp" value="{{system.etats.fatigue.xp}}" data-dtype="Number"/>
+    Nb cases : 5
+    <br>
+    Etat Actuel : <input class="normal-input" type="text" size="1em" name="system.etats.fatigue.value" value="{{system.etats.fatigue.value}}" data-dtype="Number"/>
+    </span>
+    <br>
+
+    <i class="fas fa-bolt"></i> Eclair ! 
+
+    pour modifier un message : 
+    game.messages à la liste de tous les message chat ! ici c'est le message m4h... qui est directement modifié
+    [...game.messages][18].update({ "content" : [...game.messages][18].content+' doit faire une défense, oui !', "_id" : "m4hY81wtSmQ5E86l" }) 
+
+    envoyer un simple message :
+    ChatMessage.create({ "content": "@Actor[k2F_PJ1] Coucou c'est moi !"}).then((e) =>{ console.log(e)}) 
+    on récupère même l'objet Message 
+
+    fonction de récupération un click sur le messages par le handle -apply-xxx: 
+    html.find(".apply-dmg").click((ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, data));
+    html.find(".apply-cmd").click((ev) =>EnventDuChat(ev, html, data));
+
+    fonction avec plein de truc dedans !
+        function EnventDuChat(event, html, data){
+          const btn = $(event.currentTarget);
+          const btnType = btn.data("apply");
+          // cette partie peut être toujours utile ou non, mais nécessaire pour full, et DomApply
+          console.log("EventDuChat:",btn);
+          let dataSet = event.currentTarget.dataset;
+          let obj = JSON.parse(dataSet.roll);
+          
+          return;
+          let c = html.find(".flavor-text").text();
+          let st = c.indexOf("donne ") + "donne ".length;
+          let ed = c.indexOf(" ", st);
+          switch(btnType){
+            case "full"   : 
+              console.log("lancer dommage !"); 
+              let nbMises = parseInt(c.substring(st,ed));
+              DialogueDommage(nbMises);
+              break;
+            case "DomApply"   : 
+              console.log("appliquer les dommages !"); 
+              let DomTot = parseInt(c.substring(st,ed));
+              break;
+            case "double" : console.log("lancer dommage !"); 
+              break;
+            case "attackTo"   : 
+              console.log("faire lancer la défense du personnage opposé !");
+              //on obtient ces cibles
+              let targets = ([...game.user.targets].length > 0) ? [...game.user.targets] : canvas.tokens.objects.children.filter(t => t._controlled);
+              //on obtient le personnage en cours de selections
+              let actor = ChatMessage.getSpeaker().actor;
+              if(actor==null) {
+                console.log("Selectionner un personnage");
+              } else {
+                // faire une demande de défense, puis appliquer les calcul (@Nom)
+                // let template = "systems/hitos/templates/chat/chat-drama.html";
+                // dialogData = {
+                //     title: game.i18n.localize("Drama"),
+                //     total: result,
+                //     damage: damage,
+                //     dicesOld: dicesOld,
+                //     dices: dicesNew.sort((a, b) => a - b),
+                //     actor: actor.id,
+                //     mods: mods,
+                //     weaponDamage: weaponDamage,
+                //     weaponKindBonus: weaponKindBonus,
+                //     data: actor.system,
+                //     config: CONFIG.hitos,
+                // };
+                // html = await renderTemplate(template, dialogData);
+                // ChatMessage.create({
+                //     content: html,
+                //     speaker: {alias: actor.name},
+                //     type: CONST.CHAT_MESSAGE_TYPES.ROLL, 
+                //     rollMode: game.settings.get("core", "rollMode"),
+                //     roll: newRoll
+                // });
+              }
+              break;
+          }
+        }

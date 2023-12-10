@@ -1,23 +1,31 @@
 {
-    "name": "npqv2",
-    "title": "NPQ v3",
-    "description": "NPQ v3 pour FoundryVTT!",
-    "version": "0.0.1",
-    "minimumCoreVersion": "9.0.0",
-    "compatibleCoreVersion": "10",
-    "templateVersion": 2,
-    "author": "ZolOnTheNet",
-    "esmodules": ["module/npqv2.js"],
-    "styles": ["css/npqv2.css"],
-    "scripts": [],
-    "packs": [],
-    "languages": [],
-    "gridDistance": 1.5,
-    "gridUnits": "m",
-    "primaryTokenAttribute": "",
-    "secondaryTokenAttribute": "",
-    "url": "https://www-lagep.cpe.fr/public/lemonde2k2/",
-    "manifest": "",
-    "download": "",
-    "license": "LICENSE.txt"
-  }
+  "name": "npqv2",
+  "title": "NPQ v7.3",
+  "description": "NPQ v7 pour FoundryVTT!",
+  "version": "0.0.5",
+  "minimumCoreVersion": "9.0.0",
+  "compatibleCoreVersion": "10",
+  "templateVersion": 2,
+  "author": "zolOntheNet",
+  "esmodules": ["module/npqv2.js"],
+  "styles": ["css/npqv2.css"],
+  "scripts": [],
+  "packs": [],
+  "coreTranslation": true,
+  "languages": [
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json",
+      "flags": {}
+    }
+  ],
+  "gridDistance": 5,
+  "gridUnits": "ft",
+  "primaryTokenAttribute": "health",
+  "secondaryTokenAttribute": "power",
+  "url": "https://www-lagep.cpe.fr/public/lemonde2k2/",
+  "manifest": "",
+  "download": "",
+  "license": "LICENSE.txt"
+}

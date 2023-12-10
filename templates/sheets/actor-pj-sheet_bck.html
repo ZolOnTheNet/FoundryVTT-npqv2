@@ -1,0 +1,153 @@
+<form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
+
+  {{!-- Sheet Header --}}
+  <table width="100%" style="height: 150px;" border="0">
+    <tbody>
+      <tr>
+        <td style="width: 163px;">   
+          <aside class="sidebar">
+            <div class="resource flex-group-center">
+              <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="150" width="150"/>
+            </div>  
+          </aside>
+        </td>
+        <td>
+          <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+          <h2 class="charname"><input name="data.ethnie" type="text" value="{{data.ethnie}}" placeholder="ethnie"/></h2>
+          <div class="resources grid grid-4col">
+            <div class="resource flex-group-center">
+              <label for="data.PdV.value" class="resource-label">Points de Vie</label>
+              <div class="resource-content flexrow flex-center flex-between">
+                <input type="text" name="data.PdV.value" value="{{data.PdV.value}}" data-dtype="Number"/>
+                <span> / </span>
+                <input type="text" name="data.PdVTot" value="{{data.PdVTot}}" disabled=true data-dtype="Number"/>
+                (<input type="text" name="data.PdV.max" value="{{data.PdV.max}}" data-dtype="Number"/>)
+              </div>
+            </div>
+    
+            <div class="resource flex-group-center">
+              <label for="data.PdM.value" class="resource-label">Pts de Magie</label>
+              <div class="resource-content flexrow flex-center flex-between">
+                <input type="text" name="data.PdM.value" value="{{data.PdM.value}}" data-dtype="Number"/>
+                <span> / </span>
+                <input type="text" name="data.PdMTot" value="{{data.PdMTot}}" disabled=true data-dtype="Number"/>
+                (<input type="text" name="data.PdM.max" value="{{data.PdM.max}}" data-dtype="Number"/>)
+              </div>
+            </div>
+    
+            <div class="resource flex-group-center">
+              <label for="data.Heroisme" class="resource-label">Pts de Héro</label>
+              <div class="resource-content flexrow flex-center flex-between">
+                <input type="text" name="data.Heroisme" value="{{data.Heroisme}}" data-dtype="Number"/>
+              </div>
+            </div>
+    
+           <div class="resource flex-group-center">
+              <label for="data.XP" class="resource-label">XP</label>
+              <div class="resource-content flexrow flex-center flex-between">
+                <input type="text" name="data.XP" value="{{data.XP}}" data-dtype="Number"/>
+              </div>
+            </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+ 
+  <nav class="sheet-tabs tabs" data-group="primary">
+    {{!-- Default tab is specified in actor-sheet.mjs --}}
+    <a class="item" data-tab="bibiography">Bibio.</a>
+    <a class="item" data-tab="features">Principale</a>
+    <a class="item" data-tab="synthese">synthese</a>
+    <a class="item" data-tab="competences">Dom. et Cmp.</a>
+    <a class="item" data-tab="sorts">Sortilèges.</a>
+    <a class="item" data-tab="secrets">Secrets</a>
+    <a class="item" data-tab="items">Equipements</a>
+    <a class="item" data-tab="effects">Effects</a>
+  </nav>
+
+
+
+{{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Owned Features Tab --}}
+    <div class="tab features" data-group="primary" data-tab="bibiography">
+      {{> "systems/npqv2/templates/sheets/parts/actor-bibiographie.html"}} 
+    </div>
+   
+    <div class="tab features" data-group="primary" data-tab="features">
+      <section class="grid grid-3col">
+        <aside class="sidebar">
+          <div class="abilities flexcol">
+            {{#each data.attributs as |attrib key|}}
+            <div class="flexrow flex-group-center">
+              <label for="data.attributs.{{attrib.code}}.value" class="resource-label rollable flexlarge align-left" data-roll="{{attrib.value}}" data-label="Jet de {{attrib.label}}" data-roll-type="dedirect" >{{attrib.label}} </label>
+              <input type="text" name="data.attributs.{{attrib.code}}.value" value="{{attrib.value}}" data-dtype="Number"/>
+              <span class="attrib-mod rollable" data-roll="{{attrib.value}}" data-roll-type="debase" data-label="Jet en {{attrib.label}}"> {{attrib.abrv}}</span>
+            </div>
+            {{/each}}
+          </div>
+        </aside>
+
+        <section class="main flexcol">
+          {{#each data.attrder as |attribd key|}}
+          <div class="attribd flexrow flex-group-center">
+            <label for="data.attrder.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll-type="attribr_direct" data-roll="{{attribd.value}}" data-label="{{key}}">{{attribd.label}}</label>
+            <input type="text" name="data.attrder.{{key}}.value" value="{{attribd.value}}" data-dtype="text"/>
+            <span class="attrib-mod rollable" data-roll="{{attribd.value}}" data-roll-type="attribr" data-roll="{{attribd.value}}" data-label="{{key}}">{{attribd.abrv}}</span>
+          </div>
+          {{/each}}        
+        </section>
+        <section class="Bonus flexcol">
+          Somme des bonus
+          <div class="attribd flexrow flex-group-left">
+            score:{{bonus.score}}
+          </div>
+          <div class="attribd flexrow flex-group-left">
+            dommage:{{bonus.dommage}}
+          </div>
+          <div class="attribd flexrow flex-group-left">
+            pinit:{{bonus.pinit}}
+          </div>
+          <div class="attribd flexrow flex-group-left">
+            PdV:{{bonus.PdV}}
+          </div>
+          <div class="attribd flexrow flex-group-left">
+            PdM:{{bonus.PdM}}
+          </div>
+        </section>
+      </section>
+    </div>
+
+    {{!-- Tab de Synthese --}}
+    <div class="tab items" data-group="primary" data-tab="synthese">
+       {{> "systems/npqv2/templates/sheets/parts/actor-synthese.html"}}
+    </div>
+    
+    {{!-- Owned Competences, Domaines Tab --}}
+    <div class="tab competences" data-group="primary" data-tab="competences">
+      {{> "systems/npqv2/templates/sheets/parts/actor-competences.html"}}
+    </div>
+
+    {{!--  Sortilèges Tab --}}
+    <div class="tab sorts" data-group="primary" data-tab="sorts">
+      {{> "systems/npqv2/templates/sheets/parts/actor-sorts.html"}}
+    </div>
+
+    {{!-- Secret possédée --}}
+    <div class="tab secrets" data-group="primary" data-tab="secrets">
+      {{> "systems/npqv2/templates/sheets/parts/actor-secrets.html"}}
+    </div>
+  
+    {{!-- Owned Items Tab --}}
+    <div class="tab items" data-group="primary" data-tab="items">
+       {{> "systems/npqv2/templates/sheets/parts/actor-items.html"}}
+    </div>
+
+    {{!-- Active Effects Tab --}}
+    <div class="tab effects flexcol" data-group="primary" data-tab="effects">
+      {{> "systems/npqv2/templates/sheets/parts/actor-effects.html"}}
+    </div>
+
+  </section>
+</form>
